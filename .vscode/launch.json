@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Simul",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Simul",
+            // "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset, Pt1, Pt2"
+            // "args": [20000, -7, "CCSK_NB", 64, 64, 42,8,20, 1.5, 9, 3],
+            "args": [1, -7, "CCSK_NB", 64, 64, 42,20,20, 1.5],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build simulator",  // Ensure this task is defined in tasks.json
+            "logging": {
+                "engineLogging": true,
+                "trace": true,
+                "traceResponse": true
+            }
+        }
+    ]
+}

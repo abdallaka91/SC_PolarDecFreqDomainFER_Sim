@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Pruning tool",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Pruning",
+            // EbN0 = -10;
+            // q = 64;
+            // N = 64;
+            // K = 48;
+            // nH = 9;
+            // nL = 18;
+            // Pt1 = 350;
+            // Pt2 = 350;
+            "args": [-10,64,64,48,9,18,350,350],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build simulator",  // Ensure this task is defined in tasks.json
+            "logging": {
+                "engineLogging": true,
+                "trace": true,
+                "traceResponse": true
+            }
+        }
+    ]
+}

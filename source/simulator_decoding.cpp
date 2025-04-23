@@ -135,9 +135,9 @@ int main(int argc, char *argv[])
     CCSK_seq ccsk_seq;
     vector<vector<uint16_t>> CCSK_rotated_codes(q, vector<uint16_t>());
     if (code_param.sig_mod == "CCSK_BIN")
-        create_ccsk_rotated_table(ccsk_seq.CCSK_bin_seq[code_param.p - 1], ccsk_seq.CCSK_bin_seq[code_param.p - 1].size(), CCSK_rotated_codes);
+        create_ccsk_rotated_table(ccsk_seq.CCSK_bin_seq[code_param.p - 2], ccsk_seq.CCSK_bin_seq[code_param.p - 2].size(), CCSK_rotated_codes);
     else if (code_param.sig_mod == "CCSK_NB")
-        create_ccsk_rotated_table(ccsk_seq.CCSK_GF_seq[code_param.p - 1], ccsk_seq.CCSK_GF_seq[code_param.p - 1].size(), CCSK_rotated_codes);
+        create_ccsk_rotated_table(ccsk_seq.CCSK_GF_seq[code_param.p - 2], ccsk_seq.CCSK_GF_seq[code_param.p - 2].size(), CCSK_rotated_codes);
 
     decoder_t temp_dec;
     temp_dec.intrinsic_LLR.reserve(dec_param.nm);

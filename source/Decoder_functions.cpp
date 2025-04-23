@@ -24,7 +24,6 @@ void PoAwN::decoding::Channel_LLR(const vector<vector<softdata_t>> &chan_observ,
 
     vector<softdata_t> hard_decison(q1, two_pow16 - 1);
 
-    // softdata_t mn_llr = two_pow16 - 1; // Never used outside of the loop
     const softdata_t fct = softdata_t(2) / (sigma * sigma);
     for (int i = 0; i < N; i++)
     {

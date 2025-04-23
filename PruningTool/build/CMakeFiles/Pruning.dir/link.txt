@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -O0 -g CMakeFiles/Pruning.dir/PruningToolMain.cpp.o -o Pruning 

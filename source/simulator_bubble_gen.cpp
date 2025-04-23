@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
     cout << "OK!, " << "Loading tables..." << endl;
     // void LoadTables(base_code_t & code, table_GF & table,  const uint16_t *GF_polynom_primitive)
     LoadTables(code_param, table, GF_polynom_primitive.data());
+
     cout << "Done!" << endl;
     cout << "Simulation starts..." << endl;
 
@@ -127,9 +128,9 @@ int main(int argc, char *argv[])
     CCSK_seq ccsk_seq;
     vector<vector<uint16_t>> CCSK_rotated_codes(q, vector<uint16_t>());
     if (code_param.sig_mod == "CCSK_BIN")
-        create_ccsk_rotated_table(ccsk_seq.CCSK_bin_seq[code_param.p - 1], ccsk_seq.CCSK_bin_seq[code_param.p - 1].size(), CCSK_rotated_codes);
+        create_ccsk_rotated_table(ccsk_seq.CCSK_bin_seq[code_param.p - 2], ccsk_seq.CCSK_bin_seq[code_param.p - 2].size(), CCSK_rotated_codes);
     else if (code_param.sig_mod == "CCSK_NB")
-        create_ccsk_rotated_table(ccsk_seq.CCSK_GF_seq[code_param.p - 1], ccsk_seq.CCSK_GF_seq[code_param.p - 1].size(), CCSK_rotated_codes);
+        create_ccsk_rotated_table(ccsk_seq.CCSK_GF_seq[code_param.p - 2], ccsk_seq.CCSK_GF_seq[code_param.p - 2].size(), CCSK_rotated_codes);
 
     vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
     vector<uint16_t> info_sec_rec(K, dec_param.MxUS);
@@ -182,7 +183,7 @@ int main(int argc, char *argv[])
                     for (auto &elem : rw)
                         elem = 0;
 
-        if ((i0 % 100 == 0))
+        if ((i0 % 50 == 0))
             cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
         i0++;
     }
@@ -213,7 +214,7 @@ int main(int argc, char *argv[])
                 for (int j1 = 0; j1 < nL; j1++)
                 {
                     Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
-                    // Cs[l][s][j0][j1] /= (float)NbMonteCarlo; // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
+                     Cs[l][s][j0][j1] /= (float)NbMonteCarlo; // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
                     // Cs[l][s][j0][j1] *= 10000; //for easier readabiliy now scale the bubbles by 10000 and take the integer part only (sum now ~10000)
                     // Cs[l][s][j0][j1] = std::round(Cs[l][s][j0][j1]);
                     // if (Cs[l][s][j0][j1] > Pt)

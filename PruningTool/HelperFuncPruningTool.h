@@ -25,9 +25,9 @@ bool AppendClustBubblesToFile(const std::string &filename,
     }
 
     std::string dashes = "layer " + std::to_string(l) + ", " + "cluster " + std::to_string(s);
-    if (newsim)
-        file << dashes << "\n";
-    else
+    if (!newsim)
+    //     file << dashes << "\n";
+    // else
         file << "\n"
              << dashes << "\n";
 

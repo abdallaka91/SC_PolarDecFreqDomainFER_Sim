@@ -18,21 +18,30 @@ using std::stoi;
 using std::string;
 using std::vector;
 
-int main()
+int main(int argc, char *argv[])
 {
 
     int q, N, K, n, nH, nL, nm;
     float Pt1, Pt2, Pt, EbN0, nbmontcarlo;
 
-    string main_bub_dir = "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/BubblesPattern/ccsk_nb";
-    EbN0 = -6.5;
-    q = 64;
-    N = 64;
-    K = 42;
-    nH = 20;
-    nL = 20;
-    Pt1 = 100;
-    Pt2 = 50;
+    string main_bub_dir = "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/BubblesPattern/ccsk_bin";
+    // EbN0 = -10;
+    // q = 64;
+    // N = 64;
+    // K = 48;
+    // nH = 64;
+    // nL = 64;
+    // Pt1 = 500;
+    // Pt2 = 100;
+
+    EbN0 = stod(argv[1]);
+    q = stoi(argv[2]);
+    N = stoi(argv[3]);
+    K = stoi(argv[4]);
+    nH = stoi(argv[5]);
+    nL = stoi(argv[6]);
+    Pt1 = stoi(argv[7]);
+    Pt2 = stoi(argv[8]);
 
     float norm1 = 1e6;
     n = log2(N);
@@ -87,7 +96,7 @@ int main()
             while (k < nH)
             {
                 std::getline(file, line);
-                if (line.find_first_not_of("0123456789. ") != std::string::npos)
+                if (line.find_first_not_of("+-e0123456789. ") != std::string::npos)
                 {
                     continue;
                 }
@@ -114,7 +123,7 @@ int main()
             for (auto &rw : Cs[l][s])
                 for (auto &elem : rw)
                 {
-                    elem /= nbmontcarlo;
+                    // elem /= nbmontcarlo;
                     elem = std::round(elem * norm1);
                 }
         }
@@ -147,7 +156,7 @@ int main()
     int j00, j11, cnt0, cnt1;
     for (int l = 0; l < n; l++)
     {
-        if (l < 3)
+        if (l < 2)
             Pt = Pt1;
         else
             Pt = Pt2;

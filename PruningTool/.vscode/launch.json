@@ -2,13 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Simul",
+            "name": "Pruning tool",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Simul",
-            // "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset, Pt1, Pt2"
-            "args": [1000, -13, "CCSK_Bin", 128, 512, 384,32,32, 1.0, 100, 50],
-            // "args": [100, -12.5, "CCSK_Bin", 128, 512, 384,32,32, 1.0],
+            "program": "${workspaceFolder}/build/Pruning",
+            // EbN0 = -10;
+            // q = 64;
+            // N = 64;
+            // K = 48;
+            // nH = 9;
+            // nL = 18;
+            // Pt1 = 350;
+            // Pt2 = 350;
+            "args": [-10,64,64,48,9,18,350,350],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

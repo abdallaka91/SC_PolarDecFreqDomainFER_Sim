@@ -23,7 +23,7 @@ void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR)
         mat_direct = "./matrices/ccsk_nb/N";
 
     fname << mat_direct << code.N << "/mat_N" << code.N << "_GF"
-          << code.q << "_SNR" << std::fixed << std::setprecision(2) << SNR
+          << code.q << "_SNR" << std::fixed << std::setprecision(3) << SNR
           << ".txt";
 
     std::cout << fname.str() << std::endl;

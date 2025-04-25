@@ -277,14 +277,8 @@ void PoAwN::decoding::ECN_PA(const decoder_t &theta_1,
     vector<vector<uint16_t>> Bubb_Indicator = dec_param.Bubb_Indicator[l][s];
     uint16_t nH = dec_param.ns[l][s][0];
     uint16_t nL = dec_param.ns[l][s][1];
-    nm = dec_param.ns[l + 1][2 * s][1];
-    if (nm == 0)
-        // if (l < dec_param.n - 2)
-        //     nm = dec_param.ns[l + 2][4 * s + 1][1];
-        // else
-        nm = nL;
-
-        decoder_t phi_1_p = phi_1;
+    nm = std::max({dec_param.ns[l][s][1], dec_param.ns[l+1][2*s][1], dec_param.ns[l+1][2*s+1][1]});
+    decoder_t phi_1_p = phi_1;
     bool rel_theta = (theta_1.intrinsic_LLR[dec_param.Zc] > phi_1.intrinsic_LLR[dec_param.Zc]);
     if (dec_param.sig_mod == "BPSK")
         for (int i = 0; i < phi_1.intrinsic_GF.size(); i++)
@@ -516,7 +510,7 @@ void PoAwN::decoding::VN_update_PA(const decoder_t &theta_1,
     }
 
     softdata_t mn_llr = std::numeric_limits<softdata_t>::max();
-    
+
     if (dec_param.sig_mod == "BPSK")
         for (int i = 0; i < q; i++)
         {

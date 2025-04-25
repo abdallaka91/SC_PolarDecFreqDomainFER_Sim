@@ -14,12 +14,14 @@ namespace PoAwN
         using structures::decoder_t;
         using structures::vector;
         using structures::table_GF;
+        using structures::softdata_t;
         void EncodeChanBPSK_BinCCSK(decoder_parameters &dec_param,
             const table_GF &table,
             const float SNR,
             const vector<vector<uint16_t>> &bin_table,
             vector<decoder_t> &chan_LLR_sorted,
-            vector<uint16_t> &KSYMB);
+            vector<uint16_t> &KSYMB, 
+            vector<vector<softdata_t>> &bin_mod_dict);
 
             void EncodeChanGF_CCSK(decoder_parameters &dec_param,
                 const table_GF &table,

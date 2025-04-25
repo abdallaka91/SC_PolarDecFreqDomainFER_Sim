@@ -183,8 +183,9 @@ void PoAwN::decoding::ECN_EMS_L(const decoder_t &theta_1,
 {
     decoder_t phi_1_p = phi_1;
     bool rel_theta = (theta_1.intrinsic_LLR[dec_param.Zc] > phi_1.intrinsic_LLR[dec_param.Zc]);
-    for (int i = 0; i < phi_1.intrinsic_GF.size(); i++)
-        phi_1_p.intrinsic_GF[i] = DIVGF[phi_1_p.intrinsic_GF[i]][coef];
+    if (dec_param.sig_mod == "BPSK")
+        for (int i = 0; i < phi_1.intrinsic_GF.size(); i++)
+            phi_1_p.intrinsic_GF[i] = DIVGF[phi_1_p.intrinsic_GF[i]][coef];
 
     vector<uint16_t> a_gf, b_gf;
     vector<softdata_t> a, b;
@@ -243,25 +244,21 @@ void PoAwN::decoding::ECN_EMS_L(const decoder_t &theta_1,
     for (int i = dec_param.nm; i < dec_param.q; i++)
         theta.intrinsic_GF[i] = temp_GF[i];
 
+    bool brk1 = false;
     for (int i = 0; i < nH; i++)
     {
         for (int j = 0; j < nL; j++)
         {
-            if (rel_theta)
+            if ((rel_theta && a_gf[i] == ucap_theta && b_gf[j] == ucap_phi) ||
+                (!rel_theta && a_gf[i] == ucap_phi && b_gf[j] == ucap_theta))
             {
-                if (a_gf[i] == ucap_theta && b_gf[j] == ucap_phi)
-                {
-                    Bt1[i][j]++;
-                }
-            }
-            else
-            {
-                if (a_gf[i] == ucap_phi && b_gf[j] == ucap_theta)
-                {
-                    Bt1[i][j]++;
-                }
+                Bt1[i][j]++;
+                brk1 = true;
+                break;
             }
         }
+        if (brk1)
+            break;
     }
 }
 
@@ -287,8 +284,11 @@ void PoAwN::decoding::ECN_PA(const decoder_t &theta_1,
         // else
         nm = nL;
 
-    decoder_t phi_1_p = phi_1;
+        decoder_t phi_1_p = phi_1;
     bool rel_theta = (theta_1.intrinsic_LLR[dec_param.Zc] > phi_1.intrinsic_LLR[dec_param.Zc]);
+    if (dec_param.sig_mod == "BPSK")
+        for (int i = 0; i < phi_1.intrinsic_GF.size(); i++)
+            phi_1_p.intrinsic_GF[i] = DIVGF[phi_1_p.intrinsic_GF[i]][coef];
     vector<uint16_t> a_gf, b_gf;
     vector<softdata_t> a, b;
     if (rel_theta)
@@ -452,12 +452,21 @@ void PoAwN::decoding::VN_update(const decoder_t &theta_1,
     }
 
     softdata_t mn_llr = std::numeric_limits<softdata_t>::max();
-    for (int i = 0; i < q; i++)
-    {
-        temp_llr[DIVGF[i][coef]] = theta1_llr[i] + phi1_llr[i];
-        if (temp_llr[DIVGF[i][coef]] < mn_llr)
-            mn_llr = temp_llr[DIVGF[i][coef]];
-    }
+
+    if (dec_param.sig_mod == "BPSK")
+        for (int i = 0; i < q; i++)
+        {
+            temp_llr[DIVGF[i][coef]] = theta1_llr[i] + phi1_llr[i];
+            if (temp_llr[DIVGF[i][coef]] < mn_llr)
+                mn_llr = temp_llr[DIVGF[i][coef]];
+        }
+    else
+        for (int i = 0; i < q; i++)
+        {
+            temp_llr[i] = theta1_llr[i] + phi1_llr[i];
+            if (temp_llr[i] < mn_llr)
+                mn_llr = temp_llr[i];
+        }
 
     if (std::abs(mn_llr > 1e-5))
         for (int i = 0; i < q; i++)
@@ -507,12 +516,21 @@ void PoAwN::decoding::VN_update_PA(const decoder_t &theta_1,
     }
 
     softdata_t mn_llr = std::numeric_limits<softdata_t>::max();
-    for (int i = 0; i < q; i++)
-    {
-        temp_llr[DIVGF[i][coef]] = theta1_llr[i] + phi1_llr[i];
-        if (temp_llr[DIVGF[i][coef]] < mn_llr)
-            mn_llr = temp_llr[DIVGF[i][coef]];
-    }
+    
+    if (dec_param.sig_mod == "BPSK")
+        for (int i = 0; i < q; i++)
+        {
+            temp_llr[DIVGF[i][coef]] = theta1_llr[i] + phi1_llr[i];
+            if (temp_llr[DIVGF[i][coef]] < mn_llr)
+                mn_llr = temp_llr[DIVGF[i][coef]];
+        }
+    else
+        for (int i = 0; i < q; i++)
+        {
+            temp_llr[i] = theta1_llr[i] + phi1_llr[i];
+            if (temp_llr[i] < mn_llr)
+                mn_llr = temp_llr[i];
+        }
 
     if (std::abs(mn_llr > 1e-5))
         for (int i = 0; i < q; i++)

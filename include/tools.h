@@ -24,20 +24,24 @@ namespace PoAwN
                                    const int SEED,
                                    vector<vector<uint16_t>> &KBIN,
                                    vector<uint16_t> &KSYMB);
+        void RandomSymbGenerator(const uint16_t K,
+                                 const uint16_t q,
+                                 const bool repeatable,
+                                 const int SEED,
+                                 vector<uint16_t> &KSYMB);
         void AWGN_gen(double MEAN,
                       double STD,
                       bool repeatable,
                       double SEED,
                       vector<vector<softdata_t>> &noise_table);
 
-        void awgn_channel_noise(const vector<vector<uint16_t>> &NBIN,
-                                const double sigma,
+        void awgn_channel_noise(const double sigma,
                                 const bool repeatable,
                                 const double SEED,
                                 vector<vector<softdata_t>> &noisy_sig);
         void Encoder(const vector<vector<uint16_t>> &ADDGF, const vector<vector<uint16_t>> &MULGF,
-                const vector<vector<uint16_t>> &polar_coeff,
-                vector<vector<uint16_t>> &ucap, vector<uint16_t> &NSYMB);
+                     const vector<vector<uint16_t>> &polar_coeff,
+                     vector<vector<uint16_t>> &ucap, vector<uint16_t> &NSYMB);
         float My_drand48(int *initialise);
         // void inv_Encoder(const vector<vector<uint16_t>> &ADDGF, const vector<vector<uint16_t>> &DIVGF,
         //                                const vector<vector<uint16_t>> &polar_coeff,

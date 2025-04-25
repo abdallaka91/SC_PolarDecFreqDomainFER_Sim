@@ -1,0 +1,16 @@
+7 6 5 3 4 2 1 0 
+
+7 6 5 3 4 2 1 0 
+
+0.000012319000 0.022037000000 0.058988000000 0.508130000000 0.225890000000 0.713760000000 0.766440000000 0.957410000000 
+
+0.000038072000 0.053987000000 0.130870000000 0.783910000000 0.472920000000 0.946280000000 0.980270000000 0.996000000000 
+
+N_obs: 64000
+
+File Format:
+1- most to least reliable channels (taken entropies)
+2- most to least reliable channels (taken error probabilities)
+3- channels entropies (flipped)
+4- channels error probabilities (flipped)
+5- number of MontCarlo simulations

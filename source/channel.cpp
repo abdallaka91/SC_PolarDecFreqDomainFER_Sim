@@ -30,25 +30,23 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(decoder_parameters &dec_param,
                                             const float SNR,
                                             const vector<vector<uint16_t>> &bin_table,
                                             vector<decoder_t> &chan_LLR_sorted,
-                                            vector<uint16_t> &KSYMB)
+                                            vector<uint16_t> &KSYMB,
+                                            vector<vector<softdata_t>> &bin_mod_dict)
 {
     uint16_t N = dec_param.N, K = dec_param.K, q = dec_param.q;
     uint16_t nm = dec_param.nm;
-    float sigma = sqrt(1.0 / (2*pow(10, SNR / 10.0))); // N0/2 or N0?
+    float sigma = sqrt(1.0 / (2 * pow(10, SNR / 10.0))); // N0/2 or N0?
     vector<uint16_t> NSYMB(N);
-    vector<vector<uint16_t>> KBIN(K), NBIN;
-    NBIN.resize(N, vector<uint16_t>());
     vector<vector<softdata_t>> noisy_sig(N, vector<softdata_t>(bin_table[0].size(), (softdata_t)0.0));
-    vector<uint16_t> u_symb(N, 0);
-    RandomBinaryGenerator(K, q, bin_table, RepRndGn, 0, KBIN, KSYMB);
+    RandomSymbGenerator(K, q, RepRndGn, 0, KSYMB);
     for (int i = 0; i < K; i++)
         dec_param.ucap[dec_param.n][dec_param.reliab_sequence[i]] = KSYMB[i];
     Encoder(table.ADDGF, table.MULGF, dec_param.polar_coeff, dec_param.ucap, NSYMB);
     // vector<uint16_t> temp=NSYMB;
     // inv_Encoder(table.ADDGF, table.DIVGF, dec_param.polar_coeff, NSYMB, temp);
-    for (int i = 0; i < int(NSYMB.size()); i++)
-        NBIN[i] = bin_table[NSYMB[i]];
-    awgn_channel_noise(NBIN, sigma, RepRndGn, 0, noisy_sig);
+    for (int i = 0; i < int(noisy_sig.size()); i++)
+        noisy_sig[i] = bin_mod_dict[NSYMB[i]];
+    awgn_channel_noise(sigma, RepRndGn, 0, noisy_sig);
     vector<vector<softdata_t>> chan_LLR(N, vector<softdata_t>(q, 0));
     Channel_LLR(noisy_sig, bin_table, q, sigma, chan_LLR);
     LLR_sort(chan_LLR, nm, chan_LLR_sorted);
@@ -63,7 +61,7 @@ void PoAwN::channel::EncodeChanGF_CCSK(decoder_parameters &dec_param,
 {
     uint16_t N = dec_param.N, K = dec_param.K, q = dec_param.q, csk_sz = CCSK_rotated_codes[0].size();
     uint16_t nm = dec_param.nm;
-    float sigma = sqrt(1.0 / (2*pow(10, SNR / 10.0))); // N0/2 or N0?
+    float sigma = sqrt(1.0 / (2 * pow(10, SNR / 10.0))); // N0/2 or N0?
     vector<uint16_t> NSYMB(N);
     vector<vector<uint16_t>> KBIN(K);
 

@@ -49,6 +49,21 @@ void PoAwN::tools::RandomBinaryGenerator(const uint16_t K,
     }
 }
 
+void PoAwN::tools::RandomSymbGenerator(const uint16_t K,
+                                       const uint16_t q,
+                                       const bool repeatable,
+                                       const int SEED,
+                                       vector<uint16_t> &KSYMB)
+{
+    for (uint16_t k = 0; k < K; k++)
+    {
+        static std::mt19937 gen(repeatable ? SEED : std::random_device{}());
+        static std::uniform_int_distribution<int> dist(0, q - 1);
+        uint16_t randv = (uint16_t)dist(gen);
+        KSYMB[k] = randv;
+    }
+}
+
 void PoAwN::tools::AWGN_gen(double MEAN,
                             double STD,
                             bool repeatable,
@@ -71,23 +86,19 @@ void PoAwN::tools::AWGN_gen(double MEAN,
     }
 }
 
-void PoAwN::tools::awgn_channel_noise(const vector<vector<uint16_t>> &NBIN,
-                                      const double sigma,
+void PoAwN::tools::awgn_channel_noise(const double sigma,
                                       const bool repeatable,
                                       const double SEED,
                                       vector<vector<softdata_t>> &noisy_sig)
 {
-    uint16_t N = NBIN.size();
-    uint16_t q1 = NBIN[0].size();
+    uint16_t N = noisy_sig.size();
+    uint16_t q1 = noisy_sig[0].size();
     vector<vector<softdata_t>> noise_table;
     noise_table.resize(N, vector<softdata_t>(q1, 0));
     AWGN_gen(SEED, sigma, repeatable, SEED, noise_table);
     for (int i = 0; i < N; i++)
         for (int j = 0; j < q1; j++)
-        {
-            noisy_sig[i][j] = (NBIN[i][j] == 0) ? 1 : -1;
             noisy_sig[i][j] += noise_table[i][j];
-        }
 }
 
 void PoAwN::tools::Encoder(const vector<vector<uint16_t>> &ADDGF, const vector<vector<uint16_t>> &MULGF,
@@ -95,7 +106,7 @@ void PoAwN::tools::Encoder(const vector<vector<uint16_t>> &ADDGF, const vector<v
                            vector<vector<uint16_t>> &ucap, vector<uint16_t> &NSYMB)
 {
     uint16_t N = ucap[0].size();
-    uint16_t n = ucap.size()-1;
+    uint16_t n = ucap.size() - 1;
 
     uint16_t a, b;
     uint16_t tmp_add;

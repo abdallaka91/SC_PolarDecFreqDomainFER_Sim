@@ -143,6 +143,25 @@ int main(int argc, char *argv[])
 
     vector<vector<vector<int16_t>>> hst1(n, vector<vector<int16_t>>(N, vector<int16_t>(dec_param.nm, 0)));
 
+    q = code_param.q;
+    p = code_param.p;
+    vector<vector<softdata_t>> bin_mod_dict;
+    if (code_param.sig_mod == "CCSK_BIN")
+    {
+        bin_mod_dict.resize(q, vector<softdata_t>(q, 0));
+
+        for (int i = 0; i < q; i++)
+            for (int j = 0; j < q; j++)
+                bin_mod_dict[i][j] = (CCSK_rotated_codes[i][j] == 0) ? 1 : -1;
+    }
+    else if (code_param.sig_mod == "BPSK")
+    {
+        bin_mod_dict.resize(q, vector<softdata_t>(p, 0));
+        for (int i = 0; i < q; i++)
+            for (int j = 0; j < p; j++)
+                bin_mod_dict[i][j] = (table.BINDEC[i][j] == 0) ? 1 : -1;
+    }
+
     while (succ_dec_frame < NbMonteCarlo)
     {
         // dec_param.cnd1.assign(n, vector<int16_t>(N, -1));
@@ -150,13 +169,12 @@ int main(int argc, char *argv[])
         for (int i = 0; i <= n; i++)
             for (int j = 0; j < N; j++)
                 L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
-        vector<vector<uint16_t>> KBIN;
         if (code_param.sig_mod == "CCSK_BIN")
-            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
+            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
         else if (code_param.sig_mod == "CCSK_NB")
             EncodeChanGF_CCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
         else
-            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, table.BINDEC, L[0], KSYMB);
+            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
 
         decode_SC_bubble_gen(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt);
         for (uint16_t i = 0; i < dec_param.K; i++)

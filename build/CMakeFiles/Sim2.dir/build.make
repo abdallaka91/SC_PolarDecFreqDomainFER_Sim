@@ -172,6 +172,8 @@ Sim2: CMakeFiles/Sim2.dir/source/tools.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/Decoder_functions.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/channel.cpp.o
 Sim2: CMakeFiles/Sim2.dir/build.make
+Sim2: /usr/lib/gcc/x86_64-linux-gnu/12/libgomp.so
+Sim2: /usr/lib/x86_64-linux-gnu/libpthread.a
 Sim2: CMakeFiles/Sim2.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable Sim2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Sim2.dir/link.txt --verbose=$(VERBOSE)

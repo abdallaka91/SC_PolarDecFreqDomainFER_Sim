@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include
 
-CXX_FLAGS = -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -march=native -mtune=native -ffast-math -std=gnu++17
+CXX_FLAGS = -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17
 

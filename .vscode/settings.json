@@ -58,7 +58,10 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "thread": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "map": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}"
 }

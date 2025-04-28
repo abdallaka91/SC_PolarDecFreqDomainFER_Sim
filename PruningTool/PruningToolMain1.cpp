@@ -26,14 +26,15 @@ int main(int argc, char *argv[])
     Pt1 = 0;
     Pt2 = 0;
 
-    string main_bub_dir = "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/BubblesPattern/ccsk_bin";
+    // string main_bub_dir = "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/BubblesPattern/ccsk_bin";
+    string main_bub_dir = argv[1];
 
-    EbN0 = stod(argv[1]);
-    q = stoi(argv[2]);
-    N = stoi(argv[3]);
-    K = stoi(argv[4]);
-    nH = stoi(argv[5]);
-    nL = stoi(argv[6]);
+    EbN0 = stod(argv[2]);
+    q = stoi(argv[3]);
+    N = stoi(argv[4]);
+    K = stoi(argv[5]);
+    nH = stoi(argv[6]);
+    nL = stoi(argv[7]);
     float norm1 = 1e6;
     n = log2(N);
     nm = nL;

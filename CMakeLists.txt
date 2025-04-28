@@ -22,7 +22,7 @@ endif()
 
 
 
-add_executable(Sim11
+add_executable(Sim1
     ${SOURCE_DIR}/simulator_decoding.cpp
     ${SOURCE_DIR}/GF_tools.cpp
     ${SOURCE_DIR}/init.cpp
@@ -30,18 +30,18 @@ add_executable(Sim11
     ${SOURCE_DIR}/Decoder_functions.cpp
     ${SOURCE_DIR}/channel.cpp
 )
-target_compile_options(Sim11 PUBLIC -march=native -mtune=native -ffast-math)
+target_compile_options(Sim1 PUBLIC -march=native -mtune=native -ffast-math)
 
 
-# add_executable(Sim2
-#     ${SOURCE_DIR}/simulator_bubble_gen.cpp
-#     ${SOURCE_DIR}/GF_tools.cpp
-#     ${SOURCE_DIR}/init.cpp
-#     ${SOURCE_DIR}/tools.cpp
-#     ${SOURCE_DIR}/Decoder_functions.cpp
-#     ${SOURCE_DIR}/channel.cpp
-# )
-# target_compile_options(Sim2 PUBLIC -march=native -mtune=native -ffast-math)
+ add_executable(Sim2
+    ${SOURCE_DIR}/simulator_bubble_gen.cpp
+    ${SOURCE_DIR}/GF_tools.cpp
+    ${SOURCE_DIR}/init.cpp
+    ${SOURCE_DIR}/tools.cpp
+    ${SOURCE_DIR}/Decoder_functions.cpp
+    ${SOURCE_DIR}/channel.cpp
+)
+target_compile_options(Sim2 PUBLIC -march=native -mtune=native -ffast-math)
 
 # Include header files
 include_directories(${CMAKE_SOURCE_DIR}/include)

@@ -14,7 +14,7 @@
             // nL = 18;
             // Pt1 = 350;
             // Pt2 = 350;
-            "args": [-17 ,256, 128 ,64 ,36, 36]
+            "args": ["~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/PruningTool" -17 ,256, 128 ,64 ,36, 36]
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

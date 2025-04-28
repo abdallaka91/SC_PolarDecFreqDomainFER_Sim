@@ -52,7 +52,13 @@
         "sstream": "cpp",
         "codecvt": "cpp",
         "ratio": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "chrono": "cpp",
+        "bitset": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp",
+        "thread": "cpp",
+        "__nullptr": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}"
 }

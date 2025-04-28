@@ -1,1 +1,0 @@
-/usr/bin/c++ -g -O0 -g CMakeFiles/Simul.dir/source/simulator_decoding.cpp.o CMakeFiles/Simul.dir/source/GF_tools.cpp.o CMakeFiles/Simul.dir/source/init.cpp.o CMakeFiles/Simul.dir/source/tools.cpp.o CMakeFiles/Simul.dir/source/Decoder_functions.cpp.o CMakeFiles/Simul.dir/source/channel.cpp.o -o Simul 

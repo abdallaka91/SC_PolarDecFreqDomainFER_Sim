@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     int q, N, K, n, nH, nL, nm;
     float Pt1, Pt2, Pt, EbN0, nbmontcarlo;
 
+
     string main_bub_dir = "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/BubblesPattern/ccsk_bin";
     // EbN0 = -10;
     // q = 64;
@@ -156,13 +157,14 @@ int main(int argc, char *argv[])
     int j00, j11, cnt0, cnt1;
     for (int l = 0; l < n; l++)
     {
-        if (l < 2)
-            Pt = Pt1;
-        else
-            Pt = Pt2;
+
         cnt_1st[l].assign(1 << l, 0);
         for (int s = 0; s < 1 << l; s++)
         {
+            if (l < 5 && s==0)
+            Pt = Pt1;
+            else
+                Pt = Pt2;
             cnt0 = 0;
             cnt1 = 0;
             for (int j0 = 0; j0 < nH; j0++)
@@ -172,28 +174,47 @@ int main(int argc, char *argv[])
                     if (Cs[l][s][j0][j1] > Pt)
                     {
                         Bt[l][s][j0][j1] = 1;
-                        if (j0 == 0)
+                    }
+                }
+            }
+        }
+    }
+
+    bool cnd1 = 0;
+    for (int l = 0; l < n; l++)
+    {
+        for (int s = 0; s < 1 << l; s++)
+        {
+            for (int j0 = 0; j0 < nH; j0++)
+            {
+                for (int j1 = 0; j1 < nL; j1++)
+                {
+                    {
+                        if (Bt[l][s][j0][j1] == 0)
                         {
-                            j11 = j1;
-                            cnt1++;
-                        }
-                        if (j1 == 0)
-                        {
-                            j00 = j0;
-                            cnt0++;
+                            for (int j2 = j0; j2 < nH; j2++)
+                                Bt[l][s][j2][j1] = 0;
+                            for (int j3 = j1; j3 < nL; j3++)
+                                Bt[l][s][j0][j3] = 0;
                         }
                     }
                 }
             }
-            if (Bt[l][s][0][0])
+        }
+    }
+
+    for (int l = 0; l < n; l++)
+    {
+        for (int s = 0; s < 1 << l; s++)
+        {
+            for (int j0 = 0; j0 < nL; j0++)
             {
-                cnt_1st[l][s] = j11 + 1;
-                if (cnt1 < j11 + 1)
-                    for (int j1 = 0; j1 <= j11; j1++)
-                        Bt[l][s][0][j1] = 1;
-                if (cnt0 < j00 + 1)
-                    for (int j0 = 0; j0 <= j00; j0++)
-                        Bt[l][s][j0][0] = 1;
+                if (Bt[l][s][0][j0])
+                {
+                    cnt_1st[l][s] = j0 + 1;
+                }
+                else
+                    break;
             }
         }
     }

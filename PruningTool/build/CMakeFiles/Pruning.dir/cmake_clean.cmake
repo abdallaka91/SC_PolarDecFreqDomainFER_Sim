@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Pruning.dir/PruningToolMain.cpp.o"
-  "CMakeFiles/Pruning.dir/PruningToolMain.cpp.o.d"
+  "CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o"
+  "CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o.d"
   "Pruning"
   "Pruning.pdb"
 )

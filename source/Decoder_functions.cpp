@@ -10,6 +10,7 @@
 #include <iostream>
 #include <queue>
 #include <limits>
+#include <cmath>
 
 void PoAwN::decoding::Channel_LLR(const vector<vector<softdata_t>> &chan_observ,
                                   const vector<vector<uint16_t>> &bin_symb_seq,
@@ -277,7 +278,8 @@ void PoAwN::decoding::ECN_PA(const decoder_t &theta_1,
     vector<vector<uint16_t>> Bubb_Indicator = dec_param.Bubb_Indicator[l][s];
     uint16_t nH = dec_param.ns[l][s][0];
     uint16_t nL = dec_param.ns[l][s][1];
-    nm = std::max({dec_param.ns[l][s][1], dec_param.ns[l+1][2*s][1], dec_param.ns[l+1][2*s+1][1]});
+    nm = nL;
+    // nm = std::max({dec_param.ns[l][s][1], dec_param.ns[l+1][2*s][1], dec_param.ns[l+1][2*s+1][1]});
     decoder_t phi_1_p = phi_1;
     bool rel_theta = (theta_1.intrinsic_LLR[dec_param.Zc] > phi_1.intrinsic_LLR[dec_param.Zc]);
     if (dec_param.sig_mod == "BPSK")
@@ -494,12 +496,16 @@ void PoAwN::decoding::VN_update_PA(const decoder_t &theta_1,
 
     uint16_t nm = 0;
     uint16_t q = dec_param.q;
-    if (l < dec_param.n - 1)
-        nm = dec_param.ns[l + 1][2 * s + 1][1];
-    if (nm == 0)
+    // if (l < dec_param.n - 1)
+    //     nm = dec_param.ns[l + 1][2 * s + 1][1];
+    // if (nm == 0)
+    //     nm = dec_param.ns[l][s][1];
+    // if (nm == 0)
+    //     nm = df_nm;
+    if (l == 0)
         nm = dec_param.ns[l][s][1];
-    if (nm == 0)
-        nm = df_nm;
+    else
+        nm = dec_param.ns[l - 1][(int)floor((double)s / 2)][1];
     vector<softdata_t> theta1_llr(q);
     vector<softdata_t> phi1_llr(q);
     vector<softdata_t> temp_llr(q);

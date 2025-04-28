@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
                     for (auto &elem : rw)
                         elem = 0;
 
-        if ((i0 % 50 == 0))
+        if ((i0 % 100 == 0))
             cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
         i0++;
     }
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
                 for (int j1 = 0; j1 < nL; j1++)
                 {
                     Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
-                     Cs[l][s][j0][j1] /= (float)NbMonteCarlo; // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
+                    Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
                     // Cs[l][s][j0][j1] *= 10000; //for easier readabiliy now scale the bubbles by 10000 and take the integer part only (sum now ~10000)
                     // Cs[l][s][j0][j1] = std::round(Cs[l][s][j0][j1]);
                     // if (Cs[l][s][j0][j1] > Pt)
@@ -282,125 +282,30 @@ int main(int argc, char *argv[])
           << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << dec_param.nH << "x" << dec_param.nL
           << "_Cs_mat.txt";
     std::string filename = fname.str();
-    
+
     newsim = 1;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < 1u << i; j++)
         {
-            succ_writing = AppendClustBubblesToFile(fname.str(), Cs[i][j], i, j,newsim,
-             "Observations nb: " + std::to_string(NbMonteCarlo) + "\n\n");
+            succ_writing = AppendClustBubblesToFile(fname.str(), Cs[i][j], i, j, newsim,
+                                                    "Observations nb: " + std::to_string(NbMonteCarlo) + "\n\n");
             newsim = 0;
         }
     }
+    std::filesystem::path filepath(fname.str());
+    std::ofstream file(fname.str(), std::ios::app);
+
+    if (!file.is_open())
+    {
+        std::cerr << "Error: Could not open file to write FER " << std::endl;
+        return false;
+    }
+
+    file << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+    file << endl;
+
+    file.close();
     if (succ_writing)
         std::cout << "Cs Matrices written to: " << filename << std::endl;
-    // cnt_1st_1 = cnt_1st;
-    // for (int i = 0; i < n - 1; i++)
-    // {
-    //     for (int j = 0; j < cnt_1st[i].size(); j++)
-    //     {
-    //         std::cout << cnt_1st[i][j] << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-    // for (int l = n - 2; l > 0; l--)
-    // {
-    //     for (int s = 0; s < cnt_1st_1[l].size(); s += 2)
-    //     {
-    //         cnt_1st_1[l - 1][s / 2] = std::max(cnt_1st_1[l][s], cnt_1st_1[l - 1][s / 2]);
-    //     }
-    // }
-    // for (int i = 0; i < n - 1; i++)
-    // {
-    //     for (int j = 0; j < cnt_1st_1[i].size(); j++)
-    //     {
-    //         std::cout << cnt_1st_1[i][j] << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-    // for (int l = 0; l < n; l++)
-    // {
-    //     for (int s = 0; s < 1 << l; s++)
-    //     {
-    //         if (cnt_1st[l][s] != cnt_1st_1[l][s])
-    //         {
-    //             int i1 = 0;
-    //             for (int i = 0; i < nH; i++)
-    //                 if (Bt[l][s][i][0] == 1)
-    //                     i1 = i;
-    //                 else
-    //                     break;
-    //             for (int j = cnt_1st[l][s] - 1; j < cnt_1st_1[l][s]; j++)
-    //             {
-    //                 Bt[l][s][0][j] = 1;
-    //                 if (i1 < nL / 2 - 1 && i1 < nH - 1)
-    //                 {
-    //                     i1++;
-    //                     Bt[l][s][i1][0] = 1;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // newsim = true;
-    // newclust = false;
-    // fname.str("");
-    // fname.clear();
-    // fname << bubble_direct << code_param.N << "/BubblesIndicatorsMatrices/" << "bubbles_N" << code_param.N << "_K" << code_param.K << "_GF" << code_param.q
-    //       << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << dec_param.nH << "x" << dec_param.nL
-    //       << "_Pt1_" << std::fixed << std::setprecision(3) << Pt1
-    //       << "_Pt2_" << std::fixed << std::setprecision(3) << Pt2
-    //       << "_Bt_mat.txt";
-    // filename = fname.str();
-    // succ_writing = appendToFile(fname.str(), cnt_1st_1, newsim, newclust);
-    // newsim = false;
-    // for (int i = 0; i < n; i++)
-    // {
-    //     for (int j = 0; j < 1u << i; j++)
-    //     {
-    //         succ_writing = appendToFile(fname.str(), Bt[i][j], newsim, newclust);
-    //         newsim = false;
-    //         newclust = false;
-    //     }
-    //     newclust = true;
-    // }
-    // if (succ_writing)
-    //     std::cout << "Bt Matrices written to: " << filename << std::endl;
-    // newsim = true;
-    // fname.str("");
-    // fname.clear();
-    // fname << bubble_direct << code_param.N << "/bubbles_N" << code_param.N << "_K" << code_param.K << "_GF" << code_param.q
-    //       << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << dec_param.nH << "x" << dec_param.nL
-    //       << "_Pt1_" << std::fixed << std::setprecision(3) << Pt1
-    //       << "_Pt2_" << std::fixed << std::setprecision(3) << Pt2
-    //       << "_Bt_lsts.txt";
-    // filename = fname.str();
-    // // std::filesystem::create_directories(std::filesystem::path(filename).parent_path());
-    // // succ_writing = appendToFile(filename, cnt_1st_1, true, false);
-    // FILE *file = fopen(filename.c_str(), "w");
-    // if (!file)
-    //     std::cerr << "Error: Could not open file " << filename << " for writing." << std::endl;
-    // else
-    // {
-    //     // fprintf(file, "%s", "\n");
-    //     for (int l = 0; l < n; l++)
-    //     {
-    //         for (int s = 0; s < (1u << l); s++)
-    //         {
-    //             std::ostringstream lne;
-    //             lne << l << " " << s << ",  ";
-    //             for (int j0 = 0; j0 < nH; j0++)
-    //                 for (int j1 = 0; j1 < nL; j1++)
-    //                     if (Bt[l][s][j0][j1] == 1)
-    //                         lne << j0 << "  " << j1 << std::setw(8);
-    //             if (!(l == n - 1 && s == (1u << l) - 1))
-    //                 lne << "\n";
-    //             fprintf(file, "%s", lne.str().c_str());
-    //         }
-    //         fprintf(file, "%s", "\n");
-    //     }
-    //     fclose(file);
-    //     std::cout << "Bt Matrices written to: " << filename << std::endl;
-    // }
 }

@@ -69,28 +69,28 @@ include CMakeFiles/Pruning.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Pruning.dir/flags.make
 
-CMakeFiles/Pruning.dir/PruningToolMain.cpp.o: CMakeFiles/Pruning.dir/flags.make
-CMakeFiles/Pruning.dir/PruningToolMain.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain.cpp
-CMakeFiles/Pruning.dir/PruningToolMain.cpp.o: CMakeFiles/Pruning.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Pruning.dir/PruningToolMain.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pruning.dir/PruningToolMain.cpp.o -MF CMakeFiles/Pruning.dir/PruningToolMain.cpp.o.d -o CMakeFiles/Pruning.dir/PruningToolMain.cpp.o -c /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain.cpp
+CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o: CMakeFiles/Pruning.dir/flags.make
+CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain1.cpp
+CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o: CMakeFiles/Pruning.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o -MF CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o.d -o CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o -c /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain1.cpp
 
-CMakeFiles/Pruning.dir/PruningToolMain.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pruning.dir/PruningToolMain.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain.cpp > CMakeFiles/Pruning.dir/PruningToolMain.cpp.i
+CMakeFiles/Pruning.dir/PruningToolMain1.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Pruning.dir/PruningToolMain1.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain1.cpp > CMakeFiles/Pruning.dir/PruningToolMain1.cpp.i
 
-CMakeFiles/Pruning.dir/PruningToolMain.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pruning.dir/PruningToolMain.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain.cpp -o CMakeFiles/Pruning.dir/PruningToolMain.cpp.s
+CMakeFiles/Pruning.dir/PruningToolMain1.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Pruning.dir/PruningToolMain1.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain1.cpp -o CMakeFiles/Pruning.dir/PruningToolMain1.cpp.s
 
 # Object files for target Pruning
 Pruning_OBJECTS = \
-"CMakeFiles/Pruning.dir/PruningToolMain.cpp.o"
+"CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o"
 
 # External object files for target Pruning
 Pruning_EXTERNAL_OBJECTS =
 
-Pruning: CMakeFiles/Pruning.dir/PruningToolMain.cpp.o
+Pruning: CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o
 Pruning: CMakeFiles/Pruning.dir/build.make
 Pruning: CMakeFiles/Pruning.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable Pruning"

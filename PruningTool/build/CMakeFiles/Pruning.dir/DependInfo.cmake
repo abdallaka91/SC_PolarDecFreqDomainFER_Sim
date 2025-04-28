@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain.cpp" "CMakeFiles/Pruning.dir/PruningToolMain.cpp.o" "gcc" "CMakeFiles/Pruning.dir/PruningToolMain.cpp.o.d"
+  "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/PruningToolMain1.cpp" "CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o" "gcc" "CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

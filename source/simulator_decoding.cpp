@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
                 break;
             }
         }
-        if ((i0 % 20 == 0 && i0 > 0))
+        if ((i0 % 100 == 0 && i0 > 0))
             cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
     }
     cout << endl;

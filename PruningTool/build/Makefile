@@ -129,29 +129,29 @@ Pruning/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pruning.dir/build.make CMakeFiles/Pruning.dir/build
 .PHONY : Pruning/fast
 
-PruningToolMain.o: PruningToolMain.cpp.o
-.PHONY : PruningToolMain.o
+PruningToolMain1.o: PruningToolMain1.cpp.o
+.PHONY : PruningToolMain1.o
 
 # target to build an object file
-PruningToolMain.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pruning.dir/build.make CMakeFiles/Pruning.dir/PruningToolMain.cpp.o
-.PHONY : PruningToolMain.cpp.o
+PruningToolMain1.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pruning.dir/build.make CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o
+.PHONY : PruningToolMain1.cpp.o
 
-PruningToolMain.i: PruningToolMain.cpp.i
-.PHONY : PruningToolMain.i
+PruningToolMain1.i: PruningToolMain1.cpp.i
+.PHONY : PruningToolMain1.i
 
 # target to preprocess a source file
-PruningToolMain.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pruning.dir/build.make CMakeFiles/Pruning.dir/PruningToolMain.cpp.i
-.PHONY : PruningToolMain.cpp.i
+PruningToolMain1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pruning.dir/build.make CMakeFiles/Pruning.dir/PruningToolMain1.cpp.i
+.PHONY : PruningToolMain1.cpp.i
 
-PruningToolMain.s: PruningToolMain.cpp.s
-.PHONY : PruningToolMain.s
+PruningToolMain1.s: PruningToolMain1.cpp.s
+.PHONY : PruningToolMain1.s
 
 # target to generate assembly for a file
-PruningToolMain.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pruning.dir/build.make CMakeFiles/Pruning.dir/PruningToolMain.cpp.s
-.PHONY : PruningToolMain.cpp.s
+PruningToolMain1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pruning.dir/build.make CMakeFiles/Pruning.dir/PruningToolMain1.cpp.s
+.PHONY : PruningToolMain1.cpp.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Pruning"
-	@echo "... PruningToolMain.o"
-	@echo "... PruningToolMain.i"
-	@echo "... PruningToolMain.s"
+	@echo "... PruningToolMain1.o"
+	@echo "... PruningToolMain1.i"
+	@echo "... PruningToolMain1.s"
 .PHONY : help
 
 

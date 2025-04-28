@@ -14,7 +14,7 @@
             // nL = 18;
             // Pt1 = 350;
             // Pt2 = 350;
-            "args": [-10,64,64,48,9,18,350,350],
+            "args": [-17 ,256, 128 ,64 ,36, 36]
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

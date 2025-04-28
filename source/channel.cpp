@@ -11,7 +11,7 @@
 #include "channel.h"
 #include "HelperFunc.h"
 #define PI 3.14159265358979323846
-#define RepRndGn true
+#define RepRndGn false
 
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;

@@ -22,37 +22,26 @@ endif()
 
 
 
-add_executable(Simul
+add_executable(Sim11
     ${SOURCE_DIR}/simulator_decoding.cpp
-    # ${SOURCE_DIR}/simulator_bubble_gen.cpp
     ${SOURCE_DIR}/GF_tools.cpp
     ${SOURCE_DIR}/init.cpp
     ${SOURCE_DIR}/tools.cpp
     ${SOURCE_DIR}/Decoder_functions.cpp
     ${SOURCE_DIR}/channel.cpp
 )
+target_compile_options(Sim11 PUBLIC -march=native -mtune=native -ffast-math)
 
-# option(USE_DECODING "Build with simulator_decoding.cpp" ON) # use cmake -B build -DUSE_DECODING=ON
 
-# if(USE_DECODING)
-#     set(MAIN_FILE ${SOURCE_DIR}/simulator_decoding.cpp)
-#     set(EXEC_NAME "Simul") # Executable name when using simulator_decoding.cpp
-# else()
-#     set(MAIN_FILE ${SOURCE_DIR}/simulator_bubble_gen.cpp)
-#     set(EXEC_NAME "GenBub") # Executable name when using simulator_bubble_gen.cpp
-# endif()
-
-# add_executable(${EXEC_NAME}
-#     ${MAIN_FILE}
+# add_executable(Sim2
+#     ${SOURCE_DIR}/simulator_bubble_gen.cpp
 #     ${SOURCE_DIR}/GF_tools.cpp
 #     ${SOURCE_DIR}/init.cpp
 #     ${SOURCE_DIR}/tools.cpp
 #     ${SOURCE_DIR}/Decoder_functions.cpp
 #     ${SOURCE_DIR}/channel.cpp
 # )
-# target_compile_options(${EXEC_NAME} PUBLIC -march=native -mtune=native -ffast-math)
-
-target_compile_options(Simul PUBLIC -march=native -mtune=native -ffast-math)
+# target_compile_options(Sim2 PUBLIC -march=native -mtune=native -ffast-math)
 
 # Include header files
 include_directories(${CMAKE_SOURCE_DIR}/include)

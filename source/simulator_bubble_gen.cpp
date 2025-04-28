@@ -17,6 +17,7 @@
 #include <algorithm>
 #include "channel.h"
 #include <filesystem>
+#include <omp.h>
 
 // #include <omp.h>
 
@@ -57,8 +58,6 @@ int main(int argc, char *argv[])
     nm = nL;
     Zc = 2;
     offset = stod(argv[9]);
-    // Pt1 = stod(argv[10]);
-    // Pt2 = stod(argv[11]);
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = sig_mod;
 
@@ -87,13 +86,6 @@ int main(int argc, char *argv[])
 
     dec_param.Roots_V[n].resize(1U << n, false);
 
-    vector<vector<vector<vector<uint16_t>>>> Bt;
-    vector<vector<vector<vector<float>>>> Cs;
-    vector<vector<vector<vector<uint64_t>>>> Rs;
-    Cs.resize(n);
-    Bt.resize(n);
-    Rs.resize(n);
-
     for (uint16_t l = 0; l < n; l++)
     {
         dec_param.Roots_V[l].resize(1U << l, false);
@@ -101,14 +93,9 @@ int main(int argc, char *argv[])
         dec_param.clusts_CNs[l].resize(pow(2, l));
         dec_param.clusts_VNs[l].resize(pow(2, l));
         dec_param.coefs_id[l].resize(pow(2, l));
-        Cs[l].resize(pow(2, l));
-        Bt[l].resize(pow(2, l));
+
         for (uint16_t s = 0; s < dec_param.Roots_V[l].size(); s++)
         {
-            Cs[l][s].assign(nH, vector<float>(nL, 0));
-            // Bt[l][s].assign(nH, vector<uint16_t>(nL, 0));
-            Bt[l][s].resize(N >> (l + 1), vector<uint16_t>(2, 65535));
-
             uint16_t sz1 = N >> (l + 1U), sz2 = sz1 << 1U;
             dec_param.clusts_CNs[l][s].resize(sz1);
             dec_param.clusts_VNs[l][s].resize(sz1);
@@ -137,15 +124,6 @@ int main(int argc, char *argv[])
     else if (code_param.sig_mod == "CCSK_NB")
         create_ccsk_rotated_table(ccsk_seq.CCSK_GF_seq[code_param.p - 2], ccsk_seq.CCSK_GF_seq[code_param.p - 2].size(), CCSK_rotated_codes);
 
-    vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
-    vector<uint16_t> info_sec_rec(K, dec_param.MxUS);
-    unsigned int FER = 0;
-    vector<uint16_t> KSYMB(K);
-    bool succ_dec, succ_writing, newsim;
-    int succ_dec_frame = 0, i0 = 1;
-    dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
-    dec_param.ucap[n].assign(N, dec_param.frozen_val);
-
     vector<vector<vector<int16_t>>> hst1(n, vector<vector<int16_t>>(N, vector<int16_t>(dec_param.nm, 0)));
 
     q = code_param.q;
@@ -167,59 +145,138 @@ int main(int argc, char *argv[])
                 bin_mod_dict[i][j] = (table.BINDEC[i][j] == 0) ? 1 : -1;
     }
 
-    // while (succ_dec_frame < NbMonteCarlo)
+    dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
+    dec_param.ucap[n].assign(N, dec_param.frozen_val);
 
-    for (succ_dec_frame = 0; succ_dec_frame < NbMonteCarlo; succ_dec_frame++)
+    vector<vector<vector<vector<uint16_t>>>> Bt(n, vector<vector<vector<uint16_t>>>());
+    vector<vector<vector<vector<float>>>> Cs(n, vector<vector<vector<float>>>());
+    for (uint16_t l = 0; l < n; l++)
     {
-        // dec_param.cnd1.assign(n, vector<int16_t>(N, -1));
-        succ_dec = 1;
-        for (int i = 0; i <= n; i++)
-            for (int j = 0; j < N; j++)
-                L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
-        if (code_param.sig_mod == "CCSK_BIN")
-            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
-        else if (code_param.sig_mod == "CCSK_NB")
-            EncodeChanGF_CCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
-        else
-            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
-
-        decode_SC_bubble_gen(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt);
-        for (uint16_t i = 0; i < dec_param.K; i++)
-            if (KSYMB[i] != info_sec_rec[i])
-            {
-                succ_dec = false;
-                break;
-            }
-        if (succ_dec)
+        Cs[l].resize(pow(2, l));
+        Bt[l].resize(pow(2, l));
+        for (uint16_t s = 0; s < 1 << l; s++)
         {
-            // succ_dec_frame++;
-            for (uint16_t l = 0; l < n; l++)
-                for (uint16_t s = 0; s < 1 << l; s++)
-                    for (uint16_t t = 0; t < N >> (l + 1); t++)
-                        // for (int j0 = 0; j0 < nH; j0++)
-                        //     for (int j1 = 0; j1 < nL; j1++)
-                        // Cs[l][s][j0][j1] += (float)Bt[l][s][j0][j1];
-                        if (Bt[l][s][t][0] != 65535)
-                            Cs[l][s][Bt[l][s][t][0]][Bt[l][s][t][1]]++;
+            Cs[l][s].assign(nH, vector<float>(nL, 0));
+            Bt[l][s].resize(N >> (l + 1), vector<uint16_t>(2, 65535));
         }
-        else
-            FER++;
-
-        for (uint16_t l = 0; l < n; l++)
-            for (uint16_t s = 0; s < 1 << l; s++)
-                for (uint16_t t = 0; t < N >> (l + 1); t++)
-                {
-                    Bt[l][s][t][0] = 65535;
-                    Bt[l][s][t][1] = 65535;
-                }
-        if ((i0 % 100 == 0))
-            cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
-        i0++;
     }
-    i0--;
+    unsigned int FER = 0;
+    bool succ_dec;
+    int succ_dec_frame = 0, i0 = 1;
 
-    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+#pragma omp parallel
+    {
+        vector<vector<vector<vector<uint16_t>>>> Bt1 = Bt;
+        vector<vector<vector<vector<float>>>> Cs1_local(n);
+        for (uint16_t l = 0; l < n; l++)
+        {
+            Cs1_local[l].resize(1 << l);
+            for (uint16_t s = 0; s < (1U << l); s++)
+            {
+                Cs1_local[l][s].assign(nH, vector<float>(nL, 0));
+            }
+        }
+
+#pragma omp for reduction(+ : FER)
+        for (succ_dec_frame = 0; succ_dec_frame < NbMonteCarlo; succ_dec_frame++)
+        {
+            bool succ_dec = true;
+            vector<uint16_t> KSYMB(K);
+            vector<uint16_t> info_sec_rec(K, dec_param.MxUS);
+            vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
+            for (int i = 0; i <= n; i++)
+                for (int j = 0; j < N; j++)
+                    L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
+
+            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+            decode_SC_bubble_gen(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt1);
+
+            for (uint16_t i = 0; i < dec_param.K; i++)
+                if (KSYMB[i] != info_sec_rec[i])
+                {
+                    succ_dec = false;
+                    break;
+                }
+
+            if (succ_dec)
+            {
+                for (uint16_t l = 0; l < n; l++)
+                    for (uint16_t s = 0; s < (1U << l); s++)
+                        for (uint16_t t = 0; t < (N >> (l + 1)); t++)
+                            if (Bt1[l][s][t][0] !=65535 && Bt1[l][s][t][1] !=65535)
+                                Cs1_local[l][s][Bt1[l][s][t][0]][Bt1[l][s][t][1]]++;
+            }
+            else
+                FER++;
+#pragma omp atomic update
+            i0++;
+#pragma omp critical
+            {
+                if ((i0 % 100) == 0)
+                    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+            }
+        }
+#pragma omp critical
+        {
+            for (uint16_t l = 0; l < n; l++)
+                for (uint16_t s = 0; s < (1U << l); s++)
+                    for (uint16_t i = 0; i < nH; i++)
+                        for (uint16_t j = 0; j < nL; j++)
+                            Cs[l][s][i][j] += Cs1_local[l][s][i][j];
+        }
+    }
+
+    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)NbMonteCarlo << " = " << (float)FER / (float)NbMonteCarlo << std::flush;
     cout << endl;
+
+    // for (succ_dec_frame = 0; succ_dec_frame < NbMonteCarlo; succ_dec_frame++)
+    // {
+    //     succ_dec = 1;
+    //     for (int i = 0; i <= n; i++)
+    //         for (int j = 0; j < N; j++)
+    //             L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
+    //     if (code_param.sig_mod == "CCSK_BIN")
+    //         EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+    //     else if (code_param.sig_mod == "CCSK_NB")
+    //         EncodeChanGF_CCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
+    //     else
+    //         EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
+
+    //     decode_SC_bubble_gen(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt);
+    //     for (uint16_t i = 0; i < dec_param.K; i++)
+    //         if (KSYMB[i] != info_sec_rec[i])
+    //         {
+    //             succ_dec = false;
+    //             break;
+    //         }
+    //     if (succ_dec)
+    //     {
+    //         for (uint16_t l = 0; l < n; l++)
+    //             for (uint16_t s = 0; s < 1 << l; s++)
+    //                 for (uint16_t t = 0; t < N >> (l + 1); t++)
+    //                     if (Bt[l][s][t][0] != 65535)
+    //                         Cs[l][s][Bt[l][s][t][0]][Bt[l][s][t][1]]++;
+    //     }
+    //     else
+    //         FER++;
+
+    //     for (uint16_t l = 0; l < n; l++)
+    //         for (uint16_t s = 0; s < 1 << l; s++)
+    //             for (uint16_t t = 0; t < N >> (l + 1); t++)
+    //             {
+    //                 Bt[l][s][t][0] = 65535;
+    //                 Bt[l][s][t][1] = 65535;
+    //             }
+    //     if ((i0 % 100 == 0))
+    //         cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+    //     i0++;
+    // }
+    // i0--;
+
+    // cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+    // cout << endl;
+
+    bool succ_writing, newsim;
 
     std::ostringstream fname;
     bool newclust = false;
@@ -229,10 +286,6 @@ int main(int argc, char *argv[])
     int j00, j11, cnt0, cnt1;
     for (uint16_t l = 0; l < n; l++)
     {
-        // if (l < 3)
-        //     Pt = Pt1;
-        // else
-        //     Pt = Pt2;
         cnt_1st[l].assign(1 << l, 0);
         for (uint16_t s = 0; s < N >> (n - l); s++)
         {
@@ -244,34 +297,8 @@ int main(int argc, char *argv[])
                 {
                     Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
                     Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
-                    // Cs[l][s][j0][j1] *= 10000; //for easier readabiliy now scale the bubbles by 10000 and take the integer part only (sum now ~10000)
-                    // Cs[l][s][j0][j1] = std::round(Cs[l][s][j0][j1]);
-                    // if (Cs[l][s][j0][j1] > Pt)
-                    // {
-                    //     Bt[l][s][j0][j1] = 1;
-                    //     if (j0 == 0)
-                    //     {
-                    //         j11 = j1;
-                    //         cnt1++;
-                    //     }
-                    //     if (j1 == 0)
-                    //     {
-                    //         j00 = j0;
-                    //         cnt0++;
-                    //     }
-                    // }
                 }
             }
-            // if (Bt[l][s][0][0])
-            // {
-            //     cnt_1st[l][s] = j11 + 1;
-            //     if (cnt1 < j11 + 1)
-            //         for (int j1 = 0; j1 <= j11; j1++)
-            //             Bt[l][s][0][j1] = 1;
-            //     if (cnt0 < j00 + 1)
-            //         for (int j0 = 0; j0 <= j00; j0++)
-            //             Bt[l][s][j0][0] = 1;
-            // }
         }
     }
 
@@ -282,11 +309,6 @@ int main(int argc, char *argv[])
         bubble_direct = "./BubblesPattern/ccsk_bin/N";
     else
         bubble_direct = "./BubblesPattern/ccsk_nb/N";
-    // fname.str("");
-    // fname.clear();
-    // fname << "/mnt/c/Users/Abdallah Abdallah/Desktop/BubblePattern/"
-    //       << "bubbles_N" << code_param.N << "_K" << code_param.K << "_GF" << code_param.q << "_SNR" << std::fixed << std::setprecision(3)
-    //       << EbN0 << "_" << dec_param.nH << "x" << dec_param.nL "_Cs_mat.txt";
     fname.str("");
     fname.clear();
     fname << bubble_direct << code_param.N << "/ContributionMatrices/" << "bubbles_N" << code_param.N << "_K" << code_param.K << "_GF" << code_param.q

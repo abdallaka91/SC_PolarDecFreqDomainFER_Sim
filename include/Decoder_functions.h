@@ -60,7 +60,7 @@ namespace PoAwN
                        const uint16_t ucap_theta,
                        const uint16_t ucap_phi,
                        decoder_t &theta,
-                       vector<vector<uint16_t>> &Cs1);
+                       vector<uint16_t> &Bt1);
 
         void tuples_sorter(const decoder_t &tuples,
                            const uint16_t nm,
@@ -107,7 +107,8 @@ namespace PoAwN
                                   const vector<vector<uint16_t>> &DIVGF,
                                   vector<vector<decoder_t>> &L,
                                   vector<uint16_t> &info_sec_rec,
-                                  vector<vector<vector<vector<uint16_t>>>> &Cs);
+                                  vector<vector<vector<vector<uint16_t>>>> &Bt);
+
         void frozen_lay_pos(const decoder_parameters &dec_param,
                             vector<vector<uint16_t>> &ufrozen,
                             vector<vector<bool>> &clst_frozen);

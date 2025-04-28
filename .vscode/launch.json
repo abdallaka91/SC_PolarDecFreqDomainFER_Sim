@@ -2,13 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Simul",
+            "name": "Debug Sim2",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Simul",
+            "program": "${workspaceFolder}/build/Sim2",
             // "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset, Pt1, Pt2"
             // "args": [10, -14.5, "CCSK_Bin", 256, 128, 112,36,72, 1.5],
-            "args": [2000, -14.5, "CCSK_Bin", 256, 128, 112, 18, 36, 2.5, 0 ,0],
+            "args": [2000, -14.5, "CCSK_Bin", 256, 128, 112, 10, 20, 2.0],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

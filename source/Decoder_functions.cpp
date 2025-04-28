@@ -180,7 +180,7 @@ void PoAwN::decoding::ECN_EMS_L(const decoder_t &theta_1,
                                 const uint16_t ucap_theta,
                                 const uint16_t ucap_phi,
                                 decoder_t &theta,
-                                vector<vector<uint16_t>> &Bt1)
+                                vector<uint16_t> &Bt1)
 {
     decoder_t phi_1_p = phi_1;
     bool rel_theta = (theta_1.intrinsic_LLR[dec_param.Zc] > phi_1.intrinsic_LLR[dec_param.Zc]);
@@ -253,7 +253,9 @@ void PoAwN::decoding::ECN_EMS_L(const decoder_t &theta_1,
             if ((rel_theta && a_gf[i] == ucap_theta && b_gf[j] == ucap_phi) ||
                 (!rel_theta && a_gf[i] == ucap_phi && b_gf[j] == ucap_theta))
             {
-                Bt1[i][j]++;
+                // Bt1[i][j]++;
+                Bt1[0]=i;
+                Bt1[1]=j;
                 brk1 = true;
                 break;
             }
@@ -261,6 +263,7 @@ void PoAwN::decoding::ECN_EMS_L(const decoder_t &theta_1,
         if (brk1)
             break;
     }
+    bool paus = false;
 }
 
 void PoAwN::decoding::ECN_PA(const decoder_t &theta_1,
@@ -775,7 +778,7 @@ void PoAwN::decoding::decode_SC_bubble_gen(decoder_parameters &dec_param,
                 temp_coef = dec_param.polar_coeff[n - l - 1][i3];
                 // if (l < n - 1)
                 ECN_EMS_L(L[l][Root[t]], L[l][Root[t + SZc1]], ADDGF, DIVGF, dec_param, temp_coef,
-                          dec_param.ucap[l][Root[t]], dec_param.ucap[l][Root[t + SZc1]], L[l + 1][Root[t]], Bt[l][s]);
+                          dec_param.ucap[l][Root[t]], dec_param.ucap[l][Root[t + SZc1]], L[l + 1][Root[t]], Bt[l][s][t]);
             }
             l = l + 1;
             s = 2 * s;

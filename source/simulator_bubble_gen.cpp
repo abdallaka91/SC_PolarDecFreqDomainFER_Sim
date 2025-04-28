@@ -16,6 +16,9 @@
 #include <iomanip>
 #include <algorithm>
 #include "channel.h"
+#include <filesystem>
+
+// #include <omp.h>
 
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
@@ -103,7 +106,9 @@ int main(int argc, char *argv[])
         for (uint16_t s = 0; s < dec_param.Roots_V[l].size(); s++)
         {
             Cs[l][s].assign(nH, vector<float>(nL, 0));
-            Bt[l][s].assign(nH, vector<uint16_t>(nL, 0));
+            // Bt[l][s].assign(nH, vector<uint16_t>(nL, 0));
+            Bt[l][s].resize(N >> (l + 1), vector<uint16_t>(2, 65535));
+
             uint16_t sz1 = N >> (l + 1U), sz2 = sz1 << 1U;
             dec_param.clusts_CNs[l][s].resize(sz1);
             dec_param.clusts_VNs[l][s].resize(sz1);
@@ -162,7 +167,9 @@ int main(int argc, char *argv[])
                 bin_mod_dict[i][j] = (table.BINDEC[i][j] == 0) ? 1 : -1;
     }
 
-    while (succ_dec_frame < NbMonteCarlo)
+    // while (succ_dec_frame < NbMonteCarlo)
+
+    for (succ_dec_frame = 0; succ_dec_frame < NbMonteCarlo; succ_dec_frame++)
     {
         // dec_param.cnd1.assign(n, vector<int16_t>(N, -1));
         succ_dec = 1;
@@ -185,22 +192,26 @@ int main(int argc, char *argv[])
             }
         if (succ_dec)
         {
-            succ_dec_frame++;
+            // succ_dec_frame++;
             for (uint16_t l = 0; l < n; l++)
-                for (uint16_t s = 0; s < N >> (n - l); s++)
-                    for (int j0 = 0; j0 < nH; j0++)
-                        for (int j1 = 0; j1 < nL; j1++)
-                            Cs[l][s][j0][j1] += (float)Bt[l][s][j0][j1];
+                for (uint16_t s = 0; s < 1 << l; s++)
+                    for (uint16_t t = 0; t < N >> (l + 1); t++)
+                        // for (int j0 = 0; j0 < nH; j0++)
+                        //     for (int j1 = 0; j1 < nL; j1++)
+                        // Cs[l][s][j0][j1] += (float)Bt[l][s][j0][j1];
+                        if (Bt[l][s][t][0] != 65535)
+                            Cs[l][s][Bt[l][s][t][0]][Bt[l][s][t][1]]++;
         }
         else
             FER++;
 
         for (uint16_t l = 0; l < n; l++)
-            for (uint16_t s = 0; s < N >> (n - l); s++)
-                for (auto &rw : Bt[l][s])
-                    for (auto &elem : rw)
-                        elem = 0;
-
+            for (uint16_t s = 0; s < 1 << l; s++)
+                for (uint16_t t = 0; t < N >> (l + 1); t++)
+                {
+                    Bt[l][s][t][0] = 65535;
+                    Bt[l][s][t][1] = 65535;
+                }
         if ((i0 % 100 == 0))
             cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
         i0++;

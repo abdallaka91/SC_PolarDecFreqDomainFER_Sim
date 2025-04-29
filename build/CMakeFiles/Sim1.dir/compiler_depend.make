@@ -922,6 +922,7 @@ CMakeFiles/Sim1.dir/source/init.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_dec
 CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/source/simulator_decoding.cpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/include/Decoder_functions.h \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/include/GF_tools.h \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/include/HelperFunc.h \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/include/channel.h \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/include/init.h \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/include/struct.h \
@@ -931,17 +932,22 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/asm-generic/errno.h \
   /usr/include/c++/13/algorithm \
   /usr/include/c++/13/array \
+  /usr/include/c++/13/atomic \
   /usr/include/c++/13/backward/binders.h \
   /usr/include/c++/13/bit \
   /usr/include/c++/13/bits/algorithmfwd.h \
   /usr/include/c++/13/bits/alloc_traits.h \
+  /usr/include/c++/13/bits/allocated_ptr.h \
   /usr/include/c++/13/bits/allocator.h \
+  /usr/include/c++/13/bits/atomic_base.h \
+  /usr/include/c++/13/bits/atomic_lockfree_defines.h \
   /usr/include/c++/13/bits/basic_ios.h \
   /usr/include/c++/13/bits/basic_ios.tcc \
   /usr/include/c++/13/bits/basic_string.h \
   /usr/include/c++/13/bits/basic_string.tcc \
   /usr/include/c++/13/bits/char_traits.h \
   /usr/include/c++/13/bits/charconv.h \
+  /usr/include/c++/13/bits/chrono.h \
   /usr/include/c++/13/bits/codecvt.h \
   /usr/include/c++/13/bits/concept_check.h \
   /usr/include/c++/13/bits/cpp_type_traits.h \
@@ -950,6 +956,11 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
   /usr/include/c++/13/bits/exception_ptr.h \
+  /usr/include/c++/13/bits/fs_dir.h \
+  /usr/include/c++/13/bits/fs_fwd.h \
+  /usr/include/c++/13/bits/fs_ops.h \
+  /usr/include/c++/13/bits/fs_path.h \
+  /usr/include/c++/13/bits/fstream.tcc \
   /usr/include/c++/13/bits/functexcept.h \
   /usr/include/c++/13/bits/functional_hash.h \
   /usr/include/c++/13/bits/hash_bytes.h \
@@ -971,6 +982,7 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/c++/13/bits/new_allocator.h \
   /usr/include/c++/13/bits/ostream.tcc \
   /usr/include/c++/13/bits/ostream_insert.h \
+  /usr/include/c++/13/bits/parse_numbers.h \
   /usr/include/c++/13/bits/postypes.h \
   /usr/include/c++/13/bits/predefined_ops.h \
   /usr/include/c++/13/bits/ptr_traits.h \
@@ -978,6 +990,8 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/c++/13/bits/range_access.h \
   /usr/include/c++/13/bits/refwrap.h \
   /usr/include/c++/13/bits/requires_hosted.h \
+  /usr/include/c++/13/bits/shared_ptr.h \
+  /usr/include/c++/13/bits/shared_ptr_base.h \
   /usr/include/c++/13/bits/specfun.h \
   /usr/include/c++/13/bits/sstream.tcc \
   /usr/include/c++/13/bits/std_abs.h \
@@ -999,6 +1013,7 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/c++/13/bits/string_view.tcc \
   /usr/include/c++/13/bits/stringfwd.h \
   /usr/include/c++/13/bits/uniform_int_dist.h \
+  /usr/include/c++/13/bits/unique_ptr.h \
   /usr/include/c++/13/bits/uses_allocator.h \
   /usr/include/c++/13/bits/uses_allocator_args.h \
   /usr/include/c++/13/bits/utility.h \
@@ -1007,22 +1022,28 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/c++/13/cerrno \
   /usr/include/c++/13/clocale \
   /usr/include/c++/13/cmath \
+  /usr/include/c++/13/codecvt \
   /usr/include/c++/13/compare \
   /usr/include/c++/13/cstddef \
   /usr/include/c++/13/cstdint \
   /usr/include/c++/13/cstdio \
   /usr/include/c++/13/cstdlib \
+  /usr/include/c++/13/cstring \
   /usr/include/c++/13/ctime \
   /usr/include/c++/13/cwchar \
   /usr/include/c++/13/cwctype \
   /usr/include/c++/13/debug/assertions.h \
   /usr/include/c++/13/debug/debug.h \
   /usr/include/c++/13/exception \
+  /usr/include/c++/13/ext/aligned_buffer.h \
   /usr/include/c++/13/ext/alloc_traits.h \
   /usr/include/c++/13/ext/atomicity.h \
+  /usr/include/c++/13/ext/concurrence.h \
   /usr/include/c++/13/ext/numeric_traits.h \
   /usr/include/c++/13/ext/string_conversions.h \
   /usr/include/c++/13/ext/type_traits.h \
+  /usr/include/c++/13/filesystem \
+  /usr/include/c++/13/fstream \
   /usr/include/c++/13/initializer_list \
   /usr/include/c++/13/iomanip \
   /usr/include/c++/13/ios \
@@ -1036,6 +1057,7 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/c++/13/pstl/execution_defs.h \
   /usr/include/c++/13/pstl/glue_algorithm_defs.h \
   /usr/include/c++/13/pstl/pstl_config.h \
+  /usr/include/c++/13/ratio \
   /usr/include/c++/13/sstream \
   /usr/include/c++/13/stdexcept \
   /usr/include/c++/13/streambuf \
@@ -1073,6 +1095,8 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/stdint.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   /usr/include/time.h \
   /usr/include/wchar.h \
   /usr/include/wctype.h \
@@ -1115,6 +1139,8 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib.h \
+  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
   /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
@@ -1157,8 +1183,10 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h \
+  /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
+  /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/c++locale.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/cpu_defines.h \
   /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h \
@@ -1175,6 +1203,7 @@ CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o: /home/abdallah_ubuntu/Deskt
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
+  /usr/lib/gcc/x86_64-linux-gnu/13/include/omp.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h
@@ -1403,6 +1432,14 @@ CMakeFiles/Sim1.dir/source/tools.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_de
 /usr/include/c++/13/bits/random.tcc:
 
 /usr/include/c++/13/bits/random.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/omp.h:
+
+/usr/include/c++/13/bits/atomic_lockfree_defines.h:
+
+/usr/include/c++/13/bits/atomic_base.h:
+
+/usr/include/c++/13/atomic:
 
 /usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
 

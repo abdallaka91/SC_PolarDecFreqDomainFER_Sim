@@ -1,16 +1,24 @@
 #include <cmath>
 #include <cstdio>
-#include <cstdlib>
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 #include "Decoder_functions.h"
 #include "GF_tools.h"
 #include "init.h"
 #include "struct.h"
 #include "tools.h"
-#include "channel.h"
+#include "HelperFunc.h"
+#include <fstream>
+#include <iomanip>
+#include <cstring>
+#include <string>
 #include <iomanip>
 #include <algorithm>
+#include "channel.h"
+#include <filesystem>
+#include <omp.h>
+#include <atomic>
 
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
@@ -36,7 +44,7 @@ int main(int argc, char *argv[])
     uint16_t q, N, K, n, nL, nH, nm, nb, Zc, nopM, p, frozen_val = 0;
     softdata_t offset;
     int NbMonteCarlo = stoi(argv[1]);
-    float Pt1,Pt2, EbN0 = stod(argv[2]);
+    float Pt1, Pt2, EbN0 = stod(argv[2]);
     string sig_mod = argv[3];
     std::transform(sig_mod.begin(), sig_mod.end(), sig_mod.begin(), ::toupper);
     q = stoi(argv[4]);
@@ -47,7 +55,7 @@ int main(int argc, char *argv[])
     nH = stoi(argv[7]);
     nL = stoi(argv[8]);
     nm = nL;
-    Zc = 2; 
+    Zc = 2;
     offset = stod(argv[9]);
     Pt1 = stod(argv[10]);
     Pt2 = stod(argv[11]);
@@ -74,7 +82,7 @@ int main(int argc, char *argv[])
 
     vector<vector<std::array<int, 2>>> ns0(n);
     dec_param.ns.resize(n);
-    
+
     for (int i = 0; i < n; i++)
     {
         ns0[i].resize(1 << i);
@@ -145,11 +153,10 @@ int main(int argc, char *argv[])
 
     vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
     vector<uint16_t> info_sec_rec(K, dec_param.MxUS);
-    unsigned int FER = 0;
     vector<uint16_t> KSYMB(K);
 
-    dec_param.ucap.resize(n+1, vector<uint16_t>(N,dec_param.MxUS));
-    dec_param.ucap[n].assign(N,dec_param.frozen_val);
+    dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
+    dec_param.ucap[n].assign(N, dec_param.frozen_val);
 
     vector<vector<vector<int16_t>>> hst1(n, vector<vector<int16_t>>(N, vector<int16_t>(dec_param.nm, 0)));
 
@@ -171,31 +178,97 @@ int main(int argc, char *argv[])
             for (int j = 0; j < p; j++)
                 bin_mod_dict[i][j] = (table.BINDEC[i][j] == 0) ? 1 : -1;
     }
+    // unsigned int FER = 0;
+    // for (int i0 = 1; i0 <= NbMonteCarlo; ++i0)
+    // {
+    //     if (FER >= 100)
+    //         break;
+    //     for (int i = 0; i <= n; i++)
+    //         for (int j = 0; j < N; j++)
+    //             L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
+    //     if (code_param.sig_mod == "CCSK_BIN")
+    //         EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+    //     else if (code_param.sig_mod == "CCSK_NB")
+    //         EncodeChanGF_CCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
+    //     else
+    //         EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
 
-    for (int i0 = 1; i0 <= NbMonteCarlo; ++i0)
+    //     decode_SC_PA(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec);
+
+    //     for (uint16_t i = 0; i < dec_param.K; i++)
+    //     {
+    //         if (KSYMB[i] != info_sec_rec[i])
+    //         {
+    //             FER++;
+    //             break;
+    //         }
+    //     }
+    //     if ((i0 % 100 == 0 && i0 > 0))
+    //         cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+    // }
+    // cout << endl;
+
+    unsigned int FER_out = 0, gen_frames_out = 0;
+    std::atomic<int> global_counter(0);
+    std::atomic<int> FER(0);
+
+#pragma omp parallel
     {
-        for (int i = 0; i <= n; i++)
-            for (int j = 0; j < N; j++)
-                L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
-                if (code_param.sig_mod == "CCSK_BIN")
-                EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
-            else if (code_param.sig_mod == "CCSK_NB")
-                EncodeChanGF_CCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
-            else
-                EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
+        PoAwN::structures::decoder_parameters dec_param_local = dec_param;
 
-        decode_SC_PA(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec);
-
-        for (uint16_t i = 0; i < dec_param.K; i++)
+        while (true)
         {
-            if (KSYMB[i] != info_sec_rec[i])
+
+            bool succ_dec = true;
+            vector<uint16_t> KSYMB(K);
+            vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
+            vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
+            for (int i = 0; i <= n; i++)
+                for (int j = 0; j < N; j++)
+                    L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
+
+            if (code_param.sig_mod == "CCSK_BIN")
+                EncodeChanBPSK_BinCCSK(dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+            else if (code_param.sig_mod == "CCSK_NB")
+                EncodeChanGF_CCSK(dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
+            else
+                EncodeChanBPSK_BinCCSK(dec_param_local, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
+
+            decode_SC_PA(dec_param_local, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec);
+
+            for (uint16_t i = 0; i < dec_param_local.K; i++)
             {
+                if (KSYMB[i] != info_sec_rec[i])
+                {
+                    succ_dec = false;
+                    break;
+                }
+            }
+
+            global_counter++;
+            if (!succ_dec)
                 FER++;
-                break;
+
+            int counter_now = global_counter.fetch_add(1) + 1;
+            int FER_now = FER.fetch_add(0) + 1;
+            
+            if (counter_now > NbMonteCarlo || FER_now >= 101)
+                break; 
+
+            if ((global_counter % 100) == 0 || counter_now == NbMonteCarlo)
+            {
+#pragma omp critical
+                {
+                    FER_out = FER, gen_frames_out = global_counter;
+                    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
+                         << "/" << global_counter << " = "
+                         << (float)FER_out / global_counter << std::flush;
+                }
             }
         }
-        if ((i0 % 100 == 0 && i0 > 0))
-            cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
     }
+    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
+    << "/" << global_counter << " = "
+    << (float)FER_out / global_counter << std::flush;
     cout << endl;
 }

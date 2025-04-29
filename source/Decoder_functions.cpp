@@ -678,7 +678,7 @@ void PoAwN::decoding::decode_SC_PA(const decoder_parameters &dec_param,
         info_sec_rec[i] = V[n][dec_param.reliab_sequence[i]];
 }
 
-void PoAwN::decoding::decode_SC_bubble_gen(decoder_parameters &dec_param,
+void PoAwN::decoding::decode_SC_bubble_gen(const decoder_parameters &dec_param,
                                            const vector<vector<uint16_t>> &ADDGF,
                                            const vector<vector<uint16_t>> &MULGF,
                                            const vector<vector<uint16_t>> &DIVGF,

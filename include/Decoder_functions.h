@@ -101,7 +101,7 @@ namespace PoAwN
                           vector<vector<decoder_t>> &L,
                           vector<uint16_t> &info_sec_rec);
 
-        void decode_SC_bubble_gen(decoder_parameters &dec_param,
+        void decode_SC_bubble_gen(const decoder_parameters &dec_param,
                                   const vector<vector<uint16_t>> &ADDGF,
                                   const vector<vector<uint16_t>> &MULGF,
                                   const vector<vector<uint16_t>> &DIVGF,

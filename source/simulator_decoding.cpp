@@ -178,11 +178,9 @@ int main(int argc, char *argv[])
             for (int j = 0; j < p; j++)
                 bin_mod_dict[i][j] = (table.BINDEC[i][j] == 0) ? 1 : -1;
     }
-    // unsigned int FER = 0;
-    // for (int i0 = 1; i0 <= NbMonteCarlo; ++i0)
+    // unsigned int FER = 0, i0;
+    // for (i0 = 1; i0 <= NbMonteCarlo; ++i0)
     // {
-    //     if (FER >= 100)
-    //         break;
     //     for (int i = 0; i <= n; i++)
     //         for (int j = 0; j < N; j++)
     //             L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
@@ -203,9 +201,14 @@ int main(int argc, char *argv[])
     //             break;
     //         }
     //     }
+    //     if (FER >= 100)
+    //         break;
     //     if ((i0 % 100 == 0 && i0 > 0))
     //         cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
     // }
+    // i0--;
+    // cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+
     // cout << endl;
 
     unsigned int FER_out = 0, gen_frames_out = 0;
@@ -245,15 +248,14 @@ int main(int argc, char *argv[])
                 }
             }
 
-            global_counter++;
-            if (!succ_dec)
-                FER++;
-
             int counter_now = global_counter.fetch_add(1) + 1;
-            int FER_now = FER.fetch_add(0) + 1;
-            
-            if (counter_now > NbMonteCarlo || FER_now >= 101)
-                break; 
+            if (!succ_dec)
+                FER.fetch_add(1);
+
+            int FER_now = FER.fetch_add(0);
+
+            if (counter_now >= NbMonteCarlo || FER_now >=100)
+                break;
 
             if ((global_counter % 100) == 0 || counter_now == NbMonteCarlo)
             {
@@ -268,7 +270,7 @@ int main(int argc, char *argv[])
         }
     }
     cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
-    << "/" << global_counter << " = "
-    << (float)FER_out / global_counter << std::flush;
+         << "/" << global_counter << " = "
+         << (float)FER_out / global_counter << std::flush;
     cout << endl;
 }

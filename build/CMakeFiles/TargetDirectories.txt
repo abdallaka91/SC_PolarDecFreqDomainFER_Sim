@@ -1,4 +1,4 @@
-/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build/CMakeFiles/Sim1.dir
-/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build/CMakeFiles/Sim2.dir
-/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build/CMakeFiles/edit_cache.dir
-/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build/CMakeFiles/rebuild_cache.dir
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/build/CMakeFiles/Sim1.dir
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/build/CMakeFiles/Sim2.dir
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/build/CMakeFiles/edit_cache.dir
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/build/CMakeFiles/rebuild_cache.dir

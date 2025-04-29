@@ -31,7 +31,7 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(decoder_parameters &dec_param,
                                             const vector<vector<uint16_t>> &bin_table,
                                             vector<decoder_t> &chan_LLR_sorted,
                                             vector<uint16_t> &KSYMB,
-                                            vector<vector<softdata_t>> &bin_mod_dict)
+                                            const vector<vector<softdata_t>> &bin_mod_dict)
 {
     uint16_t N = dec_param.N, K = dec_param.K, q = dec_param.q;
     uint16_t nm = dec_param.nm;

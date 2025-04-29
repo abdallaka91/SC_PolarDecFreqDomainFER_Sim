@@ -18,6 +18,7 @@
 #include "channel.h"
 #include <filesystem>
 #include <omp.h>
+#include <atomic>
 
 // #include <omp.h>
 
@@ -160,62 +161,81 @@ int main(int argc, char *argv[])
             Bt[l][s].resize(N >> (l + 1), vector<uint16_t>(2, 65535));
         }
     }
-    unsigned int FER = 0;
-    bool succ_dec;
-    int succ_dec_frame = 0, i0 = 1;
+    unsigned int FER = 0, FER_out=0, gen_frames_out=0;
+    std::atomic<int> global_counter(0);
+    std::atomic<int> succ_dec_frame(0);
 
 #pragma omp parallel
     {
         vector<vector<vector<vector<uint16_t>>>> Bt1 = Bt;
-        vector<vector<vector<vector<float>>>> Cs1_local(n);
-        for (uint16_t l = 0; l < n; l++)
-        {
-            Cs1_local[l].resize(1 << l);
-            for (uint16_t s = 0; s < (1U << l); s++)
-            {
-                Cs1_local[l][s].assign(nH, vector<float>(nL, 0));
-            }
-        }
+        vector<vector<vector<vector<float>>>> Cs1_local = Cs;
+        PoAwN::structures::decoder_parameters dec_param_local = dec_param;
 
-#pragma omp for reduction(+ : FER)
-        for (succ_dec_frame = 0; succ_dec_frame < NbMonteCarlo; succ_dec_frame++)
+        while (true)
         {
+            if (succ_dec_frame >= NbMonteCarlo)
+                break;
+
             bool succ_dec = true;
             vector<uint16_t> KSYMB(K);
-            vector<uint16_t> info_sec_rec(K, dec_param.MxUS);
+            vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
             vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
             for (int i = 0; i <= n; i++)
                 for (int j = 0; j < N; j++)
                     L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
 
-            EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
-            decode_SC_bubble_gen(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt1);
+            if (code_param.sig_mod == "CCSK_BIN")
+                EncodeChanBPSK_BinCCSK(dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+            else if (code_param.sig_mod == "CCSK_NB")
+                EncodeChanGF_CCSK(dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
+            else
+                EncodeChanBPSK_BinCCSK(dec_param_local, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
 
-            for (uint16_t i = 0; i < dec_param.K; i++)
+            decode_SC_bubble_gen(dec_param_local, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt1);
+
+            for (uint16_t i = 0; i < dec_param_local.K; i++)
+            {
                 if (KSYMB[i] != info_sec_rec[i])
                 {
                     succ_dec = false;
                     break;
                 }
+            }
+
+            global_counter++; // Count all frames
 
             if (succ_dec)
             {
+                int succ_now = succ_dec_frame.fetch_add(1) + 1;
+                if (succ_now > NbMonteCarlo)
+                    break; // Exceeded required successful frames, exit immediately
+
+
                 for (uint16_t l = 0; l < n; l++)
                     for (uint16_t s = 0; s < (1U << l); s++)
                         for (uint16_t t = 0; t < (N >> (l + 1)); t++)
-                            if (Bt1[l][s][t][0] !=65535 && Bt1[l][s][t][1] !=65535)
+                            if (Bt1[l][s][t][0] != 65535 && Bt1[l][s][t][1] != 65535)
+                            {
                                 Cs1_local[l][s][Bt1[l][s][t][0]][Bt1[l][s][t][1]]++;
+                                Bt1[l][s][t][0] = 65535;
+                                Bt1[l][s][t][1] = 65535;
+                            }
+
+                if ((succ_now % 100) == 0 || succ_now==NbMonteCarlo)
+                {
+#pragma omp critical
+                    {
+                        FER_out=FER, gen_frames_out=global_counter;
+                        cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
+                             << "/" << global_counter << " = "
+                             << (float)FER_out / global_counter << std::flush;
+                    }
+                }
             }
             else
                 FER++;
-#pragma omp atomic update
-            i0++;
-#pragma omp critical
-            {
-                if ((i0 % 100) == 0)
-                    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
-            }
         }
+
 #pragma omp critical
         {
             for (uint16_t l = 0; l < n; l++)
@@ -226,81 +246,24 @@ int main(int argc, char *argv[])
         }
     }
 
-    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)NbMonteCarlo << " = " << (float)FER / (float)NbMonteCarlo << std::flush;
+    cout << "\rFinal SNR: " << EbN0 << " dB, FER = " << FER_out << "/" << (float)gen_frames_out
+         << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
     cout << endl;
-
-    // for (succ_dec_frame = 0; succ_dec_frame < NbMonteCarlo; succ_dec_frame++)
-    // {
-    //     succ_dec = 1;
-    //     for (int i = 0; i <= n; i++)
-    //         for (int j = 0; j < N; j++)
-    //             L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
-    //     if (code_param.sig_mod == "CCSK_BIN")
-    //         EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
-    //     else if (code_param.sig_mod == "CCSK_NB")
-    //         EncodeChanGF_CCSK(dec_param, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
-    //     else
-    //         EncodeChanBPSK_BinCCSK(dec_param, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
-
-    //     decode_SC_bubble_gen(dec_param, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt);
-    //     for (uint16_t i = 0; i < dec_param.K; i++)
-    //         if (KSYMB[i] != info_sec_rec[i])
-    //         {
-    //             succ_dec = false;
-    //             break;
-    //         }
-    //     if (succ_dec)
-    //     {
-    //         for (uint16_t l = 0; l < n; l++)
-    //             for (uint16_t s = 0; s < 1 << l; s++)
-    //                 for (uint16_t t = 0; t < N >> (l + 1); t++)
-    //                     if (Bt[l][s][t][0] != 65535)
-    //                         Cs[l][s][Bt[l][s][t][0]][Bt[l][s][t][1]]++;
-    //     }
-    //     else
-    //         FER++;
-
-    //     for (uint16_t l = 0; l < n; l++)
-    //         for (uint16_t s = 0; s < 1 << l; s++)
-    //             for (uint16_t t = 0; t < N >> (l + 1); t++)
-    //             {
-    //                 Bt[l][s][t][0] = 65535;
-    //                 Bt[l][s][t][1] = 65535;
-    //             }
-    //     if ((i0 % 100 == 0))
-    //         cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
-    //     i0++;
-    // }
-    // i0--;
-
-    // cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
-    // cout << endl;
 
     bool succ_writing, newsim;
 
     std::ostringstream fname;
     bool newclust = false;
     newsim = true;
-    vector<vector<uint16_t>> cnt_1st(n), cnt_1st_1;
 
-    int j00, j11, cnt0, cnt1;
     for (uint16_t l = 0; l < n; l++)
-    {
-        cnt_1st[l].assign(1 << l, 0);
         for (uint16_t s = 0; s < N >> (n - l); s++)
-        {
-            cnt0 = 0;
-            cnt1 = 0;
             for (int j0 = 0; j0 < nH; j0++)
-            {
                 for (int j1 = 0; j1 < nL; j1++)
                 {
                     Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
                     Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
                 }
-            }
-        }
-    }
 
     string bubble_direct;
     if (code_param.sig_mod == "BPSK")
@@ -335,7 +298,7 @@ int main(int argc, char *argv[])
         return false;
     }
 
-    file << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)i0 << " = " << (float)FER / (float)i0 << std::flush;
+    file << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << (float)gen_frames_out << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
     file << endl;
 
     file.close();

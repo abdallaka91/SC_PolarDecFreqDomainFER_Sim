@@ -1,4 +1,4 @@
-# Install script for directory: /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate
+# Install script for directory: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

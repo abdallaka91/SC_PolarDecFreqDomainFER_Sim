@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
                                 Bt1[l][s][t][1] = 65535;
                             }
 
-                if ((succ_now % 100) == 0 || succ_now==NbMonteCarlo)
+                if ((global_counter % 100) == 0 || succ_now==NbMonteCarlo)
                 {
 #pragma omp critical
                     {
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    cout << "\rFinal SNR: " << EbN0 << " dB, FER = " << FER_out << "/" << (float)gen_frames_out
+    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << (float)gen_frames_out
          << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
     cout << endl;
 

@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/include
 
-CXX_FLAGS = -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -std=gnu++17 -flto=auto -fno-fat-lto-objects
+CXX_FLAGS = -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -std=gnu++17 -flto=auto -fno-fat-lto-objects -fopenmp -fopenmp
 

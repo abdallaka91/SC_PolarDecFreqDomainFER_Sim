@@ -5,9 +5,22 @@ SNR: -14.5 dB, FER = 175/3000 = 0.0583333
 SNR: -14 dB, FER = 52/12000 = 0.00433333
 SNR: -13.5 dB, FER = 13/100000 = 0.00013131
 SNR: -13 dB, FER = 25/3e+06 = 8.333333e-06
+SNR: -13 dB, FER = 41/5100800 = 8.03796e-06
 
+
+
+./build/Sim1 10000000 -13 "CCSK_Bin" 256 128 112 36 36 2.0 0 0
+Loading code_param...
+./matrices/ccsk_bin/N128/mat_N128_GF256_SNR-13.000.txt
+OK!, Loading tables...
+Done!
+Simulation starts...
+Number of threads in use: 12
+SNR: -13 dB, FER = 41/5100800 = 8.03796e-06
+----------------------------------------------------------------------------------
 EMS:(36x36)
 
 SNR: -14.5 dB, FER = 5616/105616 = 0.0531738
 SNR: -14 dB, FER = 43/10043 = 0.00428159
 SNR: -13.5 dB, FER = 63/500063 = 0.000125984
+SNR: -13 dB, FER = 7/2070000 = 3.38164e-06

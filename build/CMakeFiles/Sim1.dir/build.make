@@ -172,6 +172,8 @@ Sim1: CMakeFiles/Sim1.dir/source/tools.cpp.o
 Sim1: CMakeFiles/Sim1.dir/source/Decoder_functions.cpp.o
 Sim1: CMakeFiles/Sim1.dir/source/channel.cpp.o
 Sim1: CMakeFiles/Sim1.dir/build.make
+Sim1: /usr/lib/gcc/x86_64-linux-gnu/13/libgomp.so
+Sim1: /usr/lib/x86_64-linux-gnu/libpthread.a
 Sim1: CMakeFiles/Sim1.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable Sim1"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Sim1.dir/link.txt --verbose=$(VERBOSE)

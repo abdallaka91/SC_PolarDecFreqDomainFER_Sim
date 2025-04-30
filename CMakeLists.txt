@@ -34,6 +34,10 @@ add_executable(Sim1
     ${SOURCE_DIR}/Decoder_functions.cpp
     ${SOURCE_DIR}/channel.cpp
 )
+if(OpenMP_CXX_FOUND)
+    target_compile_options(Sim1 PRIVATE ${OpenMP_CXX_FLAGS})
+    target_link_libraries(Sim1 PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
 # Sim2 executable (with OpenMP)
 add_executable(Sim2

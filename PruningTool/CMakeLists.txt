@@ -23,7 +23,7 @@ endif()
 
 
 add_executable(Pruning
-    ${SOURCE_DIR}/PruningToolMain1.cpp
+    ${SOURCE_DIR}/PruningToolMain.cpp
 
 )
 

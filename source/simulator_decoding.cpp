@@ -36,15 +36,15 @@ using std::vector;
 int main(int argc, char *argv[])
 {
 
-    if (argc != 12)
+    if (argc != 10)
     {
-        cout << "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset, Pt1, Pt2" << std::endl;
+        cout << "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset," << std::endl;
         return 1;
     }
     uint16_t q, N, K, n, nL, nH, nm, nb, Zc, nopM, p, frozen_val = 0;
     softdata_t offset;
     int NbMonteCarlo = stoi(argv[1]);
-    float Pt1, Pt2, EbN0 = stod(argv[2]);
+    float EbN0 = stod(argv[2]);
     string sig_mod = argv[3];
     std::transform(sig_mod.begin(), sig_mod.end(), sig_mod.begin(), ::toupper);
     q = stoi(argv[4]);
@@ -57,8 +57,7 @@ int main(int argc, char *argv[])
     nm = nL;
     Zc = 2;
     offset = stod(argv[9]);
-    Pt1 = stod(argv[10]);
-    Pt2 = stod(argv[11]);
+
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = sig_mod;
 
@@ -78,7 +77,7 @@ int main(int argc, char *argv[])
     cout << "Simulation starts..." << endl;
 
     decoder_parameters dec_param(code_param, offset, nm, nL, nH, nb, Zc, nopM);
-    LoadBubblesIndcatorlists(dec_param, EbN0, Pt1, Pt2);
+    LoadBubblesIndcatorlists(dec_param, EbN0);
 
     vector<vector<std::array<int, 2>>> ns0(n);
     dec_param.ns.resize(n);

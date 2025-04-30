@@ -13,9 +13,7 @@ namespace PoAwN
                         PoAwN::structures::table_GF &table,
                         const uint16_t *GF_polynom_primitive);
         void LoadBubblesIndcatorlists(PoAwN::structures::decoder_parameters &dec,
-                                      const float SNR,
-                                      const float Pt1,
-                                      const float Pt2);
+                                      const float SNR);
     } // namespace init
 } // namespace PoAwN
 #endif

@@ -69,9 +69,7 @@ void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR)
 }
 
 void PoAwN::init::LoadBubblesIndcatorlists(PoAwN::structures::decoder_parameters &dec,
-                                           const float SNR,
-                                           const float Pt1,
-                                           const float Pt2)
+                                           const float SNR)
 {
     uint16_t n = dec.n, nH = dec.nH, nL = dec.nL;
     std::ostringstream fname;
@@ -90,8 +88,6 @@ void PoAwN::init::LoadBubblesIndcatorlists(PoAwN::structures::decoder_parameters
     << "_GF" << dec.q
           << "_SNR" << std::fixed << std::setprecision(3) << SNR << "_" 
           << dec.nH << "x" << dec.nL 
-          << "_Pt1_"<< std::fixed << std::setprecision(3)<< Pt1
-          << "_Pt2_"<< std::fixed << std::setprecision(3)<< Pt2
           << "_Bt_lsts.txt";
     std::string filename = fname.str();
 

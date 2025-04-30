@@ -98,9 +98,9 @@ int export_cs(const decoder_parameters &dec_param,
 int main(int argc, char *argv[])
 {
 
-    if (argc != 10)
+    if (argc != 10 )
     {
-        cout << "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset" << std::endl;
+        cout << "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset, (and optionally nb of threads)" << std::endl;
         return 1;
     }
     uint16_t q, N, K, n, nL, nH, nm, nb, Zc, nopM, p, frozen_val = 0;
@@ -119,6 +119,7 @@ int main(int argc, char *argv[])
     nm = nL;
     Zc = 2;
     offset = stod(argv[9]);
+
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = sig_mod;
 
@@ -229,7 +230,7 @@ int main(int argc, char *argv[])
     {
 #pragma omp single
         {
-            std::cout << "Number of threads in use: " << omp_get_num_threads() << std::endl;
+            cout << "Number of threads in use: " << omp_get_num_threads() << std::endl;
         }
         vector<vector<vector<vector<uint16_t>>>> Bt1 = Bt;
         vector<vector<vector<vector<float>>>> Cs1_local = Cs;

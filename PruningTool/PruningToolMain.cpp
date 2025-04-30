@@ -22,28 +22,18 @@ int main(int argc, char *argv[])
 {
 
     int q, N, K, n, nH, nL, nm;
-    float Pt1, Pt2, Pt, EbN0, nbmontcarlo;
+    float Pt, EbN0, nbmontcarlo;
 
 
-    string main_bub_dir = "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/BubblesPattern/ccsk_bin";
-    // EbN0 = -10;
-    // q = 64;
-    // N = 64;
-    // K = 48;
-    // nH = 64;
-    // nL = 64;
-    // Pt1 = 500;
-    // Pt2 = 100;
+    // string main_bub_dir = "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/BubblesPattern/ccsk_bin";
+    string main_bub_dir = argv[1];
 
-    EbN0 = stod(argv[1]);
-    q = stoi(argv[2]);
-    N = stoi(argv[3]);
-    K = stoi(argv[4]);
-    nH = stoi(argv[5]);
-    nL = stoi(argv[6]);
-    Pt1 = stoi(argv[7]);
-    Pt2 = stoi(argv[8]);
-
+    EbN0 = stod(argv[2]);
+    q = stoi(argv[3]);
+    N = stoi(argv[4]);
+    K = stoi(argv[5]);
+    nH = stoi(argv[6]);
+    nL = stoi(argv[7]);
     float norm1 = 1e6;
     n = log2(N);
     nm = nL;
@@ -57,16 +47,6 @@ int main(int argc, char *argv[])
           << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << nH << "x" << nL
           << "_Cs_mat.txt";
 
-    vector<vector<vector<vector<int>>>> Bt;
-    vector<vector<vector<vector<float>>>> Cs;
-    Cs.resize(n);
-    Bt.resize(n);
-
-    for (int l = 0; l < n; l++)
-    {
-        Cs[l].resize(1 << l);
-        Bt[l].resize(1 << l, vector<vector<int>>(nH, vector<int>(nL, 0)));
-    }
     std::string filename = fname.str();
     std::string line;
     std::ifstream file(filename);
@@ -88,6 +68,18 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    vector<vector<vector<vector<int>>>> Bt;
+    vector<vector<vector<vector<float>>>> Cs;
+    Cs.resize(n);
+    Bt.resize(n);
+
+    for (int l = 0; l < n; l++)
+    {
+        Cs[l].resize(1 << l);
+        Bt[l].resize(1 << l, vector<vector<int>>(nH, vector<int>(nL, 0)));
+    }
+
     for (l = 0; l < n; l++)
     {
         for (s = 0; s < (1u << l); s++)
@@ -154,17 +146,15 @@ int main(int argc, char *argv[])
 
     vector<vector<int>> cnt_1st(n), cnt_1st_1;
 
+    vector<vector<vector<vector<float>>>> Cs1 = Cs;
+
     int j00, j11, cnt0, cnt1;
+    Pt = 0;
     for (int l = 0; l < n; l++)
     {
-
         cnt_1st[l].assign(1 << l, 0);
         for (int s = 0; s < 1 << l; s++)
         {
-            if (l < 5 && s==0)
-            Pt = Pt1;
-            else
-                Pt = Pt2;
             cnt0 = 0;
             cnt1 = 0;
             for (int j0 = 0; j0 < nH; j0++)
@@ -180,7 +170,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    bool cnd1 = 0;
     for (int l = 0; l < n; l++)
     {
         for (int s = 0; s < 1 << l; s++)
@@ -192,10 +181,126 @@ int main(int argc, char *argv[])
                     {
                         if (Bt[l][s][j0][j1] == 0)
                         {
-                            for (int j2 = j0; j2 < nH; j2++)
-                                Bt[l][s][j2][j1] = 0;
-                            for (int j3 = j1; j3 < nL; j3++)
-                                Bt[l][s][j0][j3] = 0;
+                            if (j0 < nH - 1)
+                                if (Bt[l][s][j0 + 1][j1] == 0)
+                                    for (int j2 = j0; j2 < nH; j2++)
+                                        Bt[l][s][j2][j1] = 0;
+                                else
+                                {
+                                    Bt[l][s][j0][j1] = 1;
+                                }
+                        }
+                        if (Bt[l][s][j0][j1] == 0)
+                        {
+                            if (j1 < nL - 1)
+                                if (Bt[l][s][j0][j1 + 1] == 0)
+                                    for (int j3 = j1; j3 < nL; j3++)
+                                        Bt[l][s][j0][j3] = 0;
+                                else
+                                {
+                                    Bt[l][s][j0][j1] = 1;
+                                }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    int aa = 1;
+
+    vector<vector<int>> nones1(n, vector<int>());
+
+    for (int l = 0; l < n; l++)
+    {
+        nones1[l].resize(1 << l, 0);
+        for (int s = 0; s < 1 << l; s++)
+        {
+            for (int j0 = 0; j0 < nH; j0++)
+            {
+                for (int j1 = 0; j1 < nL; j1++)
+                {
+                    {
+                        if (Bt[l][s][j0][j1] == 1)
+                        {
+                            nones1[l][s]++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    vector<vector<vector<vector<int>>>> Bt1 = Bt;
+    vector<vector<int>> nones2 = nones1;
+
+    for (int l = 0; l < n; l++)
+    {
+        for (int s = 0; s < 1 << l; s++)
+        {
+            Pt = 0;
+            while (nones2[l][s] > 3 * nm)
+            {
+                Pt += 1;
+                nones2[l][s] = 0;
+                for (int j0 = 0; j0 < nH; j0++)
+                {
+                    for (int j1 = 0; j1 < nL; j1++)
+
+                        if (Cs[l][s][j0][j1] > Pt)
+                        {
+                            Bt1[l][s][j0][j1] = 1;
+                            nones2[l][s]++;
+                        }
+                        else
+                            Bt1[l][s][j0][j1] = 0;
+                }
+            }
+            int aa = 1;
+        }
+    }
+
+    // for (int l = 0; l < n; l++)
+    // {
+    //     for (int s = 0; s < 1 << l; s++)
+    //     {
+    //         if(nones2[l][s]==1)
+    //         Bt1[l][s][0][1] = 1;
+    //         Bt1[l][s][1][0] = 1;
+    //         nones2[l][s]=3;
+
+    //     }
+    // }
+
+    for (int l = 0; l < n; l++)
+    {
+        for (int s = 0; s < 1 << l; s++)
+        {
+            for (int j0 = 0; j0 < nH; j0++)
+            {
+                for (int j1 = 0; j1 < nL; j1++)
+                {
+                    {
+                        if (Bt1[l][s][j0][j1] == 0)
+                        {
+                            if (j0 < nH - 1)
+                                if (Bt1[l][s][j0 + 1][j1] == 0)
+                                    for (int j2 = j0; j2 < nH; j2++)
+                                        Bt1[l][s][j2][j1] = 0;
+                                else
+                                {
+                                    Bt1[l][s][j0][j1] = 1;
+                                }
+                        }
+                        if (Bt1[l][s][j0][j1] == 0)
+                        {
+                            if (j1 < nL - 1)
+                                if (Bt1[l][s][j0][j1 + 1] == 0)
+                                    for (int j3 = j1; j3 < nL; j3++)
+                                        Bt1[l][s][j0][j3] = 0;
+                                else
+                                {
+                                    Bt1[l][s][j0][j1] = 1;
+                                }
                         }
                     }
                 }
@@ -209,7 +314,7 @@ int main(int argc, char *argv[])
         {
             for (int j0 = 0; j0 < nL; j0++)
             {
-                if (Bt[l][s][0][j0])
+                if (Bt1[l][s][0][j0])
                 {
                     cnt_1st[l][s] = j0 + 1;
                 }
@@ -252,7 +357,7 @@ int main(int argc, char *argv[])
             {
                 for (int j = 0; j < cnt_1st_1[l][s]; j++)
                 {
-                    Bt[l][s][0][j] = 1;
+                    Bt1[l][s][0][j] = 1;
                 }
             }
         }
@@ -265,8 +370,6 @@ int main(int argc, char *argv[])
                                           "bubbles_N"
           << N << "_K" << K << "_GF" << q
           << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << nH << "x" << nL
-          << "_Pt1_" << std::fixed << std::setprecision(3) << Pt1
-          << "_Pt2_" << std::fixed << std::setprecision(3) << Pt2
           << "_Bt_mat.txt";
 
     filename = fname.str();
@@ -279,7 +382,7 @@ int main(int argc, char *argv[])
     {
         for (int j = 0; j < 1u << i; j++)
         {
-            succ_writing = AppendClustBubblesToFile(fname.str(), Bt[i][j], i, j, newsim);
+            succ_writing = AppendClustBubblesToFile(fname.str(), Bt1[i][j], i, j, newsim);
             newsim = false;
         }
     }
@@ -293,12 +396,10 @@ int main(int argc, char *argv[])
                                           "bubbles_N"
           << N << "_K" << K << "_GF" << q
           << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << nH << "x" << nL
-          << "_Pt1_" << std::fixed << std::setprecision(3) << Pt1
-          << "_Pt2_" << std::fixed << std::setprecision(3) << Pt2
           << "_Bt_lsts.txt";
 
     filename = fname.str();
 
-    writeBtMatrices(filename, n, nH, nL, Bt);
+    writeBtMatrices(filename, n, nH, nL, Bt1);
     return 0;
 }

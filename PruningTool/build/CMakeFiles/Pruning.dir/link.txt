@@ -1,1 +1,1 @@
-/usr/bin/c++ -g -O0 -g CMakeFiles/Pruning.dir/PruningToolMain1.cpp.o -o Pruning 
+/usr/bin/c++ -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects CMakeFiles/Pruning.dir/PruningToolMain.cpp.o -o Pruning 

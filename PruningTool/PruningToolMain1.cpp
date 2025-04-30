@@ -264,6 +264,18 @@ int main(int argc, char *argv[])
     {
         for (int s = 0; s < 1 << l; s++)
         {
+            if(nones2[l][s]==1)
+            Bt1[l][s][0][1] = 1;
+            Bt1[l][s][1][0] = 1;
+            nones2[l][s]=3;
+
+        }
+    }
+
+    for (int l = 0; l < n; l++)
+    {
+        for (int s = 0; s < 1 << l; s++)
+        {
             for (int j0 = 0; j0 < nH; j0++)
             {
                 for (int j1 = 0; j1 < nL; j1++)

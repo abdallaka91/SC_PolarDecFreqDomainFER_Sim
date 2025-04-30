@@ -217,6 +217,10 @@ int main(int argc, char *argv[])
 
 #pragma omp parallel
     {
+#pragma omp single
+        {
+            std::cout << "Number of threads in use: " << omp_get_num_threads() << std::endl;
+        }
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
 
         while (true)
@@ -254,7 +258,7 @@ int main(int argc, char *argv[])
 
             int FER_now = FER.fetch_add(0);
 
-            if (counter_now >= NbMonteCarlo || FER_now >=100)
+            if (counter_now >= NbMonteCarlo || FER_now >= 100)
                 break;
 
             if ((global_counter % 100) == 0 || counter_now == NbMonteCarlo)

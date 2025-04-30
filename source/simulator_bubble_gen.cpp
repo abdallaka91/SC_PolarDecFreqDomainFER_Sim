@@ -227,6 +227,10 @@ int main(int argc, char *argv[])
 
 #pragma omp parallel
     {
+#pragma omp single
+        {
+            std::cout << "Number of threads in use: " << omp_get_num_threads() << std::endl;
+        }
         vector<vector<vector<vector<uint16_t>>>> Bt1 = Bt;
         vector<vector<vector<vector<float>>>> Cs1_local = Cs;
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;

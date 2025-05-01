@@ -38,8 +38,8 @@ using std::vector;
 int export_cs(const decoder_parameters &dec_param,
               const float EbN0,
               vector<vector<vector<vector<float>>>> &Cs,
-              const uint16_t NbMonteCarlo,
-              const uint16_t gen_frame,
+              const uint64_t NbMonteCarlo,
+              const uint64_t gen_frame,
               const float FER)
 {
     uint16_t n = dec_param.n, nH = dec_param.nH, nL = dec_param.nL, N = dec_param.N, K = dec_param.K, q = dec_param.q;
@@ -86,7 +86,7 @@ int export_cs(const decoder_parameters &dec_param,
     std::filesystem::path filepath(fname.str());
     std::ofstream file(fname.str(), std::ios::app);
 
-    file << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << (float)gen_frame << " = " << (float)FER / (float)gen_frame;
+    file << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << gen_frame << " = " << (float)FER / (float)gen_frame;
     file << endl;
 
     file.close();
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     }
     uint16_t q, N, K, n, nL, nH, nm, nb, Zc, nopM, p, frozen_val = 0;
     softdata_t offset;
-    int NbMonteCarlo = stoi(argv[1]);
+    uint64_t NbMonteCarlo = stoi(argv[1]);
     float Pt1, Pt2, Pt, EbN0 = stod(argv[2]);
     string sig_mod = argv[3];
     std::transform(sig_mod.begin(), sig_mod.end(), sig_mod.begin(), ::toupper);
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
             Bt[l][s].resize(N >> (l + 1), vector<uint16_t>(2, 65535));
         }
     }
-    unsigned int FER = 0, FER_out = 0, gen_frames_out = 0;
+    uint64_t FER = 0, FER_out = 0, gen_frames_out = 0;
     std::atomic<int> global_counter(0);
     std::atomic<int> succ_dec_frame(0);
 
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << (float)gen_frames_out
+    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
          << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
     cout << endl;
 

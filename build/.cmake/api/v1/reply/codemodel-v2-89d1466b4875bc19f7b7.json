@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.10"
@@ -20,7 +20,7 @@
 					]
 				}
 			],
-			"name" : "Release",
+			"name" : "Debug",
 			"projects" : 
 			[
 				{
@@ -41,14 +41,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Sim1::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Sim1-Release-e5cb06d4f2fe4c9c5d83.json",
+					"jsonFile" : "target-Sim1-Debug-c2619b44780f07dda34c.json",
 					"name" : "Sim1",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "Sim2::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Sim2-Release-8fa666b504a863847428.json",
+					"jsonFile" : "target-Sim2-Debug-091752f2ae3dee05428e.json",
 					"name" : "Sim2",
 					"projectIndex" : 0
 				}

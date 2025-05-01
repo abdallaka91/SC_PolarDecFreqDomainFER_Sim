@@ -1,62 +1,62 @@
 [
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/simulator_decoding.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/simulator_decoding.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/simulator_decoding.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/simulator_decoding.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/GF_tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/GF_tools.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/GF_tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/GF_tools.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/GF_tools.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/init.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/init.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/init.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/init.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/init.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/tools.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/tools.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/tools.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/Decoder_functions.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/Decoder_functions.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/Decoder_functions.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/Decoder_functions.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/Decoder_functions.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/channel.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/channel.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim1.dir/source/channel.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/channel.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/channel.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/simulator_bubble_gen.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/simulator_bubble_gen.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/simulator_bubble_gen.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/simulator_bubble_gen.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/simulator_bubble_gen.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/GF_tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/GF_tools.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/GF_tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/GF_tools.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/GF_tools.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/init.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/init.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/init.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/init.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/init.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/tools.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/tools.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/tools.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/tools.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/Decoder_functions.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/Decoder_functions.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/Decoder_functions.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/Decoder_functions.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/Decoder_functions.cpp"
 },
 {
   "directory": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/build",
-  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -O3 -DNDEBUG -flto=auto -fno-fat-lto-objects -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/channel.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/channel.cpp",
+  "command": "/usr/bin/c++  -I/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/include -g -O0 -g -fopenmp -std=gnu++17 -o CMakeFiles/Sim2.dir/source/channel.cpp.o -c /lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/channel.cpp",
   "file": "/lab/home/labsticc/abdallah/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate/source/channel.cpp"
 }
 ]

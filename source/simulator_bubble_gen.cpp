@@ -98,7 +98,7 @@ int export_cs(const decoder_parameters &dec_param,
 int main(int argc, char *argv[])
 {
 
-    if (argc != 10 )
+    if (argc != 10)
     {
         cout << "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset, (and optionally nb of threads)" << std::endl;
         return 1;
@@ -222,16 +222,13 @@ int main(int argc, char *argv[])
             Bt[l][s].resize(N >> (l + 1), vector<uint16_t>(2, 65535));
         }
     }
-    uint64_t FER = 0, FER_out = 0, gen_frames_out = 0;
+    uint64_t FER_out = 0, gen_frames_out = 0;
     std::atomic<int> global_counter(0);
     std::atomic<int> succ_dec_frame(0);
+    std::atomic<int> FER(0);
 
 #pragma omp parallel
     {
-#pragma omp single
-        {
-            cout << "Number of threads in use: " << omp_get_num_threads() << std::endl;
-        }
         vector<vector<vector<vector<uint16_t>>>> Bt1 = Bt;
         vector<vector<vector<vector<float>>>> Cs1_local = Cs;
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
@@ -267,14 +264,11 @@ int main(int argc, char *argv[])
                 }
             }
 
-            global_counter++; // Count all frames
-
+            int counter_now = global_counter.fetch_add(1) + 1;
+            int succ_now = succ_dec_frame.load();
             if (succ_dec)
             {
-                int succ_now = succ_dec_frame.fetch_add(1) + 1;
-                if (succ_now > NbMonteCarlo)
-                    break; // Exceeded required successful frames, exit immediately
-
+                succ_now = succ_dec_frame.fetch_add(1) + 1;
                 for (uint16_t l = 0; l < n; l++)
                     for (uint16_t s = 0; s < (1U << l); s++)
                         for (uint16_t t = 0; t < (N >> (l + 1)); t++)
@@ -284,20 +278,27 @@ int main(int argc, char *argv[])
                                 Bt1[l][s][t][0] = 65535;
                                 Bt1[l][s][t][1] = 65535;
                             }
-
-                if ((global_counter % 100) == 0 || succ_now == NbMonteCarlo)
-                {
-#pragma omp critical
-                    {
-                        FER_out = FER, gen_frames_out = global_counter;
-                        cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
-                             << "/" << global_counter << " = "
-                             << (float)FER_out / global_counter << std::flush;
-                    }
-                }
             }
             else
-                FER++;
+                FER.fetch_add(1);
+
+            bool ENd = false;
+
+            if ((global_counter % 100) == 0 || succ_now == NbMonteCarlo)
+            {
+
+#pragma omp critical
+                {
+                    FER_out = FER.load(), gen_frames_out = global_counter.load();
+                    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
+                         << "/" << global_counter << " = "
+                         << (float)FER_out / gen_frames_out << std::flush;
+                    if (succ_now == NbMonteCarlo)
+                        ENd = true;
+                }
+            }
+            if (ENd)
+                break;
         }
 
 #pragma omp critical

@@ -35,13 +35,33 @@ void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR)
     }
 
     int tmp;
+    int temp_cnt = 0;
     code.reliab_sequence.resize(code.N);
-    for (int i = 0; i < code.N; i++)
+    for (int k = 0; k < 2; k++) // if k<1 then read the first reliability sequence existed in the file, if k<2 then cosider the second.
+    // I did this loop because my files contain 2  sequnces, the first generated taking Entropies as measurments, while the second is
+    //  generated from probability of errors. what has been noticed is at very low SNR (FER<0.1) taking probability of error is better
     {
-        opfile >> tmp;
-        code.reliab_sequence[i] = tmp;
-    }
+        temp_cnt = 0;
+        for (int i = 0; i < code.N; i++)
+        {
+            if (opfile >> tmp) 
+            {
+                code.reliab_sequence[i] = static_cast<uint16_t>(tmp);
+                temp_cnt++;
+            }
+            else
+            {
+                std::cerr << "Invalid or missing value at index " << i << " of Reliabilities sequence nb  " << k << std::endl;
+                exit(EXIT_FAILURE);
+            }
 
+        }
+        if (temp_cnt < code.N)
+        {
+            std::cerr << "Reliabilities sequence nb " << k << " is not complete" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
     if (code.sig_mod == "BPSK")
     {
         code.polar_coeff.resize(code.n, std::vector<uint16_t>(code.N / 2));
@@ -81,13 +101,13 @@ void PoAwN::init::LoadBubblesIndcatorlists(PoAwN::structures::decoder_parameters
     else
         mat_direct = "./BubblesPattern/ccsk_nb/N";
 
-    fname << mat_direct << dec.N 
-    << "/BubblesIndicatorsLists"
-    << "/bubbles_N" << dec.N 
-    << "_K" << dec.K 
-    << "_GF" << dec.q
-          << "_SNR" << std::fixed << std::setprecision(3) << SNR << "_" 
-          << dec.nH << "x" << dec.nL 
+    fname << mat_direct << dec.N
+          << "/BubblesIndicatorsLists"
+          << "/bubbles_N" << dec.N
+          << "_K" << dec.K
+          << "_GF" << dec.q
+          << "_SNR" << std::fixed << std::setprecision(3) << SNR << "_"
+          << dec.nH << "x" << dec.nL
           << "_Bt_lsts.txt";
     std::string filename = fname.str();
 
@@ -105,8 +125,8 @@ void PoAwN::init::LoadBubblesIndcatorlists(PoAwN::structures::decoder_parameters
     }
     if (linecount < (1u << n) - 1)
     {
-        std::cerr << "File data is not enough, it should  contain " << (1u<<n) - 1 
-        << " lines, each contains the list of (i,j) coordinates of cluster s at layer l, the lines format should be: l s, i0 j0 i1 j1..." << std::endl;
+        std::cerr << "File data is not enough, it should  contain " << (1u << n) - 1
+                  << " lines, each contains the list of (i,j) coordinates of cluster s at layer l, the lines format should be: l s, i0 j0 i1 j1..." << std::endl;
         std::exit(EXIT_FAILURE);
     }
 

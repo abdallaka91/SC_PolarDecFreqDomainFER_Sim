@@ -1,25 +1,48 @@
-./build/Sim1 10000000 -13 "CCSK_Bin" 256 128 112 36 36 2.0 0 0
+abdallah@lo-lester-002:~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate$ ./build/Sim1 1000000 -22  "CCSK_Bin" 64 1024 43 14
+ 28 0.3
 Loading code_param...
-./matrices/ccsk_bin/N128/mat_N128_GF256_SNR-13.000.txt
+./matrices/ccsk_bin/N1024/mat_N1024_GF64_SNR-22.000.txt
 OK!, Loading tables...
 Done!
 Simulation starts...
-Number of threads in use: 12
-SNR: -13 dB, FER = 41/5100800 = 8.03796e-06
-
-PA:
-
-SNR: -15 dB, FER = 1708/5000 = 0.341604
-SNR: -14.5 dB, FER = 175/3000 = 0.0583333
-SNR: -14 dB, FER = 52/12000 = 0.00433333
-SNR: -13.5 dB, FER = 13/100000 = 0.00013131
-SNR: -13 dB, FER = 41/5100800 = 8.03796e-06
-SNR: -12.5 dB, FER = 1/2897500 = 3.45125e-07
-
-EMS:(36x36)
-
-SNR: -14.5 dB, FER = 5616/105616 = 0.0531738
-SNR: -14 dB, FER = 43/10043 = 0.00428159
-SNR: -13.5 dB, FER = 63/500063 = 0.000125984
-SNR: -13 dB, FER = 69/1.00001e+07 = 6.89995e-06
-SNR: -12.5 dB, FER = 3/1e+07 = 3e-07
+SNR: -22 dB, FER = 100/130 = 0.769231
+abdallah@lo-lester-002:~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate$ ./build/Sim1 1000000 -21.5  "CCSK_Bin" 64 1024 43 
+14 28 0.3
+Loading code_param...
+./matrices/ccsk_bin/N1024/mat_N1024_GF64_SNR-21.500.txt
+OK!, Loading tables...
+Done!
+Simulation starts...
+SNR: -21.5 dB, FER = 100/252 = 0.396825
+abdallah@lo-lester-002:~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate$ ./build/Sim1 1000000 -21.0  "CCSK_Bin" 64 1024 43 
+14 28 0.3
+Loading code_param...
+./matrices/ccsk_bin/N1024/mat_N1024_GF64_SNR-21.000.txt
+OK!, Loading tables...
+Done!
+Simulation starts...
+SNR: -21 dB, FER = 100/746 = 0.134048
+abdallah@lo-lester-002:~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate$ ./build/Sim1 1000000 -20.5  "CCSK_Bin" 64 1024 43 
+14 28 0.3
+Loading code_param...
+./matrices/ccsk_bin/N1024/mat_N1024_GF64_SNR-20.500.txt
+OK!, Loading tables...
+Done!
+Simulation starts...
+SNR: -20.5 dB, FER = 100/2818 = 0.0354862
+abdallah@lo-lester-002:~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate$ ./build/Sim1 1000000 -20.0  "CCSK_Bin" 64 1024 43 14 28 0.4
+Loading code_param...
+./matrices/ccsk_bin/N1024/mat_N1024_GF64_SNR-20.000.txt
+OK!, Loading tables...
+Done!
+Simulation starts...
+SNR: -20 dB, FER = 100/27319 = 0.00366046
+abdallah@lo-lester-002:~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate$ ./build/Sim1 1000000 -19.5  "CCSK_Bin" 64 1024 43 
+14 28 0.4
+Loading code_param...
+./matrices/ccsk_bin/N1024/mat_N1024_GF64_SNR-19.500.txt
+OK!, Loading tables...
+Done!
+Simulation starts...
+SNR: -19.5 dB, FER = 100/479611 = 0.000208502
+abdallah@lo-lester-002:~/Documents/Abdallah_C_codes/PAwarePC_BubblesGenAndSimulate$  

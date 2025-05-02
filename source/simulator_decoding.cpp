@@ -210,28 +210,29 @@ int main(int argc, char *argv[])
 
     // cout << endl;
 
+
     unsigned int FER_out = 0, gen_frames_out = 0;
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
+    std::atomic<bool> stop(false);
     unsigned base_seed = std::chrono::system_clock::now().time_since_epoch().count();
     // const int base_seed = 42;
+
 #pragma omp parallel
     {
-
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
         int thread_id = omp_get_thread_num();
         std::mt19937 gen(thread_id + base_seed);
 
-        while (true)
+        while (!stop.load())
         {
-
             bool succ_dec = true;
-            vector<uint16_t> KSYMB(K);
-            vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
-            vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
+            std::vector<uint16_t> KSYMB(K);
+            std::vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
+            std::vector<std::vector<decoder_t>> L(n + 1, std::vector<decoder_t>(N));
             for (int i = 0; i <= n; i++)
                 for (int j = 0; j < N; j++)
-                    L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
+                    L[i][j] = decoder_t(std::vector<softdata_t>(q), std::vector<uint16_t>(q));
 
             if (code_param.sig_mod == "CCSK_BIN")
                 EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
@@ -251,29 +252,38 @@ int main(int argc, char *argv[])
                 }
             }
 
-            int counter_now = global_counter.fetch_add(1) + 1;
+            int counter_now = global_counter.load();
+            int FER_now = FER.load();
+
+            if (counter_now >= NbMonteCarlo || FER_now >= 100)
+            {
+                stop.store(true); 
+
+            if (stop.load())
+                break;
+
+            global_counter.fetch_add(1);
             if (!succ_dec)
                 FER.fetch_add(1);
 
-            int FER_now = FER.fetch_add(0);
-
-            if (counter_now >= NbMonteCarlo || FER_now >= 100)
-                break;
-
-            if ((global_counter % 100) == 0 || counter_now == NbMonteCarlo)
+            if ((counter_now % 100) == 0)
             {
 #pragma omp critical
                 {
-                    FER_out = FER, gen_frames_out = global_counter;
-                    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
-                         << "/" << global_counter << " = "
-                         << (float)FER_out / global_counter << std::flush;
+                    FER_out = FER.load();
+                    gen_frames_out = global_counter.load();
+                    std::cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out
+                              << "/" << gen_frames_out << " = "
+                              << (float)FER_out / gen_frames_out << std::flush;
                 }
             }
         }
     }
-    cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
-         << "/" << global_counter << " = "
-         << (float)FER_out / global_counter << std::flush;
-    cout << endl;
+
+    FER_out = FER.load();
+    gen_frames_out = global_counter.load();
+
+    std::cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out
+              << "/" << gen_frames_out << " = "
+              << (float)FER_out / gen_frames_out << std::flush << std::endl;
 }

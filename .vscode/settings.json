@@ -61,7 +61,9 @@
         "__nullptr": "cpp",
         "map": "cpp",
         "forward_list": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "complex": "cpp",
+        "cinttypes": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}"
 }

@@ -239,8 +239,7 @@ int main(int argc, char *argv[])
 
         while (true)
         {
-            if (stop.load())
-                break;
+
             bool succ_dec = true;
             vector<uint16_t> KSYMB(K);
             vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);

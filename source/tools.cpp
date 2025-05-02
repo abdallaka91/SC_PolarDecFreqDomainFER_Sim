@@ -71,17 +71,14 @@ void PoAwN::tools::AWGN_gen(double MEAN,
                             vector<vector<softdata_t>> &noise_table)
 {
     static std::mt19937 gen(repeatable ? std::mt19937(SEED) : std::mt19937(std::random_device{}()));
-
-    // Directly use the generator to produce different values for each call
     int N = noise_table.size();
     for (int i = 0; i < N; i++)
     {
         int q1 = noise_table[i].size();
         for (int j = 0; j < q1; j++)
         {
-            // Generate random noise with normal distribution (mean, stddev)
             std::normal_distribution<double> dist(MEAN, STD);
-            noise_table[i][j] = (softdata_t)dist(gen); // Store the generated noise
+            noise_table[i][j] = (softdata_t)dist(gen);
         }
     }
 }

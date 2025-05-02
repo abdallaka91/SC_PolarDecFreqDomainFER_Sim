@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <omp.h>
 #include <atomic>
+#include <random>
 
 // #include <omp.h>
 
@@ -226,12 +227,15 @@ int main(int argc, char *argv[])
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
     std::atomic<bool> stop(false);
-
+    unsigned base_seed = std::chrono::system_clock::now().time_since_epoch().count();
+    // const int base_seed = 42;
 #pragma omp parallel
     {
         vector<vector<vector<vector<uint16_t>>>> Bt1 = Bt;
         vector<vector<vector<vector<float>>>> Cs1_local = Cs;
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
+        int thread_id = omp_get_thread_num();
+        std::mt19937 gen(thread_id + base_seed);
 
         while (true)
         {
@@ -246,11 +250,11 @@ int main(int argc, char *argv[])
                     L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
 
             if (code_param.sig_mod == "CCSK_BIN")
-                EncodeChanBPSK_BinCCSK(dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+                EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
             else if (code_param.sig_mod == "CCSK_NB")
-                EncodeChanGF_CCSK(dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
+                EncodeChanGF_CCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
             else
-                EncodeChanBPSK_BinCCSK(dec_param_local, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
+                EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
 
             decode_SC_bubble_gen(dec_param_local, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt1);
 

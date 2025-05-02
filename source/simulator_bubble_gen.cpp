@@ -51,14 +51,14 @@ int export_cs(const decoder_parameters &dec_param,
     bool newclust = false;
     newsim = true;
 
-    // for (uint16_t l = 0; l < n; l++)
-    //     for (uint16_t s = 0; s < N >> (n - l); s++)
-    //         for (int j0 = 0; j0 < nH; j0++)
-    //             for (int j1 = 0; j1 < nL; j1++)
-    //             {
-    //                 Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
-    //                 Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
-    //             }
+    for (uint16_t l = 0; l < n; l++)
+        for (uint16_t s = 0; s < N >> (n - l); s++)
+            for (int j0 = 0; j0 < nH; j0++)
+                for (int j1 = 0; j1 < nL; j1++)
+                {
+                    Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
+                    Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
+                }
 
     string bubble_direct;
     if (dec_param.sig_mod == "BPSK")

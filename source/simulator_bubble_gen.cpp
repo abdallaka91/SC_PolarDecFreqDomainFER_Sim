@@ -51,14 +51,14 @@ int export_cs(const decoder_parameters &dec_param,
     bool newclust = false;
     newsim = true;
 
-    for (uint16_t l = 0; l < n; l++)
-        for (uint16_t s = 0; s < N >> (n - l); s++)
-            for (int j0 = 0; j0 < nH; j0++)
-                for (int j1 = 0; j1 < nL; j1++)
-                {
-                    Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
-                    Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
-                }
+    // for (uint16_t l = 0; l < n; l++)
+    //     for (uint16_t s = 0; s < N >> (n - l); s++)
+    //         for (int j0 = 0; j0 < nH; j0++)
+    //             for (int j1 = 0; j1 < nL; j1++)
+    //             {
+    //                 Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
+    //                 Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
+    //             }
 
     string bubble_direct;
     if (dec_param.sig_mod == "BPSK")
@@ -268,23 +268,25 @@ int main(int argc, char *argv[])
             }
 
             global_counter.fetch_add(1);
+            int succ_now = global_counter.load() - FER.load();
             if (succ_dec)
             {
-                for (uint16_t l = 0; l < n; l++)
-                    for (uint16_t s = 0; s < (1U << l); s++)
-                        for (uint16_t t = 0; t < (N >> (l + 1)); t++)
-                            if (Bt1[l][s][t][0] != 65535 && Bt1[l][s][t][1] != 65535)
-                            {
-                                Cs1_local[l][s][Bt1[l][s][t][0]][Bt1[l][s][t][1]]++;
-                                Bt1[l][s][t][0] = 65535;
-                                Bt1[l][s][t][1] = 65535;
-                            }
+                if (succ_now <= NbMonteCarlo)
+                    for (uint16_t l = 0; l < n; l++)
+                        for (uint16_t s = 0; s < (1U << l); s++)
+                            for (uint16_t t = 0; t < (N >> (l + 1)); t++)
+                                if (Bt1[l][s][t][0] != 65535 && Bt1[l][s][t][1] != 65535)
+                                {
+                                    Cs1_local[l][s][Bt1[l][s][t][0]][Bt1[l][s][t][1]]++;
+                                    Bt1[l][s][t][0] = 65535;
+                                    Bt1[l][s][t][1] = 65535;
+                                }
             }
             else
             {
                 FER.fetch_add(1);
             }
-            int succ_now = global_counter.load() - FER.load();
+            succ_now = global_counter.load() - FER.load();
             if ((global_counter % 100) == 0 || succ_now == NbMonteCarlo)
             {
 
@@ -319,56 +321,4 @@ int main(int argc, char *argv[])
     cout << endl;
 
     int succ_written = export_cs(dec_param, EbN0, Cs, NbMonteCarlo, gen_frames_out, FER_out);
-
-    // std::ostringstream fname;
-    // bool succ_writing, newsim;
-    // bool newclust = false;
-    // newsim = true;
-
-    // for (uint16_t l = 0; l < n; l++)
-    //     for (uint16_t s = 0; s < N >> (n - l); s++)
-    //         for (int j0 = 0; j0 < nH; j0++)
-    //             for (int j1 = 0; j1 < nL; j1++)
-    //             {
-    //                 Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
-    //                 Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
-    //             }
-
-    // string bubble_direct;
-    // if (code_param.sig_mod == "BPSK")
-    //     bubble_direct = "./BubblesPattern/bpsk/N";
-    // else if (code_param.sig_mod == "CCSK_BIN")
-    //     bubble_direct = "./BubblesPattern/ccsk_bin/N";
-    // else
-    //     bubble_direct = "./BubblesPattern/ccsk_nb/N";
-    // fname.str("");
-    // fname.clear();
-    // fname << bubble_direct << code_param.N << "/ContributionMatrices/" << "bubbles_N" << code_param.N << "_K" << code_param.K << "_GF" << code_param.q
-    //       << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << dec_param.nH << "x" << dec_param.nL
-    //       << "_Cs_mat.txt";
-    // std::string filename = fname.str();
-
-    // newsim = 1;
-    // for (int i = 0; i < n; i++)
-    // {
-    //     for (int j = 0; j < 1u << i; j++)
-    //     {
-    //         succ_writing = AppendClustBubblesToFile(fname.str(), Cs[i][j], i, j, newsim,
-    //                                                 "Observations nb: " + std::to_string(NbMonteCarlo) + "\n\n");
-    //         newsim = 0;
-    //     }
-    // }
-
-    // if (!file.is_open())
-    // {
-    //     std::cerr << "Error: Could not open file to write FER " << std::endl;
-    //     return false;
-    // }
-
-    // file << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << (float)gen_frames_out << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
-    // file << endl;
-
-    // file.close();
-    // if (succ_writing)
-    //     std::cout << "Cs Matrices written to: " << filename << std::endl;
 }

@@ -287,3 +287,4 @@ int main(int argc, char *argv[])
               << "/" << gen_frames_out << " = "
               << (float)FER_out / gen_frames_out << std::flush << std::endl;
 }
+}

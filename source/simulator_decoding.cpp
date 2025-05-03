@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
     nm = nL;
     Zc = 2;
     offset = stod(argv[9]);
+    int FER_STOP=100;
 
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = sig_mod;
@@ -210,7 +211,6 @@ int main(int argc, char *argv[])
 
     // cout << endl;
 
-
     unsigned int FER_out = 0, gen_frames_out = 0;
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
@@ -251,22 +251,17 @@ int main(int argc, char *argv[])
                     break;
                 }
             }
-
-            int counter_now = global_counter.load();
-            int FER_now = FER.load();
-
-            if (counter_now >= NbMonteCarlo || FER_now >= 100)
+            if (global_counter.load() >= NbMonteCarlo || FER.load() >= FER_STOP)
             {
-                stop.store(true); 
-
+                stop.store(true);
+            }
             if (stop.load())
                 break;
 
             global_counter.fetch_add(1);
             if (!succ_dec)
                 FER.fetch_add(1);
-
-            if ((counter_now % 100) == 0)
+            if ((global_counter.load() % 100) == 0)
             {
 #pragma omp critical
                 {

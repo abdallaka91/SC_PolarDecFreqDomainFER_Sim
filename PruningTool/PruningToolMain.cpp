@@ -263,7 +263,7 @@ int main(int argc, char *argv[])
     // {
     //     for (int s = 0; s < 1 << l; s++)
     //     {
-    //         if(nones2[l][s]==1)
+    //         if(nones2[l][s]==1 || nones2[l][s]==2)
     //         Bt1[l][s][0][1] = 1;
     //         Bt1[l][s][1][0] = 1;
     //         nones2[l][s]=3;

@@ -145,9 +145,6 @@ int main(int argc, char *argv[])
     dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
     dec_param.ucap[n].assign(N, dec_param.frozen_val);
 
-    vector<vector<vector<vector<uint16_t>>>> Bt(n, vector<vector<vector<uint16_t>>>());
-    vector<vector<vector<vector<float>>>> Cs(n, vector<vector<vector<float>>>());
-
     uint64_t FER_out = 0, gen_frames_out = 0;
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
@@ -160,6 +157,7 @@ int main(int argc, char *argv[])
         int thread_id = omp_get_thread_num();
         std::mt19937 gen(thread_id + base_seed);
         vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
+        vector<vector<decoder_t>> L_F(n + 1, vector<decoder_t>(N));
 
         for (int i = 0; i <= n; i++)
             for (int j = 0; j < N; j++)
@@ -168,6 +166,8 @@ int main(int argc, char *argv[])
                 L[i][j].intrinsic_GF.resize(q);
                 iota(L[i][j].intrinsic_GF.begin(), L[i][j].intrinsic_GF.end(), 0);
             }
+
+        L_F = L;
         vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
 
         while (true)
@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
             bool succ_dec = true;
             vector<uint16_t> KSYMB(K);
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
-            decode_SC_FFT(dec_param_local, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec);
+            decode_SC_FFT(dec_param_local, table.ADDGF, table.MULGF, table.DIVGF, L, L_F, info_sec_rec);
 
             for (uint16_t i = 0; i < dec_param_local.K; i++)
             {

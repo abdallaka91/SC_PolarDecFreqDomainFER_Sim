@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/Sim2",
             // "args": [10, -14.5, 256, 128, 112], NbSim, SNR, q, N, K
-            "args": [1 ,-7.5  ,64 , 64, 42],
+            "args": [100 ,-7.5  ,64 , 64, 42],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

@@ -5,22 +5,23 @@
 
 namespace PoAwN
 {
+using namespace PoAwN::structures;
     template <int N>
-    inline void copy(float *dst, const float *src)
+    inline void copy(softdata_t *dst, const softdata_t *src)
     {
         for (int i = 0; i < N; ++i)
             dst[i] = src[i];
     }
     template <int GF>
-    inline void fwht(float x[])
+    inline void fwht(softdata_t x[])
     {
         if (!x)
             std::abort();
     }
 
-    inline void fwht_tuile(float inp[8], float outp[8])
+    inline void fwht_tuile(softdata_t inp[8], softdata_t outp[8])
     {
-        float L1[8], L2[8];
+        softdata_t L1[8], L2[8];
         L1[0] = inp[0] + inp[4];
         L1[1] = inp[1] + inp[5];
         L1[2] = inp[2] + inp[6];
@@ -54,9 +55,9 @@ namespace PoAwN
     //
     //
     template <>
-    inline void PoAwN::fwht<16>(float inp[16])
+    inline void fwht<16>(softdata_t inp[16])
     {
-        float part_1[8], part_2[8];
+        softdata_t part_1[8], part_2[8];
 
         for (int i = 0; i < 8; i++)
             part_1[i] = inp[i] + inp[i + 8];
@@ -72,9 +73,9 @@ namespace PoAwN
     //
     //
     template <>
-    inline void PoAwN::fwht<32>(float inp[32])
+    inline void fwht<32>(softdata_t inp[32])
     {
-        float part_1[16], part_2[16];
+        softdata_t part_1[16], part_2[16];
 
         for (int i = 0; i < 16; i++)
             part_1[i] = inp[i] + inp[i + 16];
@@ -93,9 +94,9 @@ namespace PoAwN
     //
     //
     template <>
-    inline void PoAwN::fwht<64>(float inp[64])
+    inline void fwht<64>(softdata_t inp[64])
     {
-        float part_1[32], part_2[32];
+        softdata_t part_1[32], part_2[32];
 
         for (int i = 0; i < 32; i++)
             part_1[i] = inp[i] + inp[i + 32];
@@ -114,9 +115,9 @@ namespace PoAwN
     //
     //
     template <>
-    inline void PoAwN::fwht<128>(float inp[128])
+    inline void fwht<128>(softdata_t inp[128])
     {
-        float part_1[64], part_2[64];
+        softdata_t part_1[64], part_2[64];
 
         for (int i = 0; i < 64; i++)
             part_1[i] = inp[i] + inp[i + 64];
@@ -135,9 +136,9 @@ namespace PoAwN
     //
     //
     template <>
-    inline void PoAwN::fwht<256>(float inp[256])
+    inline void fwht<256>(softdata_t inp[256])
     {
-        float part_1[128], part_2[128];
+        softdata_t part_1[128], part_2[128];
 
         for (int i = 0; i < 128; i++)
             part_1[i] = inp[i] + inp[i + 128];

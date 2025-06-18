@@ -22,14 +22,6 @@ namespace PoAwN
                          softdata_t sigma,
                          vector<vector<softdata_t>> &chan_LLR);
 
-        void ECN_FFT(const decoder_t &theta_1,
-                     const decoder_t &phi_1,
-                     const vector<vector<uint16_t>> &ADDGF,
-                     const vector<vector<uint16_t>> &DIVGF,
-                     const decoder_parameters &dec_param,
-                     const uint16_t coef,
-                     decoder_t &theta);
-
         void VN_update_FFT(const decoder_t &theta_1,
                        const decoder_t &phi_1,
                        const vector<vector<uint16_t>> &ADDGF,
@@ -44,6 +36,7 @@ namespace PoAwN
                                   const vector<vector<uint16_t>> &MULGF,
                                   const vector<vector<uint16_t>> &DIVGF,
                                   vector<vector<decoder_t>> &L,
+                                  vector<vector<decoder_t>> &L_F,
                                   vector<uint16_t> &info_sec_rec);
 
         void frozen_lay_pos(const decoder_parameters &dec_param,

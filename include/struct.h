@@ -67,11 +67,9 @@ namespace PoAwN
             vector<vector<bool>> clst_frozen;
             vector<vector<uint16_t>> ucap;
             vector<vector<vector<uint16_t>>> ns;
-            decoder_parameters(const base_code_t &base, softdata_t offset = 0, uint16_t nm = 0,
-                               uint16_t nL = 0, uint16_t nH = 0, uint16_t nb = 0, uint16_t Zc = 0, uint16_t nopM = 0)
-                : base_code_t(base),
-                  offset(offset), nm(nm), nL(nL), nH(nH), nb(nb), Zc(Zc), nopM(nopM) {}
-        };
+            decoder_parameters(const base_code_t &base)
+                : base_code_t(base){}
+            };
 
         // clang-format off
 constexpr const std::array<uint16_t, 10> GF_polynom_primitive = {

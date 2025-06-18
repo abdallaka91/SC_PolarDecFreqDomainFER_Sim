@@ -63,7 +63,8 @@
         "forward_list": "cpp",
         "list": "cpp",
         "complex": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "cassert": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}"
 }

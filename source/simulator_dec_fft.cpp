@@ -20,6 +20,7 @@
 #include <omp.h>
 #include <atomic>
 #include <random>
+#include "fwht.hpp"
 
 // #include <omp.h>
 
@@ -36,93 +37,26 @@ using std::stoi;
 using std::string;
 using std::vector;
 
-int export_cs(const decoder_parameters &dec_param,
-              const float EbN0,
-              vector<vector<vector<vector<float>>>> &Cs,
-              const uint64_t NbMonteCarlo,
-              const uint64_t gen_frame,
-              const float FER)
-{
-    uint16_t n = dec_param.n, nH = dec_param.nH, nL = dec_param.nL, N = dec_param.N, K = dec_param.K, q = dec_param.q;
-
-    bool succ_writing, newsim;
-
-    std::ostringstream fname;
-    bool newclust = false;
-    newsim = true;
-
-    for (uint16_t l = 0; l < n; l++)
-        for (uint16_t s = 0; s < N >> (n - l); s++)
-            for (int j0 = 0; j0 < nH; j0++)
-                for (int j1 = 0; j1 < nL; j1++)
-                {
-                    Cs[l][s][j0][j1] /= (float)(1 << (n - (l + 1))); // divide over nb of kernels in cluster (2^(n-l-1))
-                    Cs[l][s][j0][j1] /= (float)NbMonteCarlo;         // sum of Vs buble is notmalized to be ~1 (if all bubbles are inside the matrix then sum=1)
-                }
-
-    string bubble_direct;
-    if (dec_param.sig_mod == "BPSK")
-        bubble_direct = "./BubblesPattern/bpsk/N";
-    else if (dec_param.sig_mod == "CCSK_BIN")
-        bubble_direct = "./BubblesPattern/ccsk_bin/N";
-    else
-        bubble_direct = "./BubblesPattern/ccsk_nb/N";
-    fname.str("");
-    fname.clear();
-    fname << bubble_direct << dec_param.N << "/ContributionMatrices/" << "bubbles_N" << dec_param.N << "_K" << dec_param.K << "_GF" << dec_param.q
-          << "_SNR" << std::fixed << std::setprecision(3) << EbN0 << "_" << dec_param.nH << "x" << dec_param.nL
-          << "_Cs_mat.txt";
-    std::string filename = fname.str();
-
-    newsim = 1;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < 1u << i; j++)
-        {
-            succ_writing = AppendClustBubblesToFile(fname.str(), Cs[i][j], i, j, newsim,
-                                                    "Observations nb: " + std::to_string(NbMonteCarlo) + "\n\n");
-            newsim = 0;
-        }
-    }
-    std::filesystem::path filepath(fname.str());
-    std::ofstream file(fname.str(), std::ios::app);
-
-    file << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/" << gen_frame << " = " << (float)FER / (float)gen_frame;
-    file << endl;
-
-    file.close();
-    if (succ_writing)
-        std::cout << "Cs Matrices written to: " << filename << std::endl;
-    return (succ_writing);
-}
-
 int main(int argc, char *argv[])
 {
 
-    if (argc != 10)
+    if (argc != 6)
     {
-        cout << "validate: NbMonteCarlo, SNR, sig_mod(BPSK, CCSK_bin, CCSK_NB), q, N, K, nH, nL, offset, (and optionally nb of threads)" << std::endl;
+        cout << "validate: NbMonteCarlo, SNR, q, N, K" << std::endl;
         return 1;
     }
-    uint16_t q, N, K, n, nL, nH, nm, nb, Zc, nopM, p, frozen_val = 0;
+    uint16_t q, N, K, n, p, frozen_val = 0;
     softdata_t offset;
     uint64_t NbMonteCarlo = stoi(argv[1]);
-    float Pt1, Pt2, Pt, EbN0 = stod(argv[2]);
-    string sig_mod = argv[3];
-    std::transform(sig_mod.begin(), sig_mod.end(), sig_mod.begin(), ::toupper);
-    q = stoi(argv[4]);
+    float EbN0 = stod(argv[2]);
+    q = stoi(argv[3]);
     p = log2(q);
-    N = stoi(argv[5]);
-    K = stoi(argv[6]);
+    N = stoi(argv[4]);
+    K = stoi(argv[5]);
     n = log2(N);
-    nH = stoi(argv[7]);
-    nL = stoi(argv[8]);
-    nm = nL;
-    Zc = 2;
-    offset = stod(argv[9]);
 
     base_code_t code_param(N, K, n, q, p, frozen_val);
-    code_param.sig_mod = sig_mod;
+    code_param.sig_mod = "CCSK_BIN";
 
     int gf_rand_SEED = 0;
     float nse_rand_SEED = 1.2544;
@@ -139,7 +73,7 @@ int main(int argc, char *argv[])
     cout << "Done!" << endl;
     cout << "Simulation starts..." << endl;
 
-    decoder_parameters dec_param(code_param, offset, nm, nL, nH, nb, Zc, nopM);
+    decoder_parameters dec_param(code_param);
 
     dec_param.Roots_V.resize(n + 1);
     dec_param.Roots_indices.resize(n);
@@ -213,16 +147,7 @@ int main(int argc, char *argv[])
 
     vector<vector<vector<vector<uint16_t>>>> Bt(n, vector<vector<vector<uint16_t>>>());
     vector<vector<vector<vector<float>>>> Cs(n, vector<vector<vector<float>>>());
-    for (uint16_t l = 0; l < n; l++)
-    {
-        Cs[l].resize(pow(2, l));
-        Bt[l].resize(pow(2, l));
-        for (uint16_t s = 0; s < 1 << l; s++)
-        {
-            Cs[l][s].assign(nH, vector<float>(nL, 0));
-            Bt[l][s].resize(N >> (l + 1), vector<uint16_t>(2, 65535));
-        }
-    }
+
     uint64_t FER_out = 0, gen_frames_out = 0;
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
@@ -231,31 +156,27 @@ int main(int argc, char *argv[])
     // const int base_seed = 42;
 #pragma omp parallel
     {
-        vector<vector<vector<vector<uint16_t>>>> Bt1 = Bt;
-        vector<vector<vector<vector<float>>>> Cs1_local = Cs;
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
         int thread_id = omp_get_thread_num();
         std::mt19937 gen(thread_id + base_seed);
+        vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
+
+        for (int i = 0; i <= n; i++)
+            for (int j = 0; j < N; j++)
+            {
+                L[i][j].intrinsic_LLR.resize(q, 0);
+                L[i][j].intrinsic_GF.resize(q);
+                iota(L[i][j].intrinsic_GF.begin(), L[i][j].intrinsic_GF.end(), 0);
+            }
+        vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
 
         while (true)
         {
 
             bool succ_dec = true;
             vector<uint16_t> KSYMB(K);
-            vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
-            vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
-            for (int i = 0; i <= n; i++)
-                for (int j = 0; j < N; j++)
-                    L[i][j] = decoder_t(vector<softdata_t>(q), vector<uint16_t>(q));
-
-            if (code_param.sig_mod == "CCSK_BIN")
-                EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
-            else if (code_param.sig_mod == "CCSK_NB")
-                EncodeChanGF_CCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB);
-            else
-                EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, table.BINDEC, L[0], KSYMB, bin_mod_dict);
-
-            decode_SC_bubble_gen(dec_param_local, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec, Bt1);
+            EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+            decode_SC_FFT(dec_param_local, table.ADDGF, table.MULGF, table.DIVGF, L, info_sec_rec);
 
             for (uint16_t i = 0; i < dec_param_local.K; i++)
             {
@@ -268,20 +189,7 @@ int main(int argc, char *argv[])
 
             global_counter.fetch_add(1);
             int succ_now = global_counter.load() - FER.load();
-            if (succ_dec)
-            {
-                if (succ_now <= NbMonteCarlo)
-                    for (uint16_t l = 0; l < n; l++)
-                        for (uint16_t s = 0; s < (1U << l); s++)
-                            for (uint16_t t = 0; t < (N >> (l + 1)); t++)
-                                if (Bt1[l][s][t][0] != 65535 && Bt1[l][s][t][1] != 65535)
-                                {
-                                    Cs1_local[l][s][Bt1[l][s][t][0]][Bt1[l][s][t][1]]++;
-                                    Bt1[l][s][t][0] = 65535;
-                                    Bt1[l][s][t][1] = 65535;
-                                }
-            }
-            else
+            if (!succ_dec)
             {
                 FER.fetch_add(1);
             }
@@ -304,20 +212,8 @@ int main(int argc, char *argv[])
             if (stop.load())
                 break;
         }
-
-#pragma omp critical
-        {
-            for (uint16_t l = 0; l < n; l++)
-                for (uint16_t s = 0; s < (1U << l); s++)
-                    for (uint16_t i = 0; i < nH; i++)
-                        for (uint16_t j = 0; j < nL; j++)
-                            Cs[l][s][i][j] += Cs1_local[l][s][i][j];
-        }
     }
-
     cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
          << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
     cout << endl;
-
-    int succ_written = export_cs(dec_param, EbN0, Cs, NbMonteCarlo, gen_frames_out, FER_out);
 }

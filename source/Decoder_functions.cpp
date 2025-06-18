@@ -11,7 +11,9 @@
 #include <queue>
 #include <limits>
 #include <cmath>
+#include <fwht.hpp>
 
+constexpr uint16_t q_fixed = 64;
 void PoAwN::decoding::Channel_LLR(const vector<vector<softdata_t>> &chan_observ,
                                   const vector<vector<uint16_t>> &bin_symb_seq,
                                   uint16_t q,
@@ -62,64 +64,6 @@ void PoAwN::decoding::Channel_LLR(const vector<vector<softdata_t>> &chan_observ,
     }
 }
 
-void PoAwN::decoding::ECN_FFT(const decoder_t &theta_1,
-                              const decoder_t &phi_1,
-                              const vector<vector<uint16_t>> &ADDGF,
-                              const vector<vector<uint16_t>> &DIVGF,
-                              const decoder_parameters &dec_param,
-                              const uint16_t coef,
-                              decoder_t &theta)
-{
-    decoder_t phi_1_p = phi_1;
-    for (int i = 0; i < phi_1.intrinsic_GF.size(); i++)
-        phi_1_p.intrinsic_GF[i] = DIVGF[phi_1_p.intrinsic_GF[i]][coef];
-
-    vector<uint16_t> a_gf, b_gf;
-    vector<softdata_t> a, b;
-
-    a_gf.assign(theta_1.intrinsic_GF.begin(), theta_1.intrinsic_GF.begin() + dec_param.nH);
-    b_gf.assign(phi_1_p.intrinsic_GF.begin(), phi_1_p.intrinsic_GF.begin() + dec_param.nL);
-    a.assign(theta_1.intrinsic_LLR.begin(), theta_1.intrinsic_LLR.begin() + dec_param.nH);
-    b.assign(phi_1_p.intrinsic_LLR.begin(), phi_1_p.intrinsic_LLR.begin() + dec_param.nL);
-
-    uint16_t nH = dec_param.nH;
-    uint16_t nL = dec_param.nL;
-    uint16_t N1 = nH * nL;
-    decoder_t bubble;
-    bubble.intrinsic_GF.resize(nH * nL);
-    bubble.intrinsic_LLR.resize(nH * nL);
-    vector<vector<uint16_t>> sort_bub_idxs(dec_param.nm, vector<uint16_t>(2));
-    vector<vector<uint16_t>> temp_idxs(dec_param.q, vector<uint16_t>(2, 0));
-
-    for (int i = 0; i < nH; i++)
-        for (int j = 0; j < nL; ++j)
-        {
-            bubble.intrinsic_GF[i * nL + j] = ADDGF[a_gf[i]][b_gf[j]];
-            bubble.intrinsic_LLR[i * nL + j] = a[i] + b[j];
-        }
-
-    vector<softdata_t> temp_llr(dec_param.q, std::numeric_limits<softdata_t>::max() / 2);
-    vector<uint16_t> temp_GF(dec_param.q);
-    iota(temp_GF.begin(), temp_GF.end(), 0);
-
-    for (int i = 0; i < N1; i++)
-        if (bubble.intrinsic_LLR[i] < temp_llr[bubble.intrinsic_GF[i]])
-            temp_llr[bubble.intrinsic_GF[i]] = bubble.intrinsic_LLR[i];
-
-    partial_sort(temp_GF.begin(), temp_GF.begin() + dec_param.nm, temp_GF.end(), [&](int i, int j)
-                 { return temp_llr[i] < temp_llr[j]; });
-
-    theta.intrinsic_LLR.assign(dec_param.q, temp_llr[temp_GF[dec_param.nm - 1]] + dec_param.offset);
-    for (int i = 0; i < dec_param.nm; i++)
-    {
-        theta.intrinsic_GF[i] = temp_GF[i];
-        theta.intrinsic_LLR[i] = temp_llr[temp_GF[i]];
-    }
-
-    for (int i = dec_param.nm; i < dec_param.q; i++)
-        theta.intrinsic_GF[i] = temp_GF[i];
-}
-
 void PoAwN::decoding::VN_update_FFT(const decoder_t &theta_1,
                                     const decoder_t &phi_1,
                                     const vector<vector<uint16_t>> &ADDGF,
@@ -129,7 +73,7 @@ void PoAwN::decoding::VN_update_FFT(const decoder_t &theta_1,
                                     uint16_t hard_decision,
                                     decoder_t &phi)
 {
-    uint16_t nm = dec_param.nm, q = dec_param.q;
+    uint16_t q = dec_param.q;
     vector<softdata_t> theta1_llr(q);
     vector<softdata_t> phi1_llr(q);
     vector<softdata_t> temp_llr(q);
@@ -139,38 +83,27 @@ void PoAwN::decoding::VN_update_FFT(const decoder_t &theta_1,
         theta1_llr[ADDGF[hard_decision][theta_1.intrinsic_GF[i]]] = theta_1.intrinsic_LLR[i];
     }
 
-    softdata_t mn_llr = std::numeric_limits<softdata_t>::max();
+    softdata_t s1 = 0;
 
     if (dec_param.sig_mod == "BPSK")
         for (int i = 0; i < q; i++)
         {
-            temp_llr[DIVGF[i][coef]] = theta1_llr[i] + phi1_llr[i];
-            if (temp_llr[DIVGF[i][coef]] < mn_llr)
-                mn_llr = temp_llr[DIVGF[i][coef]];
+            temp_llr[DIVGF[i][coef]] = theta1_llr[i] * phi1_llr[i];
+            s1 += temp_llr[DIVGF[i][coef]];
         }
     else
         for (int i = 0; i < q; i++)
         {
             temp_llr[i] = theta1_llr[i] + phi1_llr[i];
-            if (temp_llr[i] < mn_llr)
-                mn_llr = temp_llr[i];
+            s1 += temp_llr[i];
         }
 
-    if (std::abs(mn_llr > 1e-5))
-        for (int i = 0; i < q; i++)
-            temp_llr[i] -= mn_llr;
-
-    vector<uint16_t> temp_GF(q);
-    iota(temp_GF.begin(), temp_GF.end(), 0);
-    partial_sort(temp_GF.begin(), temp_GF.begin() + nm, temp_GF.end(),
-                 [&temp_llr](int i1, int i2)
-                 { return temp_llr[i1] < temp_llr[i2]; });
-
-    for (int i = 0; i < q; ++i)
+    for (int i = 0; i < q; i++)
     {
-        phi.intrinsic_LLR[i] = temp_llr[temp_GF[i]];
-        phi.intrinsic_GF[i] = temp_GF[i];
+        temp_llr[i] /= s1;
     }
+
+    phi.intrinsic_LLR = temp_llr;
 }
 
 void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
@@ -178,22 +111,22 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
                                     const vector<vector<uint16_t>> &MULGF,
                                     const vector<vector<uint16_t>> &DIVGF,
                                     vector<vector<decoder_t>> &L,
+                                    vector<vector<decoder_t>> &L_F,
                                     vector<uint16_t> &info_sec_rec)
 {
-    uint16_t n = dec_param.n;
-    uint16_t N = dec_param.N;
-
-            vector<vector<decoder_t>> L_F(dec_param.n + 1, vector<decoder_t>(dec_param.N));
-                    for (int i = 0; i <= n; i++)
-            for (int j = 0; j < N; j++)
-            {
-                L[i][j].intrinsic_LLR.resize(q, 0);
-                L[i][j].intrinsic_GF.resize(q);
-                iota(L[i][j].intrinsic_GF.begin(), L[i][j].intrinsic_GF.end(), 0);
-            }
-
-
     uint16_t MxUS = dec_param.MxUS, n = dec_param.n, N = dec_param.N;
+
+    for (int i = 0; i < N; i++)
+    {
+        L_F[0][i].intrinsic_LLR = L[0][i].intrinsic_LLR;
+        softdata_t datA[q_fixed];
+        std::copy(L_F[0][i].intrinsic_LLR.begin(),
+                  L_F[0][i].intrinsic_LLR.begin() + q_fixed,
+                  datA);
+        PoAwN::fwht<q_fixed>(datA);
+        std::copy(datA, datA + q_fixed, L_F[0][i].intrinsic_LLR.begin());
+    }
+
     vector<vector<bool>> Roots(n + 1);
     for (int i = 0; i < n; i++)
         Roots[i] = dec_param.clst_frozen[i];
@@ -251,14 +184,22 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
                 bool cnd1 = hard_decsion != dec_param.ucap[l + 1][Root[t]];
                 VN_update_FFT(L[l][Root[t]], L[l][Root[t + SZc1]], ADDGF, DIVGF, dec_param,
                               temp_coef, hard_decsion, L[l + 1][Root[t + SZc1]]);
+
+                softdata_t datA[q_fixed];
+                std::copy(L[l + 1][Root[t + SZc1]].intrinsic_LLR.begin(),
+                          L[l + 1][Root[t + SZc1]].intrinsic_LLR.begin() + q_fixed,
+                          datA);
+                PoAwN::fwht<q_fixed>(datA);
+                std::copy(datA, datA + q_fixed, L_F[l + 1][Root[t + SZc1]].intrinsic_LLR.begin());
+                bool PAUSE=false;
             }
             l += 1;
             s = 2 * s + 1;
             if (l == n)
             {
                 Roots[n][s] = true;
-                if (V[n][s] == MxUS)
-                    V[n][s] = L[n][s].intrinsic_GF[0];
+                auto max_ptr = std::max_element(L[n][s].intrinsic_LLR.begin(), L[n][s].intrinsic_LLR.end());
+                V[n][s] = std::distance(L[n][s].intrinsic_LLR.begin(), max_ptr);
                 if (s == N - 1)
                     break;
             }
@@ -273,8 +214,16 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
             {
 
                 i3 = dec_param.coefs_id[l][s][t];
-                temp_coef = dec_param.polar_coeff[n - l - 1][i3];
-                ECN_FFT(L[l][Root[t]], L[l][Root[t + SZc1]], ADDGF, DIVGF, dec_param, temp_coef, L[l + 1][Root[t]]);
+                for (int ii = 0; ii < dec_param.q; ii++)
+                    L_F[l + 1][Root[t]].intrinsic_LLR[ii] =
+                        L_F[l][Root[t]].intrinsic_LLR[ii] * L_F[l][Root[t + SZc1]].intrinsic_LLR[ii] / (softdata_t(q_fixed));
+                softdata_t datA[q_fixed];
+                std::copy(L_F[l + 1][Root[t]].intrinsic_LLR.begin(),
+                          L_F[l + 1][Root[t]].intrinsic_LLR.begin() + q_fixed,
+                          datA);
+                PoAwN::fwht<q_fixed>(datA);
+                std::copy(datA, datA + q_fixed, L[l + 1][Root[t]].intrinsic_LLR.begin());
+                bool PAUSE=false;
             }
             l = l + 1;
             s = 2 * s;
@@ -282,7 +231,11 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
             {
                 Roots[n][s] = true;
                 if (V[n][s] == MxUS)
-                    V[n][s] = L[n][s].intrinsic_GF[0];
+                {
+
+                    auto max_ptr = std::max_element(L[n][s].intrinsic_LLR.begin(), L[n][s].intrinsic_LLR.end());
+                    V[n][s] = std::distance(L[n][s].intrinsic_LLR.begin(), max_ptr);
+                }
             }
         }
     }

@@ -1,3 +1,0 @@
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/build/CMakeFiles/Pruning.dir
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/build/CMakeFiles/edit_cache.dir
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/PA_NBPC_bubble_and_dec/PruningTool/build/CMakeFiles/rebuild_cache.dir

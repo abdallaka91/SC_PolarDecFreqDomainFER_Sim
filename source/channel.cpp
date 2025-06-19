@@ -50,6 +50,9 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     for (int i = 0; i < K; i++)
         dec_param.ucap[dec_param.n][dec_param.reliab_sequence[i]] = KSYMB[i];
     Encoder(table.ADDGF, table.MULGF, dec_param.polar_coeff, dec_param.ucap, NSYMB);
+    for (int y = 0; y < N; y++)
+        std::cout << y<< ":" << dec_param.ucap[dec_param.n][y] << " , ";
+    std::cout << endl;
 
     vector<vector<softdata_t>> noisy_sig(N, vector<softdata_t>(bin_table[0].size(), (softdata_t)0.0));
 
@@ -81,9 +84,4 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     {
         chan_LLR_sorted[i].intrinsic_LLR = chan_LLR[i];
     }
-
-
 }
-
-
-

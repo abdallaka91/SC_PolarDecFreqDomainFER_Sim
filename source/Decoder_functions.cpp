@@ -79,24 +79,17 @@ void PoAwN::decoding::VN_update_FFT(const decoder_t &theta_1,
     vector<softdata_t> temp_llr(q);
     for (int i = 0; i < q; i++)
     {
-        phi1_llr[phi_1.intrinsic_GF[i]] = phi_1.intrinsic_LLR[i];
+        phi1_llr[i] = phi_1.intrinsic_LLR[i];
         theta1_llr[ADDGF[hard_decision][theta_1.intrinsic_GF[i]]] = theta_1.intrinsic_LLR[i];
     }
 
     softdata_t s1 = 0;
 
-    if (dec_param.sig_mod == "BPSK")
-        for (int i = 0; i < q; i++)
-        {
-            temp_llr[DIVGF[i][coef]] = theta1_llr[i] * phi1_llr[i];
-            s1 += temp_llr[DIVGF[i][coef]];
-        }
-    else
-        for (int i = 0; i < q; i++)
-        {
-            temp_llr[i] = theta1_llr[i] + phi1_llr[i];
-            s1 += temp_llr[i];
-        }
+    for (int i = 0; i < q; i++)
+    {
+        temp_llr[i] = theta1_llr[i] * phi1_llr[i];
+        s1 += temp_llr[i];
+    }
 
     for (int i = 0; i < q; i++)
     {
@@ -104,6 +97,7 @@ void PoAwN::decoding::VN_update_FFT(const decoder_t &theta_1,
     }
 
     phi.intrinsic_LLR = temp_llr;
+    bool PAUSE = false;
 }
 
 void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
@@ -191,15 +185,19 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
                           datA);
                 PoAwN::fwht<q_fixed>(datA);
                 std::copy(datA, datA + q_fixed, L_F[l + 1][Root[t + SZc1]].intrinsic_LLR.begin());
-                bool PAUSE=false;
+                bool PAUSE = false;
             }
             l += 1;
             s = 2 * s + 1;
             if (l == n)
             {
                 Roots[n][s] = true;
-                auto max_ptr = std::max_element(L[n][s].intrinsic_LLR.begin(), L[n][s].intrinsic_LLR.end());
-                V[n][s] = std::distance(L[n][s].intrinsic_LLR.begin(), max_ptr);
+                if (V[n][s] == MxUS)
+                {
+                    auto max_ptr = std::max_element(L[n][s].intrinsic_LLR.begin(), L[n][s].intrinsic_LLR.end());
+                    V[n][s] = std::distance(L[n][s].intrinsic_LLR.begin(), max_ptr);
+                    bool PAUSE = false;
+                }
                 if (s == N - 1)
                     break;
             }
@@ -216,14 +214,20 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
                 i3 = dec_param.coefs_id[l][s][t];
                 for (int ii = 0; ii < dec_param.q; ii++)
                     L_F[l + 1][Root[t]].intrinsic_LLR[ii] =
-                        L_F[l][Root[t]].intrinsic_LLR[ii] * L_F[l][Root[t + SZc1]].intrinsic_LLR[ii] / (softdata_t(q_fixed));
+                        L_F[l][Root[t]].intrinsic_LLR[ii] * L_F[l][Root[t + SZc1]].intrinsic_LLR[ii];
                 softdata_t datA[q_fixed];
                 std::copy(L_F[l + 1][Root[t]].intrinsic_LLR.begin(),
                           L_F[l + 1][Root[t]].intrinsic_LLR.begin() + q_fixed,
                           datA);
                 PoAwN::fwht<q_fixed>(datA);
+                softdata_t s2 = 0;
+                for (int ii = 0; ii < dec_param.q; ii++)
+                {
+                    datA[ii] /= (softdata_t(q_fixed));
+                    s2 += datA[ii];
+                }
                 std::copy(datA, datA + q_fixed, L[l + 1][Root[t]].intrinsic_LLR.begin());
-                bool PAUSE=false;
+                bool PAUSE = false;
             }
             l = l + 1;
             s = 2 * s;
@@ -235,6 +239,7 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
 
                     auto max_ptr = std::max_element(L[n][s].intrinsic_LLR.begin(), L[n][s].intrinsic_LLR.end());
                     V[n][s] = std::distance(L[n][s].intrinsic_LLR.begin(), max_ptr);
+                    bool PAUSE = false;
                 }
             }
         }

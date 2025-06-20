@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
     std::atomic<bool> stop(false);
-    unsigned base_seed = 0;//std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned base_seed = std::chrono::system_clock::now().time_since_epoch().count();
     // const int base_seed = 42;
 #pragma omp parallel
     {
@@ -194,12 +194,12 @@ int main(int argc, char *argv[])
                 FER.fetch_add(1);
             }
             succ_now = global_counter.load() - FER.load();
-            if ((global_counter % 1) == 0 || succ_now == NbMonteCarlo)
+            if ((global_counter % 100) == 0 || succ_now == NbMonteCarlo)
             {
 
 #pragma omp critical
                 {
-                    int local_success = global_counter.load();// - FER.load();
+                    int local_success = global_counter.load() - FER.load();
                     if (local_success >= NbMonteCarlo)
                         stop.store(true); // Set the flag
                     FER_out = FER.load();

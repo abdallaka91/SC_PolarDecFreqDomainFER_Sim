@@ -2,7 +2,7 @@
 #define POAWN_FWHT_HPP
 
 #include <cassert>
-
+ 
 namespace PoAwN
 {
 using namespace PoAwN::structures;
@@ -12,11 +12,60 @@ using namespace PoAwN::structures;
         for (int i = 0; i < N; ++i)
             dst[i] = src[i];
     }
+
     template <int GF>
     inline void fwht(softdata_t x[])
     {
         if (!x)
             std::abort();
+    }
+
+    template <unsigned GF>
+    inline void fwht(softdata_t inp[GF], softdata_t outp[GF])
+    {
+        static_assert(((GF >> 1) << 1) == GF, "GF must be a power of two");
+        constexpr unsigned gf_half = GF / 2;
+        softdata_t part_1[gf_half], part_2[gf_half];
+
+        for (int i = 0; i < gf_half; i++)
+            part_1[i] = inp[i] + inp[i + gf_half];
+        for (int i = 0; i < gf_half; i++)
+            part_2[i] = inp[i] - inp[i + gf_half];
+
+        fwht<gf_half>(part_1, outp + 0);
+        fwht<gf_half>(part_2, outp + gf_half);
+    }
+
+    template<>
+    inline void fwht<8>(softdata_t inp[8], softdata_t outp[8])
+    {
+        softdata_t L1[8], L2[8];
+        L1[0] = inp[0] + inp[4];
+        L1[1] = inp[1] + inp[5];
+        L1[2] = inp[2] + inp[6];
+        L1[3] = inp[3] + inp[7];
+        L1[4] = inp[0] - inp[4];
+        L1[5] = inp[1] - inp[5];
+        L1[6] = inp[2] - inp[6];
+        L1[7] = inp[3] - inp[7];
+
+        L2[0] = L1[0] + L1[2];
+        L2[2] = L1[0] - L1[2];
+        L2[1] = L1[1] + L1[3];
+        L2[3] = L1[1] - L1[3];
+        L2[4] = L1[4] + L1[6];
+        L2[6] = L1[4] - L1[6];
+        L2[5] = L1[5] + L1[7];
+        L2[7] = L1[5] - L1[7];
+
+        outp[0] = L2[0] + L2[1];
+        outp[1] = L2[0] - L2[1];
+        outp[2] = L2[2] + L2[3];
+        outp[3] = L2[2] - L2[3];
+        outp[4] = L2[4] + L2[5];
+        outp[5] = L2[4] - L2[5];
+        outp[6] = L2[6] + L2[7];
+        outp[7] = L2[6] - L2[7];
     }
 
     inline void fwht_tuile(softdata_t inp[8], softdata_t outp[8])

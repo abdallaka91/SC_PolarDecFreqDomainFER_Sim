@@ -37,6 +37,55 @@ using std::stoi;
 using std::string;
 using std::vector;
 
+#include <fstream>
+#include <string>
+#include <cstdio>
+#include <iostream>
+
+namespace fs = std::filesystem;
+
+void append_results_to_file(
+    const std::string &modulation,
+    int GFx,
+    int Nx,
+    int Kx,
+    double SNR,
+    unsigned long nb_err,
+    unsigned long nb_gen_frame)
+{
+    // Directory path
+    fs::path dir = "results";
+
+    // Create directory if not exists
+    std::error_code ec;
+    if (!fs::exists(dir))
+    {
+        if (!fs::create_directories(dir, ec))
+        {
+            std::cerr << "Error creating directory " << dir << ": " << ec.message() << "\n";
+            return;
+        }
+    }
+
+    // Compose filename
+    fs::path filename = dir / (modulation + "_GF" + std::to_string(GFx) +
+                               "_N" + std::to_string(Nx) +
+                               "_K" + std::to_string(Kx) + ".txt");
+
+    // Open file in append mode
+    std::ofstream file(filename, std::ios::app);
+    if (!file.is_open())
+    {
+        std::cerr << "Error opening file " << filename << " for appending.\n";
+        return;
+    }
+
+    double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
+
+    file << "SNR=" << SNR << " db,    FER = "
+         << nb_err << "/" << nb_gen_frame << " = " << FER_value << "\n";
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -54,6 +103,7 @@ int main(int argc, char *argv[])
     N = stoi(argv[4]);
     K = stoi(argv[5]);
     n = log2(N);
+    int FER_STOP = 100;
 
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = "CCSK_BIN";
@@ -176,7 +226,7 @@ int main(int argc, char *argv[])
             bool succ_dec = true;
             vector<uint16_t> KSYMB(K);
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
-            decode_SC_FFT(dec_param_local,table, L, L_F, info_sec_rec);
+            decode_SC_FFT(dec_param_local, table, L, L_F, info_sec_rec);
 
             for (uint16_t i = 0; i < dec_param_local.K; i++)
             {
@@ -200,7 +250,7 @@ int main(int argc, char *argv[])
 #pragma omp critical
                 {
                     int local_success = global_counter.load() - FER.load();
-                    if (local_success >= NbMonteCarlo)
+                    if ((global_counter.load() >= NbMonteCarlo) || (FER.load() >= FER_STOP))
                         stop.store(true); // Set the flag
                     FER_out = FER.load();
                     gen_frames_out = global_counter.load();
@@ -216,4 +266,13 @@ int main(int argc, char *argv[])
     cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
          << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
     cout << endl;
+
+    append_results_to_file(
+        dec_param.sig_mod.c_str(),
+        dec_param.q,
+        dec_param.N,
+        dec_param.K,
+        EbN0,
+        FER_out,
+        gen_frames_out);
 }

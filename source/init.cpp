@@ -244,6 +244,6 @@ void PoAwN::init::LoadTables(PoAwN::structures::base_code_t &code,
     PoAwN::GFtools::GF_mul_mat_gen(table.DECGF, table.MULGF, table.MULDEC);
     
     std::cout << "(II) - PoAwN::GFtools::GF_div_mat_gen" << std::endl;
-    PoAwN::GFtools::GF_div_mat_gen(table.DECGF, table.DIVGF, table.DIVDEC);
+//  PoAwN::GFtools::GF_div_mat_gen(table.DECGF, table.DIVGF, table.DIVDEC);
     std::cout << "(II) - End of PoAwN::GFtools section" << std::endl;
 }

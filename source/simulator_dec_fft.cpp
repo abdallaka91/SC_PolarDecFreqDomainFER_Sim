@@ -88,6 +88,19 @@ void append_results_to_file(
 
 int main(int argc, char *argv[])
 {
+#ifdef __AVX512BW__
+    printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation program (AVX512 version)\n");
+#elif __AVX2__
+    printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation program (AVX2 version)\n");
+#else
+    printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation program (ARM NEON version)\n");
+#endif
+
+    printf("#(II) + developped by Abdallah ABDALLAH in 2025...\n");
+    printf("#(II) +        and by Camille MONIERE   in 2025...\n");
+    printf("#(II) +        and by Bertrand LE GAL   in 2025...\n");
+    printf("#(II)\n");
+    printf("#(II) Binary generated : %s - %s\n", __DATE__, __TIME__);
 
     if (argc != 6)
     {
@@ -114,13 +127,15 @@ int main(int argc, char *argv[])
 
     table_GF table;
 
-    cout << "Loading code_param..." << endl;
+    cout << "(II) Loading code_param [START]" << endl;
     LoadCode(code_param, EbN0);
-    cout << "OK!, " << "Loading tables..." << endl;
+    cout << "(II) Loading code_param [END OK]" << endl;
     // void LoadTables(base_code_t & code, table_GF & table,  const uint16_t *GF_polynom_primitive)
-    LoadTables(code_param, table, GF_polynom_primitive.data());
 
-    cout << "Done!" << endl;
+    cout << "(II) Loading tables [START]" << endl;
+    LoadTables(code_param, table, GF_polynom_primitive.data());
+    cout << "(II) Loading tables [END OK]" << endl;
+
     cout << "Simulation starts..." << endl;
 
     decoder_parameters dec_param(code_param);

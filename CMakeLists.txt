@@ -31,6 +31,7 @@ add_executable(Sim2
     ${SOURCE_DIR}/init.cpp
     ${SOURCE_DIR}/tools.cpp
     ${SOURCE_DIR}/Decoder_functions.cpp
+    ${SOURCE_DIR}/BLG/naive_pruning/decoder_naive_pruning.cpp
     ${SOURCE_DIR}/channel.cpp
 )
 

@@ -103,10 +103,12 @@ void decoder_naive_pruning<gf_size>::execute(symbols_t * channel, uint16_t *  de
 //
 //
 //
-bool fix_xor_list(int *list1, const int *list2, int N) {
-    int total_xor = 0;
+bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float *proba2, int N) {
+    int   total_xor   = 0;
+    float total_proba = 1.f;
     for (int i = 0; i < N; i++) {
-        total_xor ^= list1[i];
+        total_xor   ^= list1 [i];
+        total_proba *= proba1[i];
     }
 
     int list_c[32];
@@ -124,12 +126,14 @@ bool fix_xor_list(int *list1, const int *list2, int N) {
         int new_xor     = current_xor ^ list2[i];
         if (new_xor == 0)
         {
+                float local_proba = total_proba / list1[i] * list2[i];
                 for (int k = 0; k < N; k++)
                     list_c[k] = list1[k];
                 list_c[i] = list2[i];
                 for (int k = 0; k < N; k++)
                     printf(" %3d", list_c[k]);
-                printf(" [%2d] <= %2d\n", i, list2[i]);
+
+                printf(" [%2d] <= %2d : proba (%f)\n", i, list2[i], local_proba);
                 nSolu += 1;
         }
     }
@@ -335,14 +339,18 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
 #endif
             int arg_1[32];
             int arg_2[32];
+            float val_1[32];
+            float val_2[32];
             for (int j = 0; j < size; j++) {
                 argmax2_indices<gf_size>(inputs[j].value, arg_1 + j, arg_2 + j);
+                val_1[j] = inputs[j].value[arg_1[j]];
+                val_2[j] = inputs[j].value[arg_2[j]];
 #if defined(debug_rate_spc)
                 printf("  - [%d] arg_1(%2d) and arg_1(%2d)\n", j, arg_1[j], arg_2[j]);
 #endif
             }
             //
-            bool isOK = fix_xor_list(arg_1, arg_2, size);
+            bool isOK = fix_xor_list(arg_1, arg_2, val_1, val_2, size);
             if ( isOK ) {
 #if defined(debug_rate_spc)
                 printf("-> CN equation is validated !\n");

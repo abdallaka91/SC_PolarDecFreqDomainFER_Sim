@@ -1,5 +1,6 @@
 #include <cmath>
 #include <vector>
+#include <cstdio>
 #include "GF_tools.h"
 
 using std::vector;
@@ -149,7 +150,12 @@ void PoAwN::GFtools::GF_div_mat_gen(const vector<uint16_t> &DECGF, vector<vector
         for (int k = 0; k < q; k++)
             DEC_div_mat[DECGF[i]][DECGF[k]] = Raw[k];
     }
-    for (int i = 0; i < q; i++)
-        for (int j = 0; j < q; j++)
-            DEC_div_mat[DECGF[i]][DECGF[j]] = DECGF[GF_div_mat[i][j]];
+    for (int i = 0; i < q; i++){
+        for (int j = 0; j < q; j++){
+            const int addr = GF_div_mat[i][j];
+            printf("[%2d:%2d] arrd = %d/%d\n", i, j, addr, q);
+            DEC_div_mat[DECGF[i]][DECGF[j]] = DECGF[ addr ];
+        }
+    }
+    exit( 0 );
 }

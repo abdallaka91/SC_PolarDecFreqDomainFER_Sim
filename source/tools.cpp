@@ -124,6 +124,7 @@ void PoAwN::tools::Encoder(const vector<vector<uint16_t>> &ADDGF, const vector<v
     for (uint16_t i = 0; i < N; ++i)
         NSYMB[i] = ucap[0][i];
 }
+
 float PoAwN::tools::My_drand48(int *initialise)
 {
     static thread_local std::mt19937 generator(std::random_device{}());

@@ -47,12 +47,71 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     {
         KSYMB[k] = (uint16_t)unif_dist(gen);
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+#if 0
+    printf("Generated symbols:\n");
+    for (int i = 0; i < K; i += 1) {
+        if ((i % 8) == 0)
+            printf(" | ");
+        if ((i % 16) == 0)
+            printf("\n | ");
+        printf("%2d ", KSYMB[i]);
+    }
+    printf(" |\n");
+#endif
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     for (int i = 0; i < K; i++)
         dec_param.ucap[dec_param.n][dec_param.reliab_sequence[i]] = KSYMB[i];
+
+#if 0
+    printf("Frozen symbol reliability:\n");
+    for (int i = 0; i < N; i += 1) {
+        if ((i % 8) == 0)
+            printf(" | ");
+        if ((i % 16) == 0)
+            printf("\n | ");
+        printf("%2d ", dec_param.reliab_sequence[i]);
+    }
+    printf(" |\n");
+
+    printf("Encoded symbols:\n");
+    for (int i = 0; i < N; i += 1) {
+        if ((i % 8) == 0)
+            printf(" | ");
+        if ((i % 16) == 0)
+            printf("\n | ");
+        printf("%2d ", dec_param.ucap[dec_param.n][i]);
+    }
+    printf(" |\n");
+#endif
+
+
     Encoder(table.ADDDEC, table.MULDEC, dec_param.polar_coeff, dec_param.ucap, NSYMB);
     // for (int y = 0; y < N; y++)
     //     std::cout << y<< ":" << dec_param.ucap[dec_param.n][y] << " , ";
     // std::cout << endl;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+#if 0
+    printf("Encoded symbols:\n");
+    for (int i = 0; i < N; i += 1) {
+        if ((i % 8) == 0)
+            printf(" | ");
+        if ((i % 16) == 0)
+            printf("\n | ");
+        printf("%2d ", NSYMB[i]);
+    }
+    printf(" |\n");
+#endif
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     vector<vector<softdata_t>> noisy_sig(N, vector<softdata_t>(bin_table[0].size(), (softdata_t)0.0));
 
@@ -84,4 +143,30 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     {
         chan_LLR_sorted[i].intrinsic_LLR = chan_LLR[i];
     }
+
+#if 0
+    const int id = 1;
+    const int GF = chan_LLR_sorted[0].intrinsic_LLR.size();
+    printf("Post-channel LLRs:\n");
+    for (int i = 0; i < GF; i += 1) {
+        if ((i % 8) == 0)
+            printf(" | ");
+        if ((i % 16) == 0)
+            printf("\n | ");
+        printf("%1.3f ", chan_LLR_sorted[id].intrinsic_LLR[i]);
+    }
+    printf(" |\n");
+    printf("Post-channel GFs:\n");
+    for (int i = 0; i < GF; i += 1) {
+        if ((i % 8) == 0)
+            printf(" | ");
+        if ((i % 16) == 0)
+            printf("\n | ");
+        printf("%2d ", chan_LLR_sorted[id].intrinsic_GF[i]);
+    }
+    printf(" |\n");
+    exit( EXIT_SUCCESS );
+#endif
+
 }
+

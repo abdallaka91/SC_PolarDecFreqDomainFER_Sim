@@ -22,6 +22,10 @@
 #include <random>
 #include "fwht.hpp"
 
+#include "BLG/naive_pruning/decoder_naive_pruning.hpp"
+#include "BLG/code.hpp"
+
+
 // #include <omp.h>
 
 using namespace PoAwN::structures;
@@ -116,7 +120,7 @@ int main(int argc, char *argv[])
     N = stoi(argv[4]);
     K = stoi(argv[5]);
     n = log2(N);
-    int FER_STOP = 100;
+    int FER_STOP = 1000;
 
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = "CCSK_BIN";
@@ -214,9 +218,22 @@ int main(int argc, char *argv[])
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
     std::atomic<bool> stop(false);
-    unsigned base_seed = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned base_seed = 0; //std::chrono::system_clock::now().time_since_epoch().count();
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    int frozen_symbols[N];
+    for (int i = 0; i < N; i += 1)
+        frozen_symbols[i] = true;
+    for (int i = 0; i < K; i += 1)
+        frozen_symbols[ dec_param.reliab_sequence[i] ] = false;
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     // const int base_seed = 42;
-#pragma omp parallel
+//#pragma omp parallel
     {
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
         int thread_id = omp_get_thread_num();
@@ -235,13 +252,48 @@ int main(int argc, char *argv[])
         L_F = L;
         vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //
+        std::vector<uint16_t>   decoded_n(N);
+
+        decoder_naive_pruning< _GF_ > dec(N, frozen_symbols);
+
+        std::vector<symbols_t>  llrs_n   (N);
+        //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         while (true)
         {
 
             bool succ_dec = true;
             vector<uint16_t> KSYMB(K);
+
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+
+#if 0
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //
             decode_SC_FFT(dec_param_local, table, L, L_F, info_sec_rec);
+            //
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#else
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //
+            for (int i = 0; i < N; i++)
+            {
+                llrs_n[i].is_freq = false;
+                for (int j = 0; j < _GF_; j++)
+                    llrs_n[i].value[j] = L[0][i].intrinsic_LLR[j];
+            }
+
+            dec.execute(llrs_n.data(), decoded_n.data());
+
+
+            for (int i = 0; i < K; i++)
+                info_sec_rec[i] = decoded_n[ dec_param.reliab_sequence[i] ];
+            //
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#endif
 
             for (uint16_t i = 0; i < dec_param_local.K; i++)
             {
@@ -259,7 +311,7 @@ int main(int argc, char *argv[])
                 FER.fetch_add(1);
             }
             succ_now = global_counter.load() - FER.load();
-            if ((global_counter % 100) == 0 || succ_now == NbMonteCarlo)
+            if ((global_counter % 10000) == 0 || succ_now == NbMonteCarlo)
             {
 
 #pragma omp critical

@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     N = stoi(argv[4]);
     K = stoi(argv[5]);
     n = log2(N);
-    int FER_STOP = 1000;
+    int FER_STOP = 200;
 
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = "CCSK_BIN";
@@ -311,7 +311,11 @@ int main(int argc, char *argv[])
                 FER.fetch_add(1);
             }
             succ_now = global_counter.load() - FER.load();
-            if ((global_counter % 10000) == 0 || succ_now == NbMonteCarlo)
+            if (
+                ((global_counter % 10000) == 0) ||
+                (succ_now == NbMonteCarlo)      ||
+                (succ_dec == false)
+            )
             {
 
 #pragma omp critical

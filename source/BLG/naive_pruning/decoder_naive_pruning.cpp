@@ -104,10 +104,11 @@ void decoder_naive_pruning<gf_size>::execute(symbols_t * channel, uint16_t *  de
 //
 //
 //#define HARD_DEBUG
-bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float *proba2, const symbols_t* symb, const int N) {
+bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float *proba2, const symbols_t* internal, const int N) {
     int   total_xor   = 0;
     float total_proba = 1.f;
 #ifdef HARD_DEBUG
+    printf("\n");
     printf("[list 1] "); for (int i = 0; i < N; i++) { printf("%9d ",   list1 [i]); } printf("\n");
     printf("[list 2] "); for (int i = 0; i < N; i++) { printf("%9d ",   list2 [i]); } printf("\n");
     printf("[proba1] "); for (int i = 0; i < N; i++) { printf("%1.7f ", proba1[i]); } printf("\n");
@@ -129,53 +130,149 @@ bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float
         return true;
     }
 
-    bool  found = false;
-    float bestf = 0.f;
+    int   symbole[32];
+    float score  [32];
 
 #ifdef HARD_DEBUG
     for (int k = 0; k < N; k++)
         printf(" %3d", list_c[k]);
     printf(" : proba (%f)\n", total_proba);
 #endif
-    int nSolu = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    //
     for (int i = 0; i < N; i++) {
-        int current_xor = total_xor   ^ list1[i];
-        int new_xor     = current_xor ^ list2[i];
-        if (new_xor == 0)
-        {
-            const float remove_proba = total_proba  / proba1[i];
-            const float local_proba  = remove_proba * proba2[i];
-            if( (found == false) || (bestf < local_proba) ){
-                for (int k = 0; k < N; k++) list_c[k] = list1[k];
-                list_c[i] = list2[i];
-#ifdef HARD_DEBUG                
-                for (int k = 0; k < N; k++) printf(" %3d", list_c[k]);
-                printf(" [%2d] <= %2d : proba (%f - %f) (old was %f)\n", i, list2[i], remove_proba, local_proba, bestf);
+        const int   old_symb  = list1[i];
+        const int   new_symb  = total_xor   ^ old_symb;
+#ifdef HARD_DEBUG
+        printf("total_xor = %2d, old_symb = %2d, new_symb = %2d :: ", total_xor, old_symb, new_symb);
 #endif
-                bestf = local_proba;
-                found = true;
-#ifdef HARD_DEBUG                
-            }else{
-                printf(" NOT STORED [%2d] <= %2d : proba (%f - %f)\n", i, list2[i], remove_proba, local_proba);
+        const float new_proba = total_proba * internal[i].value[ new_symb ] / internal[i].value[ old_symb ];
+        symbole  [i] = new_symb;
+        score    [i] = new_proba;
+#ifdef HARD_DEBUG
+        printf("- Case (1) %2d : [symb = %3d, score = %f]\n", i,  symbole[i], score[i]);
 #endif
-            }
-            nSolu += 1;
+    }
+
+    int   best_pos_1err   = 0;
+    float best_score_1err = score[0];
+    for (int i = 1; i < N; i++) {
+        if( best_score_1err < score[i] ){
+            best_pos_1err   = i;
+            best_score_1err = score[i];
+#ifdef HARD_DEBUG
+            printf("- Solution (1) %2d : [symb = %3d, score = %f] (UPDATE)\n", i, symbole[i], score[i]);
+#endif
         }
     }
-    if( nSolu >= 1 )
-    {
-#ifdef HARD_DEBUG                
-        printf("Nombre de solutions = %d\n", nSolu);
+
+    //
+    // On le keep pour la suite 
+    //
+    const int best_symb_1err = symbole[best_pos_1err];
+    
+    //
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    //
+    int   pos_argmax_2 = 0;
+    float val_argmax_2 = proba2[0];
+    for(int i = 0; i < N; i += 1){
+        if( proba2[i] > val_argmax_2 ){
+            val_argmax_2 = proba2[i];
+            pos_argmax_2 = i;
+        }
+    }
+
+#ifdef HARD_DEBUG
+    printf("ARGMAX2= %d - proba (%f)\n", pos_argmax_2, val_argmax_2);
 #endif
-        for (int k = 0; k < N; k++)
-            list1[k] = list_c[k];
+
+    if( best_pos_1err == pos_argmax_2 )
+    {
+        //
+        // On prend un bypass car le resultat sera tjs le meme...
+        //
+        list1[best_pos_1err] = best_symb_1err;
         return true;
     }
 
-    // Aucun remplacement possible
-    return false;
-}
+    int symbol_backup   = list1[pos_argmax_2];
+    list1[pos_argmax_2] = list2[pos_argmax_2];
 
+
+    total_xor   = total_xor   ^ symbol_backup        ^ list1 [pos_argmax_2]; //
+    total_proba = total_proba * proba2[pos_argmax_2] / proba1[pos_argmax_2]; //
+
+    for (int i = 0; i < N; i++) {
+
+        int   old_symb  = list1[i];
+        int   new_symb  = total_xor   ^ old_symb;
+        float new_proba = total_proba * internal[i].value[ new_symb ] / internal[i].value[ old_symb ];
+
+        if(i == pos_argmax_2){
+            new_symb  = -1;
+            new_proba = 0.f;
+        }
+
+#ifdef HARD_DEBUG
+        printf("total_xor = %2d, old_symb = %2d, new_symb = %2d :: ", total_xor, old_symb, new_symb);
+#endif
+        symbole  [i] = new_symb;
+        score    [i] = new_proba;
+#ifdef HARD_DEBUG
+        printf("- Case (2) %2d : [symb = %3d, score = %f]\n", i,  symbole[i], score[i]);
+#endif
+    }
+
+    list1[pos_argmax_2] = symbol_backup; // On remet la liste dans son état initial
+
+    int   best_pos_2err   = 0;
+    float best_score_2err = score[0];
+    for (int i = 1; i < N; i++) {
+        if( best_score_2err < score[i] ){
+            best_pos_2err   = i;
+            best_score_2err = score[i];
+#ifdef HARD_DEBUG
+            printf("- Solution (2) %2d : [symb = %3d, score = %f] (UPDATE)\n", i, symbole[i], score[i]);
+#endif
+        }
+    }
+    
+    //
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    if( best_score_1err >= best_score_2err )
+    {
+        list1[best_pos_1err] = best_symb_1err;
+#ifdef HARD_DEBUG
+        printf("[list A] "); for (int i = 0; i < N; i++) { printf("%9d ",   list1 [i]); } printf("\n");
+#endif
+    }else{
+        list1[pos_argmax_2 ] = list2[pos_argmax_2];    // le second minimum
+        list1[best_pos_2err] = symbole[best_pos_2err]; // le symbol que l'on a identifié
+#ifdef HARD_DEBUG
+        printf("[list B] "); for (int i = 0; i < N; i++) { printf("%9d ",   list1 [i]); } printf("\n");
+#endif
+    }
+    return true; // on repond tjs true car on n'a plus d'idée à ce stade ;-)
+}
+//
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+//
 bool fix_xor_list_old(int *list1, const int *list2, int N) {
     int total_xor = 0;
     for (int i = 0; i < N; i++) {

@@ -148,7 +148,7 @@ bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float
 #ifdef HARD_DEBUG
         printf("total_xor = %2d, old_symb = %2d, new_symb = %2d :: ", total_xor, old_symb, new_symb);
 #endif
-        const float new_proba = total_proba * internal[i].value[ new_symb ] / internal[i].value[ old_symb ];
+        const float new_proba = /*total_proba * */ internal[i].value[ new_symb ] /* / internal[i].value[ old_symb ] */;
         symbole  [i] = new_symb;
         score    [i] = new_proba;
 #ifdef HARD_DEBUG
@@ -203,18 +203,18 @@ bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float
         return true;
     }
 
-    int symbol_backup   = list1[pos_argmax_2];
-    list1[pos_argmax_2] = list2[pos_argmax_2];
+    const int symbol_backup = list1[pos_argmax_2];
+    list1[pos_argmax_2]     = list2[pos_argmax_2];
 
 
     total_xor   = total_xor   ^ symbol_backup        ^ list1 [pos_argmax_2]; //
-    total_proba = total_proba * proba2[pos_argmax_2] / proba1[pos_argmax_2]; //
+    total_proba = /*total_proba * */ proba2[pos_argmax_2] /* / / proba1[pos_argmax_2] */; //
 
     for (int i = 0; i < N; i++) {
 
         int   old_symb  = list1[i];
         int   new_symb  = total_xor   ^ old_symb;
-        float new_proba = total_proba * internal[i].value[ new_symb ] / internal[i].value[ old_symb ];
+        float new_proba = total_proba * internal[i].value[ new_symb ] /* / internal[i].value[ old_symb ] */;
 
         if(i == pos_argmax_2){
             new_symb  = -1;

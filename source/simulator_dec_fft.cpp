@@ -49,6 +49,56 @@ using std::vector;
 namespace fs = std::filesystem;
 
 void append_results_to_file(
+        const std::string &modulation,
+        int GFx,
+        int Nx,
+        int Kx,
+        double SNR,
+        unsigned long nb_err,
+        unsigned long nb_gen_frame,
+        float debit,
+        int tSimuSec
+    ){
+    // Directory path
+    fs::path dir = "results";
+
+    // Create directory if not exists
+    std::error_code ec;
+    if (!fs::exists(dir))
+    {
+        if (!fs::create_directories(dir, ec))
+        {
+            std::cerr << "Error creating directory " << dir << ": " << ec.message() << "\n";
+            return;
+        }
+    }
+
+    // Compose filename
+    fs::path filename = dir / (modulation + "_GF" + std::to_string(GFx) +
+                               "_N" + std::to_string(Nx) +
+                               "_K" + std::to_string(Kx) + ".txt");
+
+    // Open file in append mode
+    FILE* fou = fopen(filename.c_str(), "a");
+
+    if( fou == nullptr )
+    {
+        std::cerr << "Error opening file " << filename << " for appending.\n";
+        return;
+    }
+
+    double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
+
+    fprintf(fou, "%+6.2f ",  SNR);
+    fprintf(fou, "%1.16f ", FER_value);
+    fprintf(fou, "%1.2e ",  FER_value);
+    fprintf(fou, "%5.2f ",  debit);
+    fprintf(fou, "%6d\n",    tSimuSec);
+    fclose( fou );
+}
+
+
+void append_results_to_file(
     const std::string &modulation,
     int GFx,
     int Nx,
@@ -232,8 +282,13 @@ int main(int argc, char *argv[])
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    // const int base_seed = 42;
-//#pragma omp parallel
+    double time_base[64];
+    for(int i = 0; i < 64; i += 1)
+        time_base[i] = 0.0;
+
+    const auto s_start = std::chrono::system_clock::now();
+
+#pragma omp parallel
     {
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
         int thread_id = omp_get_thread_num();
@@ -286,7 +341,10 @@ int main(int argc, char *argv[])
                     llrs_n[i].value[j] = L[0][i].intrinsic_LLR[j];
             }
 
+            const auto m_start    = std::chrono::system_clock::now();
             dec.execute(llrs_n.data(), decoded_n.data());
+            const auto m_stop     = std::chrono::system_clock::now();
+            time_base[thread_id] += std::chrono::duration_cast<std::chrono::microseconds>(m_stop - m_start).count();
 
 
             for (int i = 0; i < K; i++)
@@ -312,9 +370,9 @@ int main(int argc, char *argv[])
             }
             succ_now = global_counter.load() - FER.load();
             if (
-                ((global_counter % 10000) == 0) ||
-                (succ_now == NbMonteCarlo)      ||
-                (succ_dec == false)
+                  ((global_counter % 100000) == 0)
+                || (succ_now == NbMonteCarlo)
+//              || (succ_dec == false)
             )
             {
 
@@ -334,8 +392,18 @@ int main(int argc, char *argv[])
                 break;
         }
     }
+    const auto s_stop  = std::chrono::system_clock::now();
+    const int tSimuSec = std::chrono::duration_cast<std::chrono::seconds>(s_stop - s_start).count();
+
+    double total_us = 0.0;
+    for(int i = 0; i < 64; i+= 1)
+        total_us = (total_us >= time_base[i]) ? total_us : time_base[i];
+    const float time_run  = (total_us / (double)gen_frames_out);
+    const float debit     = ((double)N * (double)_logGF_) / time_run;
+
     cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
          << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
+    cout << " :: débit = " << debit << " Mbps";
     cout << endl;
 
     append_results_to_file(
@@ -345,5 +413,7 @@ int main(int argc, char *argv[])
         dec_param.K,
         EbN0,
         FER_out,
-        gen_frames_out);
+        gen_frames_out,
+        debit,
+        tSimuSec);
 }

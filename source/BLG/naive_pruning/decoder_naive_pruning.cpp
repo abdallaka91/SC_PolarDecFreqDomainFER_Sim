@@ -103,9 +103,18 @@ void decoder_naive_pruning<gf_size>::execute(symbols_t * channel, uint16_t *  de
 //
 //
 //
-bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float *proba2, int N) {
+//#define HARD_DEBUG
+bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float *proba2, const symbols_t* symb, const int N) {
     int   total_xor   = 0;
     float total_proba = 1.f;
+#ifdef HARD_DEBUG
+    printf("[list 1] "); for (int i = 0; i < N; i++) { printf("%9d ",   list1 [i]); } printf("\n");
+    printf("[list 2] "); for (int i = 0; i < N; i++) { printf("%9d ",   list2 [i]); } printf("\n");
+    printf("[proba1] "); for (int i = 0; i < N; i++) { printf("%1.7f ", proba1[i]); } printf("\n");
+    printf("[proba2] "); for (int i = 0; i < N; i++) { printf("%1.7f ", proba2[i]); } printf("\n");
+#endif
+//    exit( EXIT_FAILURE );
+
     for (int i = 0; i < N; i++) {
         total_xor   ^= list1 [i];
         total_proba *= proba1[i];
@@ -120,26 +129,44 @@ bool fix_xor_list(int *list1, const int *list2, const float *proba1, const float
         return true;
     }
 
+    bool  found = false;
+    float bestf = 0.f;
+
+#ifdef HARD_DEBUG
+    for (int k = 0; k < N; k++)
+        printf(" %3d", list_c[k]);
+    printf(" : proba (%f)\n", total_proba);
+#endif
     int nSolu = 0;
     for (int i = 0; i < N; i++) {
         int current_xor = total_xor   ^ list1[i];
         int new_xor     = current_xor ^ list2[i];
         if (new_xor == 0)
         {
-                float local_proba = total_proba / list1[i] * list2[i];
-                for (int k = 0; k < N; k++)
-                    list_c[k] = list1[k];
+            const float remove_proba = total_proba  / proba1[i];
+            const float local_proba  = remove_proba * proba2[i];
+            if( (found == false) || (bestf < local_proba) ){
+                for (int k = 0; k < N; k++) list_c[k] = list1[k];
                 list_c[i] = list2[i];
-                for (int k = 0; k < N; k++)
-                    printf(" %3d", list_c[k]);
-
-                printf(" [%2d] <= %2d : proba (%f)\n", i, list2[i], local_proba);
-                nSolu += 1;
+#ifdef HARD_DEBUG                
+                for (int k = 0; k < N; k++) printf(" %3d", list_c[k]);
+                printf(" [%2d] <= %2d : proba (%f - %f) (old was %f)\n", i, list2[i], remove_proba, local_proba, bestf);
+#endif
+                bestf = local_proba;
+                found = true;
+#ifdef HARD_DEBUG                
+            }else{
+                printf(" NOT STORED [%2d] <= %2d : proba (%f - %f)\n", i, list2[i], remove_proba, local_proba);
+#endif
+            }
+            nSolu += 1;
         }
     }
     if( nSolu >= 1 )
     {
+#ifdef HARD_DEBUG                
         printf("Nombre de solutions = %d\n", nSolu);
+#endif
         for (int k = 0; k < N; k++)
             list1[k] = list_c[k];
         return true;
@@ -326,7 +353,7 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
         }
 #if 1
         else {
-#if defined(debug_rate_spc)
+#if defined(debug_rate_spc) 
             printf("-> CN equation is NOT validated (first round)\n");
             remove_xors(decoded + symbol_id, size);
             for (int j = 0; j < size; j++) {
@@ -350,7 +377,7 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
 #endif
             }
             //
-            bool isOK = fix_xor_list(arg_1, arg_2, val_1, val_2, size);
+            bool isOK = fix_xor_list(arg_1, arg_2, val_1, val_2, inputs, size);
             if ( isOK ) {
 #if defined(debug_rate_spc)
                 printf("-> CN equation is validated !\n");

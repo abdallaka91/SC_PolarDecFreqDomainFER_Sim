@@ -25,7 +25,6 @@
 #include "BLG/naive_pruning/decoder_naive_pruning.hpp"
 #include "BLG/code.hpp"
 
-
 // #include <omp.h>
 
 using namespace PoAwN::structures;
@@ -49,16 +48,16 @@ using std::vector;
 namespace fs = std::filesystem;
 
 void append_results_to_file(
-        const std::string &modulation,
-        int GFx,
-        int Nx,
-        int Kx,
-        double SNR,
-        unsigned long nb_err,
-        unsigned long nb_gen_frame,
-        float debit,
-        int tSimuSec
-    ){
+    const std::string &modulation,
+    int GFx,
+    int Nx,
+    int Kx,
+    double SNR,
+    unsigned long nb_err,
+    unsigned long nb_gen_frame,
+    float debit,
+    int tSimuSec)
+{
     // Directory path
     fs::path dir = "results";
 
@@ -79,9 +78,9 @@ void append_results_to_file(
                                "_K" + std::to_string(Kx) + ".txt");
 
     // Open file in append mode
-    FILE* fou = fopen(filename.c_str(), "a");
+    FILE *fou = fopen(filename.c_str(), "a");
 
-    if( fou == nullptr )
+    if (fou == nullptr)
     {
         std::cerr << "Error opening file " << filename << " for appending.\n";
         return;
@@ -89,14 +88,13 @@ void append_results_to_file(
 
     double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 
-    fprintf(fou, "%+6.2f ",  SNR);
+    fprintf(fou, "%+6.2f ", SNR);
     fprintf(fou, "%1.16f ", FER_value);
-    fprintf(fou, "%1.2e ",  FER_value);
-    fprintf(fou, "%5.2f ",  debit);
-    fprintf(fou, "%6d\n",    tSimuSec);
-    fclose( fou );
+    fprintf(fou, "%1.2e ", FER_value);
+    fprintf(fou, "%5.2f ", debit);
+    fprintf(fou, "%6d\n", tSimuSec);
+    fclose(fou);
 }
-
 
 void append_results_to_file(
     const std::string &modulation,
@@ -253,13 +251,6 @@ int main(int argc, char *argv[])
             for (int j = 0; j < q; j++)
                 bin_mod_dict[i][j] = (CCSK_rotated_codes[i][j] == 0) ? 1 : -1;
     }
-    else if (code_param.sig_mod == "BPSK")
-    {
-        bin_mod_dict.resize(q, vector<softdata_t>(p, 0));
-        for (int i = 0; i < q; i++)
-            for (int j = 0; j < p; j++)
-                bin_mod_dict[i][j] = (table.BINDEC[i][j] == 0) ? 1 : -1;
-    }
 
     dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
     dec_param.ucap[n].assign(N, dec_param.frozen_val);
@@ -268,8 +259,7 @@ int main(int argc, char *argv[])
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
     std::atomic<bool> stop(false);
-    unsigned base_seed = 0; //std::chrono::system_clock::now().time_since_epoch().count();
-
+    unsigned base_seed = 0; // std::chrono::system_clock::now().time_since_epoch().count();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -277,13 +267,12 @@ int main(int argc, char *argv[])
     for (int i = 0; i < N; i += 1)
         frozen_symbols[i] = true;
     for (int i = 0; i < K; i += 1)
-        frozen_symbols[ dec_param.reliab_sequence[i] ] = false;
+        frozen_symbols[dec_param.reliab_sequence[i]] = false;
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     double time_base[64];
-    for(int i = 0; i < 64; i += 1)
+    for (int i = 0; i < 64; i += 1)
         time_base[i] = 0.0;
 
     const auto s_start = std::chrono::system_clock::now();
@@ -294,26 +283,23 @@ int main(int argc, char *argv[])
         int thread_id = omp_get_thread_num();
         std::mt19937 gen(thread_id + base_seed);
         vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
-        vector<vector<decoder_t>> L_F(n + 1, vector<decoder_t>(N));
 
         for (int i = 0; i <= n; i++)
             for (int j = 0; j < N; j++)
             {
                 L[i][j].intrinsic_LLR.resize(q, 0);
-                L[i][j].intrinsic_GF.resize(q);
-                iota(L[i][j].intrinsic_GF.begin(), L[i][j].intrinsic_GF.end(), 0);
+                L[i][j].is_freq=false;
             }
 
-        L_F = L;
         vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //
-        std::vector<uint16_t>   decoded_n(N);
+        std::vector<uint16_t> decoded_n(N);
 
-        decoder_naive_pruning< _GF_ > dec(N, frozen_symbols);
+        decoder_naive_pruning<_GF_> dec(N, frozen_symbols);
 
-        std::vector<symbols_t>  llrs_n   (N);
+        std::vector<symbols_t> llrs_n(N);
         //
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -325,10 +311,21 @@ int main(int argc, char *argv[])
 
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
 
-#if 0
+#if 1
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
-            decode_SC_FFT(dec_param_local, table, L, L_F, info_sec_rec);
+            for (int i = 1; i <= n; i++)
+            for (int j = 0; j < N; j++)
+            {
+                L[i][j].intrinsic_LLR.assign(q, 0);
+                L[i][j].is_freq=false;
+            }
+
+            const auto m_start = std::chrono::system_clock::now();
+            decode_SC_FFT(dec_param_local, L, info_sec_rec);
+            const auto m_stop = std::chrono::system_clock::now();
+            time_base[thread_id] += std::chrono::duration_cast<std::chrono::microseconds>(m_stop - m_start).count();
+
             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #else
@@ -341,14 +338,13 @@ int main(int argc, char *argv[])
                     llrs_n[i].value[j] = L[0][i].intrinsic_LLR[j];
             }
 
-            const auto m_start    = std::chrono::system_clock::now();
+            const auto m_start = std::chrono::system_clock::now();
             dec.execute(llrs_n.data(), decoded_n.data());
-            const auto m_stop     = std::chrono::system_clock::now();
+            const auto m_stop = std::chrono::system_clock::now();
             time_base[thread_id] += std::chrono::duration_cast<std::chrono::microseconds>(m_stop - m_start).count();
 
-
             for (int i = 0; i < K; i++)
-                info_sec_rec[i] = decoded_n[ dec_param.reliab_sequence[i] ];
+                info_sec_rec[i] = decoded_n[dec_param.reliab_sequence[i]];
             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif
@@ -369,11 +365,7 @@ int main(int argc, char *argv[])
                 FER.fetch_add(1);
             }
             succ_now = global_counter.load() - FER.load();
-            if (
-                  ((global_counter % 100000) == 0)
-                || (succ_now == NbMonteCarlo)
-//              || (succ_dec == false)
-            )
+            if((global_counter % 100) == 0)
             {
 
 #pragma omp critical
@@ -392,14 +384,14 @@ int main(int argc, char *argv[])
                 break;
         }
     }
-    const auto s_stop  = std::chrono::system_clock::now();
+    const auto s_stop = std::chrono::system_clock::now();
     const int tSimuSec = std::chrono::duration_cast<std::chrono::seconds>(s_stop - s_start).count();
 
     double total_us = 0.0;
-    for(int i = 0; i < 64; i+= 1)
+    for (int i = 0; i < 64; i += 1)
         total_us = (total_us >= time_base[i]) ? total_us : time_base[i];
-    const float time_run  = (total_us / (double)gen_frames_out);
-    const float debit     = ((double)N * (double)_logGF_) / time_run;
+    const float time_run = (total_us / (double)gen_frames_out);
+    const float debit = ((double)N * (double)_logGF_) / time_run;
 
     cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
          << " = " << (float)FER_out / (float)gen_frames_out << std::flush;

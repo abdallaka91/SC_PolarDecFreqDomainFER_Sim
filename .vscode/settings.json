@@ -64,7 +64,8 @@
         "list": "cpp",
         "complex": "cpp",
         "cinttypes": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "regex": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}"
 }

@@ -25,9 +25,10 @@ namespace PoAwN
         struct decoder_t
         {
             vector<softdata_t> intrinsic_LLR;
-            vector<uint16_t> intrinsic_GF;
-            decoder_t(vector<softdata_t> v1 = {}, vector<uint16_t> v2 = {})
-                : intrinsic_LLR(v1), intrinsic_GF(v2) {}
+            bool is_freq;
+
+            decoder_t(vector<softdata_t> v1 = {}, bool v2 = false)
+                : intrinsic_LLR(v1), is_freq(v2) {}
         };
 
         struct table_GF
@@ -68,8 +69,8 @@ namespace PoAwN
             vector<vector<uint16_t>> ucap;
             vector<vector<vector<uint16_t>>> ns;
             decoder_parameters(const base_code_t &base)
-                : base_code_t(base){}
-            };
+                : base_code_t(base) {}
+        };
 
         // clang-format off
 constexpr const std::array<uint16_t, 10> GF_polynom_primitive = {

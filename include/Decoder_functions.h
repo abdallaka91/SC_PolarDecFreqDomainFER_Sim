@@ -25,7 +25,7 @@ namespace PoAwN
             for (std::size_t i = 0; i < N; ++i)
             {
                 result[i] = a[i] * b[i];
-                result[i] /= static_cast<softdata_t>(N);
+                // result[i] /= static_cast<softdata_t>(N);
             }
 
             return result;
@@ -39,17 +39,12 @@ namespace PoAwN
 
         void VN_update_FFT(const decoder_t &theta_1,
                            const decoder_t &phi_1,
-                           const vector<vector<uint16_t>> &ADDDEC,
-                           const vector<vector<uint16_t>> &DIVDEC,
                            const decoder_parameters &dec_param,
-                           uint16_t coef,
                            uint16_t hard_decision,
                            decoder_t &phi);
 
         void decode_SC_FFT(const decoder_parameters &dec_param,
-                           const table_GF &table,
                            vector<vector<decoder_t>> &L,
-                           vector<vector<decoder_t>> &L_F,
                            vector<uint16_t> &info_sec_rec);
 
         void frozen_lay_pos(const decoder_parameters &dec_param,

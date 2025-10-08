@@ -157,8 +157,8 @@ void PoAwN::decoding::decode_SC_FFT(const decoder_parameters &dec_param,
                 i3 = dec_param.coefs_id[l][s][t];
                 hard_decsion = V[l + 1][Root[t]];
                 bool cnd1 = hard_decsion != dec_param.ucap[l + 1][Root[t]];
-                softdata_t f1 = L[l][Root[t]].intrinsic_LLR[0] * soft_q;
-                softdata_t f2 = L[l][Root[t + SZc1]].intrinsic_LLR[0] * soft_q;
+                softdata_t f1 = 1;// /*L[l][Root[t]].intrinsic_LLR[0] * */soft_q;
+                softdata_t f2 = 1;// /*L[l][Root[t + SZc1]].intrinsic_LLR[0] * */soft_q;
                 if (L[l][Root[t]].is_freq)
                 {
                     PoAwN::fwht<q_fixed>(L[l][Root[t]].intrinsic_LLR.data(),

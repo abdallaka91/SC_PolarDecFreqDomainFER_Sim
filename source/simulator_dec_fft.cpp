@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     N = stoi(argv[4]);
     K = stoi(argv[5]);
     n = log2(N);
-    int FER_STOP = 200;
+    int FER_STOP = 100000;
 
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = "CCSK_BIN";
@@ -311,7 +311,7 @@ int main(int argc, char *argv[])
 
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
 
-#if 1
+#if 0
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
             for (int i = 1; i <= n; i++)

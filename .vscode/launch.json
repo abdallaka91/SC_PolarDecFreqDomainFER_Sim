@@ -1,36 +1,32 @@
 {
-    "version": "0.2.0",
-    "configurations": [
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Sim2",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Sim2",
+      "args": ["1", "-7.5", "64", "64", "42"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        { "name": "OMP_NUM_THREADS", "value": "1" }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
         {
-            "name": "Debug Sim2",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/Sim2",
-            // "args": [10, -14.5, 256, 128, 112], NbSim, SNR, q, N, K
-            "args": [1 ,"-10"  ,64 , 1024, 500],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [
-                {
-                    "name": "OMP_NUM_THREADS",
-                    "value": "1"
-                }
-            ],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "build simulator",  // Ensure this task is defined in tasks.json
-            "logging": {
-                "engineLogging": true,
-                "trace": true,
-                "traceResponse": true
-            }
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
         }
-    ]
+      ],
+      "logging": {
+        "engineLogging": true,
+        "trace": true,
+        "traceResponse": true
+      }
+    }
+  ]
 }

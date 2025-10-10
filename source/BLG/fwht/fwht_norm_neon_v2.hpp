@@ -464,23 +464,47 @@ template <> inline void lwht_norm_generic_neon<512>(float* srcdst) {
 //
 //
 template <> inline void lwht_norm_internal_neon<1024>(float* srcdst, const float fact) {
-    for (int i = 0; i < 512; i++) {
-        const float A = srcdst[i] + srcdst[i + 512];
-        const float B = srcdst[i] - srcdst[i + 512];
-        srcdst[i      ] = A;
-        srcdst[i + 512] = B;
+    const int simd = sizeof(float32x4_t) / sizeof(float);
+#if defined (__clang__)
+    #pragma unroll
+#endif
+    for (int i = 0; i < 512; i += simd) {
+        const float32x4_t A = vld1q_f32(srcdst + i +   0);
+        const float32x4_t B = vld1q_f32(srcdst + i + 512);
+        const float32x4_t C = vaddq_f32(A, B);
+        const float32x4_t D = vsubq_f32(A, C);
+        vst1q_f32(srcdst + i +   0, C);
+        vst1q_f32(srcdst + i + 512, D);
     }
+//    for (int i = 0; i < 512; i++) {
+//        const float A = srcdst[i] + srcdst[i + 512];
+//        const float B = srcdst[i] - srcdst[i + 512];
+//        srcdst[i      ] = A;
+//        srcdst[i + 512] = B;
+//    }
     lwht_norm_internal_neon<512>(srcdst +   0, fact);
     lwht_norm_internal_neon<512>(srcdst + 512, fact);
 }
 //
 template <> inline void lwht_norm_internal_neon<1024>(float* dst, const float* src, const float fact) {
-    for (int i = 0; i < 512; i++) {
-        const float A = src[i] + src[i + 512];
-        const float B = src[i] - src[i + 512];
-        dst[i      ] = A;
-        dst[i + 512] = B;
+    const int simd = sizeof(float32x4_t) / sizeof(float);
+#if defined (__clang__)
+    #pragma unroll
+#endif
+    for (int i = 0; i < 512; i += simd) {
+        const float32x4_t A = vld1q_f32(src + i +   0);
+        const float32x4_t B = vld1q_f32(src + i + 512);
+        const float32x4_t C = vaddq_f32(A, B);
+        const float32x4_t D = vsubq_f32(A, C);
+        vst1q_f32(dst + i +   0, C);
+        vst1q_f32(dst + i + 512, D);
     }
+//    for (int i = 0; i < 512; i++) {
+//        const float A = src[i] + src[i + 512];
+//        const float B = src[i] - src[i + 512];
+//        dst[i      ] = A;
+//        dst[i + 512] = B;
+//    }
     lwht_norm_internal_neon<512>(dst +   0, fact);
     lwht_norm_internal_neon<512>(dst + 512, fact);
 }

@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
-#include "../code.hpp"
+#include "const_config_GF64_N64.hpp"
 #include <cassert>
 #include <cmath>
 #include <cstdint>
@@ -298,15 +298,15 @@ inline void fwht<512>(float* inp) {
     float part_2[256];
 
     for (int i = 0; i < 256; i++) {
-        part_1[i] = inp[i] + inp[i + 128];
-        part_2[i] = inp[i] - inp[i + 128];
+        part_1[i] = inp[i] + inp[i + 256];
+        part_2[i] = inp[i] - inp[i + 256];
     }
 
     fwht<256>(part_1);
     fwht<256>(part_2);
 
     for (int i = 0; i < 256; i++) {
-        inp[i +   0]   = part_1[i];
+        inp[i +   0] = part_1[i];
         inp[i + 256] = part_2[i];
     }
 }
@@ -333,8 +333,8 @@ inline void fwht<1024>(float* inp) {
     float part_2[512];
 
     for (int i = 0; i < 512; i++) {
-        part_1[i] = inp[i] + inp[i + 128];
-        part_2[i] = inp[i] - inp[i + 128];
+        part_1[i] = inp[i] + inp[i + 512];
+        part_2[i] = inp[i] - inp[i + 512];
     }
 
     fwht<512>(part_1);

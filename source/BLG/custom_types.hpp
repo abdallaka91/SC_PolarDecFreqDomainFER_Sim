@@ -14,7 +14,8 @@ struct symbols_t {
 //
 // For specialized NB polar decoders
 //
+template<int gf_size>
 struct symbols_s {
-    float value[_GF_];
+    float value[gf_size];
 };
 

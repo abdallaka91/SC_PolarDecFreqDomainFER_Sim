@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <immintrin.h>
 
-#include "../code.hpp"
+#include "const_config_GF64_N64.hpp"
 
 template <uint16_t GF>
 inline void fwht_avx2(float x[]) {
@@ -47,7 +47,7 @@ inline void fwht_avx2(float x[], float y[]) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-inline void fwht16_terminale(const __m256 X0, const __m256 X1, float y[]) {
+inline void fwht16_terminale_avx2(const __m256 X0, const __m256 X1, float y[]) {
     //
     // ON LOAD LES COEFFICIENTS NECESSAIRE A LA TRANFORMATION DES TUILES BASSES
     //
@@ -87,14 +87,14 @@ inline void fwht16_terminale(const __m256 X0, const __m256 X1, float y[]) {
 inline void fwht16_flat_avx2(float x[], float y[]) {
     const __m256 X0 = _mm256_loadu_ps(x + 0);
     const __m256 X1 = _mm256_loadu_ps(x + 8);
-    fwht16_terminale(X0, X1, y);
+    fwht16_terminale_avx2(X0, X1, y);
 }
 
-inline void fwht32_terminale(__m256 X0, __m256 X1, __m256 X2, __m256 X3, float y[]) {
+inline void fwht32_terminale_avx2(__m256 X0, __m256 X1, __m256 X2, __m256 X3, float y[]) {
     const __m256 A0 = X0 + X2, A1 = X1 + X3;
     const __m256 B0 = X0 - X2, B1 = X1 - X3;
-    fwht16_terminale(A0, A1, y + 0);
-    fwht16_terminale(B0, B1, y + 16);
+    fwht16_terminale_avx2(A0, A1, y + 0);
+    fwht16_terminale_avx2(B0, B1, y + 16);
 }
 
 inline void fwht32_flat_avx2(float x[], float y[]) {
@@ -106,18 +106,18 @@ inline void fwht32_flat_avx2(float x[], float y[]) {
     const __m256 m0 = X0 + X2, m1 = X1 + X3;
     const __m256 M0 = X0 - X2, M1 = X1 - X3;
 
-    fwht16_terminale(m0, m1, y + 0);
-    fwht16_terminale(M0, M1, y + 16);
+    fwht16_terminale_avx2(m0, m1, y + 0);
+    fwht16_terminale_avx2(M0, M1, y + 16);
 }
 
-inline void fwht64_terminale(__m256 X0, __m256 X1, __m256 X2, __m256 X3, __m256 X4, __m256 X5, __m256 X6, __m256 X7, float y[]) {
+inline void fwht64_terminale_avx2(__m256 X0, __m256 X1, __m256 X2, __m256 X3, __m256 X4, __m256 X5, __m256 X6, __m256 X7, float y[]) {
     const __m256 A0 = X0 + X4, A1 = X1 + X5;
     const __m256 A2 = X2 + X6, A3 = X3 + X7;
     const __m256 B0 = X0 - X4, B1 = X1 - X5;
     const __m256 B2 = X2 - X6, B3 = X3 - X7;
 
-    fwht32_terminale(A0, A1, A2, A3, y + 0);
-    fwht32_terminale(B0, B1, B2, B3, y + 32);
+    fwht32_terminale_avx2(A0, A1, A2, A3, y + 0);
+    fwht32_terminale_avx2(B0, B1, B2, B3, y + 32);
 }
 
 inline void fwht64_flat_avx2(float x[], float y[]) {
@@ -135,17 +135,17 @@ inline void fwht64_flat_avx2(float x[], float y[]) {
     const __m256 B0 = X0 - X4, B1 = X1 - X5;
     const __m256 B2 = X2 - X6, B3 = X3 - X7;
 
-    fwht32_terminale(A0, A1, A2, A3, y + 0);
-    fwht32_terminale(B0, B1, B2, B3, y + 32);
+    fwht32_terminale_avx2(A0, A1, A2, A3, y + 0);
+    fwht32_terminale_avx2(B0, B1, B2, B3, y + 32);
 }
 
-inline void fwht128_terminale(__m256 X0, __m256 X1, __m256 X2, __m256 X3, __m256 X4, __m256 X5, __m256 X6, __m256 X7, __m256 X8, __m256 X9, __m256 X10, __m256 X11, __m256 X12, __m256 X13, __m256 X14, __m256 X15, float y[]) {
+inline void fwht128_terminale_avx2(__m256 X0, __m256 X1, __m256 X2, __m256 X3, __m256 X4, __m256 X5, __m256 X6, __m256 X7, __m256 X8, __m256 X9, __m256 X10, __m256 X11, __m256 X12, __m256 X13, __m256 X14, __m256 X15, float y[]) {
     const __m256 A0 = X0 + X8, A1 = X1 + X9, A2 = X2 + X10, A3 = X3 + X11;
     const __m256 A4 = X4 + X12, A5 = X5 + X13, A6 = X6 + X14, A7 = X7 + X15;
     const __m256 B0 = X0 - X8, B1 = X1 - X9, B2 = X2 - X10, B3 = X3 - X11;
     const __m256 B4 = X4 - X12, B5 = X5 - X13, B6 = X6 - X14, B7 = X7 - X15;
-    fwht64_terminale(A0, A1, A2, A3, A4, A5, A6, A7, y + 0);
-    fwht64_terminale(B0, B1, B2, B3, B4, B5, B6, B7, y + 64);
+    fwht64_terminale_avx2(A0, A1, A2, A3, A4, A5, A6, A7, y + 0);
+    fwht64_terminale_avx2(B0, B1, B2, B3, B4, B5, B6, B7, y + 64);
 }
 
 inline void fwht128_flat_avx2(float x[], float y[]) {
@@ -166,7 +166,7 @@ inline void fwht128_flat_avx2(float x[], float y[]) {
     const __m256 X14 = _mm256_loadu_ps(x + 112);
     const __m256 X15 = _mm256_loadu_ps(x + 120);
 
-    fwht128_terminale(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, y);
+    fwht128_terminale_avx2(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, y);
 }
 
 inline void fwht256_flat_avx2(float x[], float y[]) {
@@ -204,8 +204,8 @@ inline void fwht256_flat_avx2(float x[], float y[]) {
     const __m256 x14 = (_mm256_loadu_ps(x + 112) - _mm256_loadu_ps(x + 240));
     const __m256 x15 = (_mm256_loadu_ps(x + 120) - _mm256_loadu_ps(x + 248));
 
-    fwht128_terminale(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, y);
-    fwht128_terminale(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, y + 128);
+    fwht128_terminale_avx2(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, y);
+    fwht128_terminale_avx2(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, y + 128);
 }
 //
 //
@@ -350,7 +350,8 @@ inline void fwht_avx2<256>(float x[], float y[]) {
 //
 template <> inline void fwht_avx2<512>(float x[])
 {
-    for (int i = 0; i < 256; i+= sizeof(__m256)) {
+    const int simd = sizeof(__m256) / sizeof(float);
+    for (int i = 0; i < 256; i+= simd) {
         const __m256 A = _mm256_loadu_ps(x + i      );
         const __m256 B = _mm256_loadu_ps(x + i + 256);
         const __m256 C = _mm256_add_ps (A, B);
@@ -367,7 +368,8 @@ template <> inline void fwht_avx2<512>(float x[])
 //
 //
 template <> inline void fwht_avx2<1024>(float x[]) {
-    for (int i = 0; i < 512; i+= sizeof(__m256)) {
+    const int simd = sizeof(__m256) / sizeof(float);
+    for (int i = 0; i < 512; i+= simd) {
         const __m256 A = _mm256_loadu_ps(x + i      );
         const __m256 B = _mm256_loadu_ps(x + i + 512);
         const __m256 C = _mm256_add_ps (A, B);
@@ -378,9 +380,5 @@ template <> inline void fwht_avx2<1024>(float x[]) {
     fwht_avx2<512>(x);
     fwht_avx2<512>(x + 512);
 }
-//
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//
+
 #endif

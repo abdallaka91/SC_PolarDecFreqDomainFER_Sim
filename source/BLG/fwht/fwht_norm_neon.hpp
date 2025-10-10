@@ -317,12 +317,19 @@ inline void fwht256_norm_flat_neon(float x[], float y[], const float factor_s = 
 //
 inline void fwht512_norm_flat_neon(float* srcdst, const float factor_s = 0.04419417382f)
 {
-    for (int i = 0; i < 256; i++) {
-        const float A = srcdst[i] + srcdst[i + 256];
-        const float B = srcdst[i] - srcdst[i + 256];
-        srcdst[i      ] = A;
-        srcdst[i + 256] = B;
+    const int simd = sizeof(float32x4_t) / sizeof(float);
+#if defined (__clang__)
+    #pragma unroll
+#endif
+    for (int i = 0; i < 256; i += simd) {
+        const float32x4_t A = vld1q_f32(srcdst + i +   0);
+        const float32x4_t B = vld1q_f32(srcdst + i + 256);
+        const float32x4_t C = vaddq_f32(A, B);
+        const float32x4_t D = vsubq_f32(A, B);
+        vst1q_f32(srcdst + i +   0, C);
+        vst1q_f32(srcdst + i + 256, D);
     }
+
     fwht256_norm_flat_neon(srcdst,       srcdst,      factor_s);
     fwht256_norm_flat_neon(srcdst + 256, srcdst + 256,factor_s);
 }
@@ -333,16 +340,70 @@ inline void fwht512_norm_flat_neon(float* srcdst, const float factor_s = 0.04419
 //
 //
 //
-inline void fwht1024_norm_flat_neon(float* srcdst)
+inline void fwht1024_norm_flat_neon(float* srcdst, const float factor_s = 0.03125f) // 0.03125f
 {
-    for (int i = 0; i < 512; i++) {
-        const float A = srcdst[i] + srcdst[i + 512];
-        const float B = srcdst[i] - srcdst[i + 512];
-        srcdst[i      ] = A;
-        srcdst[i + 512] = B;
+    const int simd = sizeof(float32x4_t) / sizeof(float);
+#if defined (__clang__)
+    #pragma unroll
+#endif
+    for (int i = 0; i < 512; i += simd) {
+        const float32x4_t A = vld1q_f32(srcdst + i +   0);
+        const float32x4_t B = vld1q_f32(srcdst + i + 512);
+        const float32x4_t C = vaddq_f32(A, B);
+        const float32x4_t D = vsubq_f32(A, B);
+        vst1q_f32(srcdst + i +   0, C);
+        vst1q_f32(srcdst + i + 512, D);
     }
-    fwht512_norm_flat_neon(srcdst,       0.03125f);
-    fwht512_norm_flat_neon(srcdst + 512, 0.03125f);
+    fwht512_norm_flat_neon(srcdst,       factor_s);
+    fwht512_norm_flat_neon(srcdst + 512, factor_s);
+}
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+inline void fwht2048_norm_flat_neon(float* srcdst, const float factor_s = 0.02209708691f) // 0.02209708691
+{
+    const int simd = sizeof(float32x4_t) / sizeof(float);
+#if defined (__clang__)
+    #pragma unroll
+#endif
+    for (int i = 0; i < 1024; i += simd) {
+        const float32x4_t A = vld1q_f32(srcdst + i +    0);
+        const float32x4_t B = vld1q_f32(srcdst + i + 1024);
+        const float32x4_t C = vaddq_f32(A, B);
+        const float32x4_t D = vsubq_f32(A, B);
+        vst1q_f32(srcdst + i +    0, C);
+        vst1q_f32(srcdst + i + 1024, D);
+    }
+    fwht1024_norm_flat_neon(srcdst,        factor_s);
+    fwht1024_norm_flat_neon(srcdst + 1024, factor_s);
+}
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+inline void fwht4096_norm_flat_neon(float* srcdst, const float factor_s = 0.015625f) // 0.015625
+{
+    const int simd = sizeof(float32x4_t) / sizeof(float);
+#if defined (__clang__)
+    #pragma unroll
+#endif
+    for (int i = 0; i < 2048; i += simd) {
+        const float32x4_t A = vld1q_f32(srcdst + i +    0);
+        const float32x4_t B = vld1q_f32(srcdst + i + 2048);
+        const float32x4_t C = vaddq_f32(A, B);
+        const float32x4_t D = vsubq_f32(A, B);
+        vst1q_f32(srcdst + i +    0, C);
+        vst1q_f32(srcdst + i + 2048, D);
+    }
+    fwht2048_norm_flat_neon(srcdst,        factor_s);
+    fwht2048_norm_flat_neon(srcdst + 2048, factor_s);
 }
 //
 //
@@ -405,6 +466,8 @@ template <> inline void fwht_norm_neon< 128>(float x[]) { fwht128_norm_flat_neon
 template <> inline void fwht_norm_neon< 256>(float x[]) { fwht256_norm_flat_neon(x, x); }
 template <> inline void fwht_norm_neon< 512>(float x[]) { fwht512_norm_flat_neon(x); }
 template <> inline void fwht_norm_neon<1024>(float x[]) { fwht1024_norm_flat_neon(x); }
+template <> inline void fwht_norm_neon<2048>(float x[]) { fwht2048_norm_flat_neon(x); }
+template <> inline void fwht_norm_neon<4096>(float x[]) { fwht4096_norm_flat_neon(x); }
 
 //
 //

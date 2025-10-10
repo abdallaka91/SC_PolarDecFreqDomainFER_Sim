@@ -25,7 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "../code.hpp"
+#include "const_config_GF64_N64.hpp"
 
 //
 //
@@ -242,6 +242,48 @@ inline void fwht_norm_internal<1024>(float* inp, const float fact) {
 template <>
 inline void fwht_norm<1024>(float* inp) {
     fwht_norm_internal<1024>(inp, 0.03125f);
+}
+//
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+template <>
+inline void fwht_norm_internal<2048>(float* inp, const float fact) {
+    for (int i = 0; i < 1024; i++) {
+        const float A = inp[i] + inp[i + 1024];
+        const float B = inp[i] - inp[i + 1024];
+        inp[i       ] = A;
+        inp[i + 1024] = B;
+    }
+    fwht_norm_internal<1024>(inp +    0, fact);
+    fwht_norm_internal<1024>(inp + 1024, fact);
+}
+//
+template <>
+inline void fwht_norm<2048>(float* inp) {
+    fwht_norm_internal<2048>(inp, 0.02209708691f);
+}
+//
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+template <>
+inline void fwht_norm_internal<4096>(float* inp, const float fact) {
+    for (int i = 0; i < 2048; i++) {
+        const float A = inp[i] + inp[i + 2048];
+        const float B = inp[i] - inp[i + 2048];
+        inp[i       ] = A;
+        inp[i + 2048] = B;
+    }
+    fwht_norm_internal<2048>(inp +    0, fact);
+    fwht_norm_internal<2048>(inp + 2048, fact);
+}
+//
+template <>
+inline void fwht_norm<4096>(float* inp) {
+    fwht_norm_internal<4096>(inp, 0.015625f);
 }
 //
 //

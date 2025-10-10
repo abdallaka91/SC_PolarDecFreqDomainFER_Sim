@@ -1,41 +1,65 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
-project(TEST1)
+# ===========================
+#  Project setup
+# ===========================
+project(TEST1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For VSCode IntelliSense
 
-# Debug build settings
+# ===========================
+#  Build type configuration
+# ===========================
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "-g -O0")
+    message(STATUS "Configuring Debug build")
+    set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-endif()
-
-# Release build settings
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Configuring Release build")
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+else()
+    message(STATUS "No build type selected, defaulting to Release")
+    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
-# Enable OpenMP for Sim2 only
+# ===========================
+#  Dependencies
+# ===========================
 find_package(OpenMP REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+# ===========================
+#  Source setup
+# ===========================
+
+add_compile_options(-mavx2)
 
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/source)
 
+file(GLOB_RECURSE SRC_FILES "${SOURCE_DIR}/*.cpp")
+add_executable(Sim2 ${SRC_FILES})
 
-add_executable(Sim2
-    ${SOURCE_DIR}/simulator_dec_fft.cpp
-    ${SOURCE_DIR}/GF_tools.cpp
-    ${SOURCE_DIR}/init.cpp
-    ${SOURCE_DIR}/tools.cpp
-    ${SOURCE_DIR}/Decoder_functions.cpp
-    ${SOURCE_DIR}/BLG/naive_pruning/decoder_naive_pruning.cpp
-    ${SOURCE_DIR}/channel.cpp
+target_include_directories(Sim2 PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/source/BLG
 )
 
+
+
+# ===========================
+#  Linker configuration
+# ===========================
 if(OpenMP_CXX_FOUND)
-    target_compile_options(Sim2 PRIVATE ${OpenMP_CXX_FLAGS})
     target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
 endif()
+
+# ===========================
+#  Optional diagnostics
+# ===========================
+message(STATUS "C++ Compiler : ${CMAKE_CXX_COMPILER}")
+message(STATUS "Build type   : ${CMAKE_BUILD_TYPE}")
+message(STATUS "C++ Flags    : ${CMAKE_CXX_FLAGS}")

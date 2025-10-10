@@ -15,7 +15,7 @@
 //
 //
 //
-template<int size> void argmax(const float* values, int* position, float* valeur)
+template<int size> inline void argmax(const float* values, int* position, float* valeur)
 {
     const int32x4_t increment  = { 4, 4, 4, 4 };
           int32x4_t indices    = { 0, 1, 2, 3 };
@@ -23,7 +23,9 @@ template<int size> void argmax(const float* values, int* position, float* valeur
 
     float32x4_t maxvalues  = vld1q_f32( values );
 
-#pragma unroll
+#if defined (__clang__)
+    #pragma unroll
+#endif
     for (int i = 4; i < size; i += 4)
     {
         indices = vaddq_s32(indices, increment);
@@ -41,7 +43,9 @@ template<int size> void argmax(const float* values, int* position, float* valeur
 
     int   maxindex = indices_array[0];
     float maxvalue =  values_array[0];
-#pragma unroll
+#if defined (__clang__)
+    #pragma unroll
+#endif
     for (int i = 1; i < 4; i++)
     {
         if (values_array[i] > maxvalue)
@@ -61,7 +65,7 @@ template<int size> void argmax(const float* values, int* position, float* valeur
 //
 //
 template<int length>
-int argmax(const float* values)
+inline int argmax(const float* values)
 {
     const int32x4_t increment  = { 4, 4, 4, 4 };
     int32x4_t indices    = { 0, 1, 2, 3 };
@@ -69,7 +73,9 @@ int argmax(const float* values)
 
     float32x4_t maxvalues  = vld1q_f32( values );
 
-#pragma unroll
+#if defined (__clang__)
+    #pragma unroll
+#endif
     for (int i = 4; i < length; i += 4)
     {
         indices = vaddq_s32(indices, increment);
@@ -88,7 +94,9 @@ int argmax(const float* values)
     int   maxindex = indices_array[0];
     float maxvalue =  values_array[0];
 
-#pragma unroll
+#if defined (__clang__)
+    #pragma unroll
+#endif
     for (int i = 1; i < 4; i++)
     {
         if (values_array[i] > maxvalue)

@@ -32,11 +32,11 @@ template<int length> void argmax(const float* values, int* position, float* vale
 #endif
     for (int i = 0; i < length; i += simd)
     {
-        const __m256 value  = _mm256_loadu_ps (values + i);
-        const __m256 gt     = _mm256_cmp_ps   (value, maxvalues, _CMP_GT_OQ);
+        const __m256 value  = _mm256_loadu_ps   (values + i);
+        const __m256 gt     = _mm256_cmp_ps     (value, maxvalues, _CMP_GT_OQ);
         maxindices          = _mm256_blendv_epi8(maxindices, indices, _mm256_castps_si256(gt));
-        maxvalues           = _mm256_max_ps   (value, maxvalues);
-        indices             = _mm256_add_epi32(indices, increment);
+        maxvalues           = _mm256_max_ps     (value, maxvalues);
+        indices             = _mm256_add_epi32  (indices, increment);
     }
 
     float   values_array [simd];

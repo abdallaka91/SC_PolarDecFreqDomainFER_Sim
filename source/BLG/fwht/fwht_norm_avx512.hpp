@@ -20,7 +20,7 @@
 #pragma once
 #ifdef __AVX512F__
 
-#include "definitions/const_config_GF64_N64.hpp"
+#include "const_config_GF64_N64.hpp"
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
@@ -28,7 +28,7 @@
 #include <immintrin.h>
 
 template <uint16_t GF>
-inline void fwht_norm_avx2(float x[]) {
+inline void fwht_norm_avx512(float x[]) {
     assert(x != 0);
     assert(true);
     exit(x != nullptr);
@@ -36,7 +36,7 @@ inline void fwht_norm_avx2(float x[]) {
 
 #if 0
 template <uint16_t GF>
-inline void fwht_norm_avx2(float x[], float y[]) {
+inline void fwht_norm_avx512(float x[], float y[]) {
     assert(x != 0);
     assert(y != 0);
     assert(true);
@@ -57,7 +57,7 @@ inline void fwht16_norm_terminale(const __m256 X0, const __m256 X1, float y[], c
     const __m256 M2 = _mm256_castsi256_ps(_mm256_setr_epi32(0x00000000, 0x80000000, 0x00000000, 0x80000000, 0x00000000, 0x80000000, 0x00000000, 0x80000000));
 
     //////////////////////////////////////////////////////
-    //	const __m256 B0 = fwht8_avx2 ( A0 );
+    //	const __m256 B0 = fwht8_avx512 ( A0 );
     const __m256 HAUT = _mm256_add_ps(X0, X1);
     const __m256 N0   = _mm256_xor_ps(HAUT, M0);
     const __m256 N1   = _mm256_permute2f128_ps(HAUT, HAUT, 0x01);
@@ -71,7 +71,7 @@ inline void fwht16_norm_terminale(const __m256 X0, const __m256 X1, float y[], c
     const __m256 P3   = _mm256_mul_ps(P2, factor);
     _mm256_storeu_ps(y + 0, P3);
     //////////////////////////////////////////////////////
-    //	const __m256 B0 = fwht8_avx2 ( A0 );
+    //	const __m256 B0 = fwht8_avx512 ( A0 );
     const __m256 BAS = _mm256_sub_ps(X0, X1);
     const __m256 B0  = _mm256_xor_ps(BAS, M0);
     const __m256 B1  = _mm256_permute2f128_ps(BAS, BAS, 0x01);
@@ -86,173 +86,147 @@ inline void fwht16_norm_terminale(const __m256 X0, const __m256 X1, float y[], c
     _mm256_storeu_ps(y + 8, BP3);
     //////////////////////////////////////////////////////
 }
+inline void fwht16_norm_terminale(const __m512 X, float y[], const __m512 factor) {
+    const __m256 X0 = _mm512_extractf32x8_ps(X, 0);
+    const __m256 X1 = _mm512_extractf32x8_ps(X, 1);
+    const __m256 F0 = _mm512_extractf32x8_ps(factor, 0);
+    fwht16_norm_terminale(X0, X1, y, F0);
+}
 
-inline void fwht16_norm_flat_avx2(float x[], float y[], const __m256 factor) {
+inline void fwht16_norm_flat_avx512(float x[], float y[], const __m512 factor) {
     const __m256 X0 = _mm256_loadu_ps(x + 0);
     const __m256 X1 = _mm256_loadu_ps(x + 8);
-    fwht16_norm_terminale(X0, X1, y, factor);
+    const __m256 F0 = _mm512_extractf32x8_ps(factor, 0);
+    fwht16_norm_terminale(X0, X1, y, F0);
 }
 
-inline void fwht32_norm_terminale(__m256 X0, __m256 X1, __m256 X2, __m256 X3, float y[], const __m256 factor) {
-    const __m256 A0 = X0 + X2, A1 = X1 + X3;
-    const __m256 B0 = X0 - X2, B1 = X1 - X3;
-    fwht16_norm_terminale(A0, A1, y + 0, factor);
-    fwht16_norm_terminale(B0, B1, y + 16, factor);
+inline void fwht32_norm_terminale(const __m512 X0, const __m512 X1, float y[], const __m512 factor) {
+    const __m512 A0 = X0 + X1;
+    const __m512 B0 = X0 - X1;
+    fwht16_norm_terminale(A0, y +  0, factor);
+    fwht16_norm_terminale(B0, y + 16, factor);
 }
 
-inline void fwht32_norm_flat_avx2(float x[], float y[], const __m256 factor) {
-    const __m256 X0 = _mm256_loadu_ps(x + 0);
-    const __m256 X1 = _mm256_loadu_ps(x + 8);
-    const __m256 X2 = _mm256_loadu_ps(x + 16);
-    const __m256 X3 = _mm256_loadu_ps(x + 24);
-
-    const __m256 m0 = X0 + X2, m1 = X1 + X3;
-    const __m256 M0 = X0 - X2, M1 = X1 - X3;
-
-    fwht16_norm_terminale(m0, m1, y + 0, factor);
-    fwht16_norm_terminale(M0, M1, y + 16, factor);
+inline void fwht32_norm_flat_avx512(float x[], float y[], const __m512 factor) {
+    const __m512 X0 = _mm512_loadu_ps(x +  0);
+    const __m512 X2 = _mm512_loadu_ps(x + 16);
+    const __m512 m0 = _mm512_add_ps(X0, X2);
+    fwht16_norm_terminale(m0, y +  0, factor);
+    const __m512 M0 = _mm512_sub_ps(X0, X2);
+    fwht16_norm_terminale(M0, y + 16, factor);
 }
 
-inline void fwht64_norm_terminale(__m256 X0, __m256 X1, __m256 X2, __m256 X3, __m256 X4, __m256 X5, __m256 X6, __m256 X7, float y[], const __m256 factor) {
-    const __m256 A0 = X0 + X4, A1 = X1 + X5;
-    const __m256 A2 = X2 + X6, A3 = X3 + X7;
-    const __m256 B0 = X0 - X4, B1 = X1 - X5;
-    const __m256 B2 = X2 - X6, B3 = X3 - X7;
-
-    fwht32_norm_terminale(A0, A1, A2, A3, y + 0, factor);
-    fwht32_norm_terminale(B0, B1, B2, B3, y + 32, factor);
-}
-
-inline void fwht64_norm_flat_avx2(float x[], float y[], const __m256 factor) {
-    const __m256 X0 = _mm256_loadu_ps(x + 0);
-    const __m256 X1 = _mm256_loadu_ps(x + 8);
-    const __m256 X2 = _mm256_loadu_ps(x + 16);
-    const __m256 X3 = _mm256_loadu_ps(x + 24);
-    const __m256 X4 = _mm256_loadu_ps(x + 32);
-    const __m256 X5 = _mm256_loadu_ps(x + 40);
-    const __m256 X6 = _mm256_loadu_ps(x + 48);
-    const __m256 X7 = _mm256_loadu_ps(x + 56);
-
-    const __m256 A0 = X0 + X4, A1 = X1 + X5;
-    const __m256 A2 = X2 + X6, A3 = X3 + X7;
-    const __m256 B0 = X0 - X4, B1 = X1 - X5;
-    const __m256 B2 = X2 - X6, B3 = X3 - X7;
-
-    fwht32_norm_terminale(A0, A1, A2, A3, y + 0, factor);
-    fwht32_norm_terminale(B0, B1, B2, B3, y + 32, factor);
-}
-
-inline void fwht128_norm_terminale(__m256 X0, __m256 X1, __m256 X2, __m256 X3, __m256 X4, __m256 X5, __m256 X6, __m256 X7, __m256 X8, __m256 X9, __m256 X10, __m256 X11, __m256 X12, __m256 X13, __m256 X14, __m256 X15, float y[], const __m256 factor) {
-    const __m256 A0 = X0 + X8, A1 = X1 + X9, A2 = X2 + X10, A3 = X3 + X11;
-    const __m256 A4 = X4 + X12, A5 = X5 + X13, A6 = X6 + X14, A7 = X7 + X15;
-    const __m256 B0 = X0 - X8, B1 = X1 - X9, B2 = X2 - X10, B3 = X3 - X11;
-    const __m256 B4 = X4 - X12, B5 = X5 - X13, B6 = X6 - X14, B7 = X7 - X15;
-    fwht64_norm_terminale(A0, A1, A2, A3, A4, A5, A6, A7, y + 0, factor);
-    fwht64_norm_terminale(B0, B1, B2, B3, B4, B5, B6, B7, y + 64, factor);
-}
-
-inline void fwht128_norm_flat_avx2(float x[], float y[], const __m256 factor) {
-    const __m256 X0  = _mm256_loadu_ps(x + 0);
-    const __m256 X1  = _mm256_loadu_ps(x + 8);
-    const __m256 X2  = _mm256_loadu_ps(x + 16);
-    const __m256 X3  = _mm256_loadu_ps(x + 24);
-    const __m256 X4  = _mm256_loadu_ps(x + 32);
-    const __m256 X5  = _mm256_loadu_ps(x + 40);
-    const __m256 X6  = _mm256_loadu_ps(x + 48);
-    const __m256 X7  = _mm256_loadu_ps(x + 56);
-    const __m256 X8  = _mm256_loadu_ps(x + 64);
-    const __m256 X9  = _mm256_loadu_ps(x + 72);
-    const __m256 X10 = _mm256_loadu_ps(x + 80);
-    const __m256 X11 = _mm256_loadu_ps(x + 88);
-    const __m256 X12 = _mm256_loadu_ps(x + 96);
-    const __m256 X13 = _mm256_loadu_ps(x + 104);
-    const __m256 X14 = _mm256_loadu_ps(x + 112);
-    const __m256 X15 = _mm256_loadu_ps(x + 120);
-
-    fwht128_norm_terminale(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, y, factor);
-}
-
-inline void fwht256_norm_flat_avx2(float x[], float y[], const __m256 factor) {
-    const __m256 X0  = (_mm256_loadu_ps(x + 0) + _mm256_loadu_ps(x + 128));
-    const __m256 X1  = (_mm256_loadu_ps(x + 8) + _mm256_loadu_ps(x + 136));
-    const __m256 X2  = (_mm256_loadu_ps(x + 16) + _mm256_loadu_ps(x + 144));
-    const __m256 X3  = (_mm256_loadu_ps(x + 24) + _mm256_loadu_ps(x + 152));
-    const __m256 X4  = (_mm256_loadu_ps(x + 32) + _mm256_loadu_ps(x + 160));
-    const __m256 X5  = (_mm256_loadu_ps(x + 40) + _mm256_loadu_ps(x + 168));
-    const __m256 X6  = (_mm256_loadu_ps(x + 48) + _mm256_loadu_ps(x + 176));
-    const __m256 X7  = (_mm256_loadu_ps(x + 56) + _mm256_loadu_ps(x + 184));
-    const __m256 X8  = (_mm256_loadu_ps(x + 64) + _mm256_loadu_ps(x + 192));
-    const __m256 X9  = (_mm256_loadu_ps(x + 72) + _mm256_loadu_ps(x + 200));
-    const __m256 X10 = (_mm256_loadu_ps(x + 80) + _mm256_loadu_ps(x + 208));
-    const __m256 X11 = (_mm256_loadu_ps(x + 88) + _mm256_loadu_ps(x + 216));
-    const __m256 X12 = (_mm256_loadu_ps(x + 96) + _mm256_loadu_ps(x + 224));
-    const __m256 X13 = (_mm256_loadu_ps(x + 104) + _mm256_loadu_ps(x + 232));
-    const __m256 X14 = (_mm256_loadu_ps(x + 112) + _mm256_loadu_ps(x + 240));
-    const __m256 X15 = (_mm256_loadu_ps(x + 120) + _mm256_loadu_ps(x + 248));
-
-    const __m256 x0  = (_mm256_loadu_ps(x + 0) - _mm256_loadu_ps(x + 128));
-    const __m256 x1  = (_mm256_loadu_ps(x + 8) - _mm256_loadu_ps(x + 136));
-    const __m256 x2  = (_mm256_loadu_ps(x + 16) - _mm256_loadu_ps(x + 144));
-    const __m256 x3  = (_mm256_loadu_ps(x + 24) - _mm256_loadu_ps(x + 152));
-    const __m256 x4  = (_mm256_loadu_ps(x + 32) - _mm256_loadu_ps(x + 160));
-    const __m256 x5  = (_mm256_loadu_ps(x + 40) - _mm256_loadu_ps(x + 168));
-    const __m256 x6  = (_mm256_loadu_ps(x + 48) - _mm256_loadu_ps(x + 176));
-    const __m256 x7  = (_mm256_loadu_ps(x + 56) - _mm256_loadu_ps(x + 184));
-    const __m256 x8  = (_mm256_loadu_ps(x + 64) - _mm256_loadu_ps(x + 192));
-    const __m256 x9  = (_mm256_loadu_ps(x + 72) - _mm256_loadu_ps(x + 200));
-    const __m256 x10 = (_mm256_loadu_ps(x + 80) - _mm256_loadu_ps(x + 208));
-    const __m256 x11 = (_mm256_loadu_ps(x + 88) - _mm256_loadu_ps(x + 216));
-    const __m256 x12 = (_mm256_loadu_ps(x + 96) - _mm256_loadu_ps(x + 224));
-    const __m256 x13 = (_mm256_loadu_ps(x + 104) - _mm256_loadu_ps(x + 232));
-    const __m256 x14 = (_mm256_loadu_ps(x + 112) - _mm256_loadu_ps(x + 240));
-    const __m256 x15 = (_mm256_loadu_ps(x + 120) - _mm256_loadu_ps(x + 248));
-
-    fwht128_norm_terminale(X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, y,       factor);
-    fwht128_norm_terminale(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, y + 128, factor);
-}
-//
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//
-inline void fwht512_norm_flat_avx2(float* srcdst, const float factor_s = 0.04419417382f)
+inline void fwht64_norm_terminale(const __m512 X0, const __m512 X1, const __m512 X2, const __m512 X3, float y[], const __m512 factor)
 {
-    for (int i = 0; i < 256; i+= sizeof(__m256)) {
-        const __m256 A = _mm256_loadu_ps(srcdst + i      );
-        const __m256 B = _mm256_loadu_ps(srcdst + i + 256);
-        const __m256 C = _mm256_add_ps (A, B);
-        const __m256 D = _mm256_sub_ps (A, B);
-        _mm256_storeu_ps(srcdst + i +   0, C);
-        _mm256_storeu_ps(srcdst + i + 256, D);
-    }
-    const __m256 factor = _mm256_set1_ps(factor_s);
-    fwht256_norm_flat_avx2(srcdst,       srcdst,       factor);
-    fwht256_norm_flat_avx2(srcdst + 256, srcdst + 256, factor);
+    const __m512 A0 = X0 + X2;
+    const __m512 A1 = X1 + X3;
+    const __m512 B0 = X0 - X2;
+    const __m512 B1 = X1 - X3;
+
+    fwht32_norm_terminale(A0, A1, y +  0, factor);
+    fwht32_norm_terminale(B0, B1, y + 32, factor);
+}
+
+inline void fwht64_norm_flat_avx512(float x[], float y[], const __m512 factor) {
+    const __m512 X0 = _mm512_loadu_ps(x + 0);
+    const __m512 X1 = _mm512_loadu_ps(x + 16);
+    const __m512 X2 = _mm512_loadu_ps(x + 32);
+    const __m512 X3 = _mm512_loadu_ps(x + 48);
+
+    const __m512 A0 = X0 + X2, A1 = X1 + X3;
+    const __m512 B0 = X0 - X2, B1 = X1 - X3;
+
+    fwht32_norm_terminale(A0, A1, y +  0, factor);
+    fwht32_norm_terminale(B0, B1, y + 32, factor);
+}
+
+inline void fwht128_norm_terminale(__m512 X0, __m512 X1, __m512 X2, __m512 X3, __m512 X4, __m512 X5, __m512 X6, __m512 X7, float y[], const __m512 factor) {
+    const __m512 A0 = X0 + X4, A1 = X1 + X5, A2 = X2 + X6, A3 = X3 + X7;
+    const __m512 B0 = X0 - X4, B1 = X1 - X5, B2 = X2 - X6, B3 = X3 - X7;
+    fwht64_norm_terminale(A0, A1, A2, A3, y +  0, factor);
+    fwht64_norm_terminale(B0, B1, B2, B3, y + 64, factor);
+}
+
+inline void fwht128_norm_flat_avx512(float x[], float y[], const __m512 factor) {
+    const __m512 X0 = _mm512_loadu_ps(x + 0);
+    const __m512 X1 = _mm512_loadu_ps(x + 16);
+    const __m512 X2 = _mm512_loadu_ps(x + 32);
+    const __m512 X3 = _mm512_loadu_ps(x + 48);
+    const __m512 X4 = _mm512_loadu_ps(x + 64);
+    const __m512 X5 = _mm512_loadu_ps(x + 80);
+    const __m512 X6 = _mm512_loadu_ps(x + 96);
+    const __m512 X7 = _mm512_loadu_ps(x + 112);
+
+    fwht128_norm_terminale(X0, X1, X2, X3, X4, X5, X6, X7, y, factor);
+}
+
+inline void fwht256_norm_flat_avx512(float x[], float y[], const __m512 factor) {
+    const __m512 X0  = (_mm512_loadu_ps(x +   0) + _mm512_loadu_ps(x + 128));
+    const __m512 X2  = (_mm512_loadu_ps(x +  16) + _mm512_loadu_ps(x + 144));
+    const __m512 X4  = (_mm512_loadu_ps(x +  32) + _mm512_loadu_ps(x + 160));
+    const __m512 X6  = (_mm512_loadu_ps(x +  48) + _mm512_loadu_ps(x + 176));
+    const __m512 X8  = (_mm512_loadu_ps(x +  64) + _mm512_loadu_ps(x + 192));
+    const __m512 X10 = (_mm512_loadu_ps(x +  80) + _mm512_loadu_ps(x + 208));
+    const __m512 X12 = (_mm512_loadu_ps(x +  96) + _mm512_loadu_ps(x + 224));
+    const __m512 X14 = (_mm512_loadu_ps(x + 112) + _mm512_loadu_ps(x + 240));
+ 
+    const __m512 x0  = (_mm512_loadu_ps(x +   0) - _mm512_loadu_ps(x + 128));
+    const __m512 x2  = (_mm512_loadu_ps(x +  16) - _mm512_loadu_ps(x + 144));
+    const __m512 x4  = (_mm512_loadu_ps(x +  32) - _mm512_loadu_ps(x + 160));
+    const __m512 x6  = (_mm512_loadu_ps(x +  48) - _mm512_loadu_ps(x + 176));
+    const __m512 x8  = (_mm512_loadu_ps(x +  64) - _mm512_loadu_ps(x + 192));
+    const __m512 x10 = (_mm512_loadu_ps(x +  80) - _mm512_loadu_ps(x + 208));
+    const __m512 x12 = (_mm512_loadu_ps(x +  96) - _mm512_loadu_ps(x + 224));
+    const __m512 x14 = (_mm512_loadu_ps(x + 112) - _mm512_loadu_ps(x + 240));
+
+    fwht128_norm_terminale(X0, X2, X4, X6, X8, X10, X12, X14,  y,       factor);
+    fwht128_norm_terminale(x0, x2, x4, x6, x8, x10, x12, x14,  y + 128, factor);
 }
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-inline void fwht1024_norm_flat_avx2(float* srcdst)
+inline void fwht512_norm_flat_avx512(float* srcdst, const float factor_s = 0.04419417382f)
 {
-    for (int i = 0; i < 512; i+= sizeof(__m256)) {
-        const __m256 A = _mm256_loadu_ps(srcdst + i      );
-        const __m256 B = _mm256_loadu_ps(srcdst + i + 512);
-        const __m256 C = _mm256_add_ps (A, B);
-        const __m256 D = _mm256_sub_ps (A, B);
-        _mm256_storeu_ps(srcdst + i +   0, C);
-        _mm256_storeu_ps(srcdst + i + 512, D);
+    const int simd = sizeof(__m512) / sizeof(float);
+    for (int i = 0; i < 256; i+= simd) {
+        const __m512 A = _mm512_loadu_ps(srcdst + i      );
+        const __m512 B = _mm512_loadu_ps(srcdst + i + 256);
+        const __m512 C = _mm512_add_ps (A, B);
+        const __m512 D = _mm512_sub_ps (A, B);
+        _mm512_storeu_ps(srcdst + i +   0, C);
+        _mm512_storeu_ps(srcdst + i + 256, D);
     }
-    fwht512_norm_flat_avx2(srcdst,       0.03125f);
-    fwht512_norm_flat_avx2(srcdst + 512, 0.03125f);
+    const __m512 factor = _mm512_set1_ps(factor_s);
+    fwht256_norm_flat_avx512(srcdst,       srcdst,       factor);
+    fwht256_norm_flat_avx512(srcdst + 256, srcdst + 256, factor);
 }
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-inline __m256 fwht8_norm_avx2(const __m256 x, const __m256 factor) {
+inline void fwht1024_norm_flat_avx512(float* srcdst)
+{
+    const int simd = sizeof(__m512) / sizeof(float);
+    for (int i = 0; i < 512; i+= simd) {
+        const __m512 A = _mm512_loadu_ps(srcdst + i      );
+        const __m512 B = _mm512_loadu_ps(srcdst + i + 512);
+        const __m512 C = _mm512_add_ps (A, B);
+        const __m512 D = _mm512_sub_ps (A, B);
+        _mm512_storeu_ps(srcdst + i +   0, C);
+        _mm512_storeu_ps(srcdst + i + 512, D);
+    }
+    fwht512_norm_flat_avx512(srcdst,       0.03125f);
+    fwht512_norm_flat_avx512(srcdst + 512, 0.03125f);
+}
+//
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+inline __m256 fwht8_norm_avx512(const __m256 x, const __m256 factor) {
     const __m256 M0 = _mm256_castsi256_ps(_mm256_setr_epi32(0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000));
     const __m256 N0 = _mm256_xor_ps(x, M0);
     const __m256 N1 = _mm256_permute2f128_ps(x, x, 0x01);
@@ -275,26 +249,26 @@ inline __m256 fwht8_norm_avx2(const __m256 x, const __m256 factor) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-inline void fwht16_norm_avx2(__m256 * B0, __m256 * B1, const __m256 factor) {
+inline void fwht16_norm_avx512(__m256 * B0, __m256 * B1, const __m256 factor) {
     const __m256 C0 = _mm256_add_ps(*B0, *B1);
     const __m256 C1 = _mm256_sub_ps(*B0, *B1);
-    *B0             = fwht8_norm_avx2(C0, factor);
-    *B1             = fwht8_norm_avx2(C1, factor);
+    *B0             = fwht8_norm_avx512(C0, factor);
+    *B1             = fwht8_norm_avx512(C1, factor);
 }
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-inline void fwht32_norm_avx2(__m256 * B0, __m256 * B1, __m256 * B2, __m256 * B3, const __m256 factor) {
+inline void fwht32_norm_avx512(__m256 * B0, __m256 * B1, __m256 * B2, __m256 * B3, const __m256 factor) {
     __m256 C0 = _mm256_add_ps(*B0, *B2);
     __m256 C1 = _mm256_add_ps(*B1, *B3);
 
     __m256 C2 = _mm256_sub_ps(*B0, *B2);
     __m256 C3 = _mm256_sub_ps(*B1, *B3);
 
-    fwht16_norm_avx2(&C0, &C1, factor);
-    fwht16_norm_avx2(&C2, &C3, factor);
+    fwht16_norm_avx512(&C0, &C1, factor);
+    fwht16_norm_avx512(&C2, &C3, factor);
 
     *B0 = C0;
     *B1 = C1;
@@ -307,87 +281,57 @@ inline void fwht32_norm_avx2(__m256 * B0, __m256 * B1, __m256 * B2, __m256 * B3,
 //
 //
 template <>
-inline void fwht_norm_avx2<8>(float x[]) {
+inline void fwht_norm_avx512<8>(float x[]) {
     const __m256 factor = _mm256_set1_ps(0.35355339059f);
     const __m256 C0     = _mm256_loadu_ps(x);
-    const __m256 D0     = fwht8_norm_avx2(C0, factor);
+    const __m256 D0     = fwht8_norm_avx512(C0, factor);
     _mm256_storeu_ps(x, D0);
 }
-#if 0
-template <>
-inline void fwht_norm_avx2<8>(float x[], float y[]) {
-    const __m256 factor = _mm256_set1_ps(0.35355339059f);
-    const __m256 C0     = _mm256_loadu_ps(x);
-    const __m256 D0     = fwht8_norm_avx2(C0, factor);
-    _mm256_storeu_ps(y, D0);
-}
-#endif
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
 template <>
-inline void fwht_norm_avx2<16>(float x[]) {
-    const __m256 factor = _mm256_set1_ps(0.25f);
-    fwht16_norm_flat_avx2(x, x, factor);
+inline void fwht_norm_avx512<16>(float x[]) {
+    const __m512 factor = _mm512_set1_ps(0.25f);
+    fwht16_norm_flat_avx512(x, x, factor);
 }
-#if 0
-template <>
-inline void fwht_norm_avx2<16>(float x[], float y[]) {
-    const __m256 factor = _mm256_set1_ps(0.25f);
-    fwht16_norm_flat_avx2(x, y, factor);
-}
-#endif
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
 template <>
-inline void fwht_norm_avx2<32>(float x[]) {
-    const __m256 factor = _mm256_set1_ps(0.17677669529f);
-    fwht32_norm_flat_avx2(x, x, factor);
+inline void fwht_norm_avx512<32>(float x[]) {
+    const __m512 factor = _mm512_set1_ps(0.17677669529f);
+    fwht32_norm_flat_avx512(x, x, factor);
 }
-#if 0
-template <>
-inline void fwht_norm_avx2<32>(float x[], float y[]) {
-    const __m256 factor = _mm256_set1_ps(0.17677669529f);
-    fwht32_norm_flat_avx2(x, y, factor);
-}
-#endif
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
 template <>
-inline void fwht_norm_avx2<64>(float x[]) {
-    const __m256 factor = _mm256_set1_ps(0.125f);
-    fwht64_norm_flat_avx2(x, x, factor);
+inline void fwht_norm_avx512<64>(float x[]) {
+    const __m512 factor = _mm512_set1_ps(0.125f);
+    fwht64_norm_flat_avx512(x, x, factor);
 }
-#if 0
-template <>
-inline void fwht_norm_avx2<64>(float x[], float y[]) {
-    const __m256 factor = _mm256_set1_ps(0.125f);
-    fwht64_norm_flat_avx2(x, y, factor);
-}
-#endif
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
 template <>
-inline void fwht_norm_avx2<128>(float x[]) {
+inline void fwht_norm_avx512<128>(float x[]) {
+    const __m512 factor = _mm512_set1_ps(0.08838834764f);
+    fwht128_norm_flat_avx512(x, x, factor);
+}
+#if 0
+template <>
+inline void fwht_norm_avx512<128>(float x[], float y[]) {
     const __m256 factor = _mm256_set1_ps(0.08838834764f);
-    fwht128_norm_flat_avx2(x, x, factor);
-}
-#if 0
-template <>
-inline void fwht_norm_avx2<128>(float x[], float y[]) {
-    const __m256 factor = _mm256_set1_ps(0.08838834764f);
-    fwht128_norm_flat_avx2(x, y, factor);
+    fwht128_norm_flat_avx512(x, y, factor);
 }
 #endif
 //
@@ -395,14 +339,14 @@ inline void fwht_norm_avx2<128>(float x[], float y[]) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <> inline void fwht_norm_avx2<256>(float x[]) {
-    const __m256 factor = _mm256_set1_ps(0.0625f);
-    fwht256_norm_flat_avx2(x, x, factor);
+template <> inline void fwht_norm_avx512<256>(float x[]) {
+    const __m512 factor = _mm512_set1_ps(0.0625f);
+    fwht256_norm_flat_avx512(x, x, factor);
 }
 #if 0
-template <> inline void fwht_norm_avx2<256>(float x[], float y[]) {
+template <> inline void fwht_norm_avx512<256>(float x[], float y[]) {
     const __m256 factor = _mm256_set1_ps(0.0625f);
-    fwht256_norm_flat_avx2(x, y, factor);
+    fwht256_norm_flat_avx512(x, y, factor);
 }
 #endif
 //
@@ -410,16 +354,16 @@ template <> inline void fwht_norm_avx2<256>(float x[], float y[]) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <> inline void fwht_norm_avx2<512>(float x[]) {
-    fwht512_norm_flat_avx2(x);
+template <> inline void fwht_norm_avx512<512>(float x[]) {
+    fwht512_norm_flat_avx512(x);
 }
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <> inline void fwht_norm_avx2<1024>(float x[]) {
-    fwht1024_norm_flat_avx2(x);
+template <> inline void fwht_norm_avx512<1024>(float x[]) {
+    fwht1024_norm_flat_avx512(x);
 }
 //
 //

@@ -20,10 +20,8 @@
 #include <omp.h>
 #include <atomic>
 #include <random>
-#include "fwht.hpp"
-
-#include "BLG/naive_pruning/decoder_naive_pruning.hpp"
-#include "BLG/code.hpp"
+#include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
+// #include "definitions/code.hpp"
 
 // #include <omp.h>
 
@@ -192,45 +190,6 @@ int main(int argc, char *argv[])
 
     decoder_parameters dec_param(code_param);
 
-    dec_param.Roots_V.resize(n + 1);
-    dec_param.Roots_indices.resize(n);
-    dec_param.clusts_CNs.resize(n);
-    dec_param.clusts_VNs.resize(n);
-    dec_param.coefs_id.resize(n);
-
-    dec_param.Roots_V[n].resize(1U << n, false);
-
-    for (uint16_t l = 0; l < n; l++)
-    {
-        dec_param.Roots_V[l].resize(1U << l, false);
-        dec_param.Roots_indices[l].resize(pow(2, l));
-        dec_param.clusts_CNs[l].resize(pow(2, l));
-        dec_param.clusts_VNs[l].resize(pow(2, l));
-        dec_param.coefs_id[l].resize(pow(2, l));
-
-        for (uint16_t s = 0; s < dec_param.Roots_V[l].size(); s++)
-        {
-            uint16_t sz1 = N >> (l + 1U), sz2 = sz1 << 1U;
-            dec_param.clusts_CNs[l][s].resize(sz1);
-            dec_param.clusts_VNs[l][s].resize(sz1);
-            dec_param.coefs_id[l][s].resize(sz1);
-            for (uint16_t t = 0; t < sz1; ++t)
-            {
-                dec_param.clusts_CNs[l][s][t] = s * sz2 + (t << 1U) - (t % sz1);
-                dec_param.clusts_VNs[l][s][t] = dec_param.clusts_CNs[l][s][t] + (N >> (l + 1U));
-                dec_param.coefs_id[l][s][t] = dec_param.clusts_VNs[l][s][t] - (s + 1) * sz1;
-            }
-        }
-        for (uint16_t s = 0; s < dec_param.Roots_indices[l].size(); s++)
-        {
-
-            uint16_t sz1 = N >> l;
-            dec_param.Roots_indices[l][s].resize(sz1);
-            for (uint16_t t = 0; t < sz1; ++t)
-                dec_param.Roots_indices[l][s][t] = s * sz1 + t;
-        }
-    }
-    frozen_lay_pos(dec_param, dec_param.ufrozen, dec_param.clst_frozen);
     CCSK_seq ccsk_seq;
     vector<vector<uint16_t>> CCSK_rotated_codes(q, vector<uint16_t>());
     if (code_param.sig_mod == "CCSK_BIN")
@@ -254,7 +213,6 @@ int main(int argc, char *argv[])
 
     dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
     dec_param.ucap[n].assign(N, dec_param.frozen_val);
-
     uint64_t FER_out = 0, gen_frames_out = 0;
     std::atomic<int> global_counter(0);
     std::atomic<int> FER(0);
@@ -288,7 +246,7 @@ int main(int argc, char *argv[])
             for (int j = 0; j < N; j++)
             {
                 L[i][j].intrinsic_LLR.resize(q, 0);
-                L[i][j].is_freq=false;
+                L[i][j].is_freq = false;
             }
 
         vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
@@ -297,7 +255,7 @@ int main(int argc, char *argv[])
         //
         std::vector<uint16_t> decoded_n(N);
 
-        decoder_naive_pruning<_GF_> dec(N, frozen_symbols);
+        decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
 
         std::vector<symbols_t> llrs_n(N);
         //
@@ -311,26 +269,6 @@ int main(int argc, char *argv[])
 
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
 
-#if 0
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //
-            for (int i = 1; i <= n; i++)
-            for (int j = 0; j < N; j++)
-            {
-                L[i][j].intrinsic_LLR.assign(q, 0);
-                L[i][j].is_freq=false;
-            }
-
-            const auto m_start = std::chrono::system_clock::now();
-            decode_SC_FFT(dec_param_local, L, info_sec_rec);
-            const auto m_stop = std::chrono::system_clock::now();
-            time_base[thread_id] += std::chrono::duration_cast<std::chrono::microseconds>(m_stop - m_start).count();
-
-            //
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#else
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //
             for (int i = 0; i < N; i++)
             {
                 llrs_n[i].is_freq = false;
@@ -345,9 +283,6 @@ int main(int argc, char *argv[])
 
             for (int i = 0; i < K; i++)
                 info_sec_rec[i] = decoded_n[dec_param.reliab_sequence[i]];
-            //
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 
             for (uint16_t i = 0; i < dec_param_local.K; i++)
             {
@@ -365,7 +300,7 @@ int main(int argc, char *argv[])
                 FER.fetch_add(1);
             }
             succ_now = global_counter.load() - FER.load();
-            if((global_counter % 100) == 0)
+            if ((global_counter % 100) == 0)
             {
 
 #pragma omp critical

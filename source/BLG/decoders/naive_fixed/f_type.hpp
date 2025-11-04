@@ -6,8 +6,8 @@
 //
 #include "include/ap_fixed.h"
 //
-#define NBITS   64
-#define NFRAC   32
+#define NBITS   32
+#define NFRAC   22
 //
 struct symbols_f {
     ap_fixed<NBITS, NFRAC> value[_GF_];

@@ -4,7 +4,7 @@
 //
 //
 //
-#include "const_config_GF64_N64.hpp"
+// #include "const_config_GF64_N64.hpp"
 #include "archi.hpp"
 //
 //

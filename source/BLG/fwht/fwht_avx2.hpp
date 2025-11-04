@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <immintrin.h>
 
-#include "const_config_GF64_N64.hpp"
+// #include "const_config_GF64_N64.hpp"
 
 template <uint16_t GF>
 inline void fwht_avx2(float x[]) {

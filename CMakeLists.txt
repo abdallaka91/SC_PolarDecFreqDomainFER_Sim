@@ -45,6 +45,7 @@ add_executable(Sim2 ${SRC_FILES})
 
 target_include_directories(Sim2 PRIVATE
     ${CMAKE_SOURCE_DIR}/include
+     ${CMAKE_SOURCE_DIR}/source/BLG/include
     ${CMAKE_SOURCE_DIR}/source/BLG
 )
 

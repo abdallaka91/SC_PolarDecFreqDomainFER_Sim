@@ -20,7 +20,8 @@
 #include <omp.h>
 #include <atomic>
 #include <random>
-#include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
+// #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
+#include "decoders/naive_fixed/decoder_naive_fixed.hpp"
 // #include "definitions/code.hpp"
 
 // #include <omp.h>
@@ -255,7 +256,8 @@ int main(int argc, char *argv[])
         //
         std::vector<uint16_t> decoded_n(N);
 
-        decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
+        // decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
+        decoder* dec; dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
 
         std::vector<symbols_t> llrs_n(N);
         //
@@ -277,7 +279,7 @@ int main(int argc, char *argv[])
             }
 
             const auto m_start = std::chrono::system_clock::now();
-            dec.execute(llrs_n.data(), decoded_n.data());
+            dec->execute(llrs_n.data(), decoded_n.data());
             const auto m_stop = std::chrono::system_clock::now();
             time_base[thread_id] += std::chrono::duration_cast<std::chrono::microseconds>(m_stop - m_start).count();
 

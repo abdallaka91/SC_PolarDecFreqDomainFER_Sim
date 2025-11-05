@@ -3,6 +3,7 @@
 #include "g_function.hpp"
 #include "f_argmax.hpp"
 #include "f_normalize.hpp"
+#include "f_fwht.hpp"
 #include "f_fwht_norm.hpp"
 //
 //
@@ -45,8 +46,8 @@ decoder_naive_fixed<gf_size>::decoder_naive_fixed(const int n, const int* frozen
 template <int gf_size> decoder_naive_fixed<gf_size>::decoder_naive_fixed() : N(0)
 {
     f_internal = nullptr;
-    symbols  = nullptr;
-    frozen   = nullptr;
+    symbols    = nullptr;
+    frozen     = nullptr;
     printf("(EE) Error we should never be there...\n");
     printf("(EE) %s %d\n", __FILE__, __LINE__);
     exit(EXIT_FAILURE);

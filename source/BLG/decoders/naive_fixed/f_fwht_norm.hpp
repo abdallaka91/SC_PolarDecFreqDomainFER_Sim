@@ -26,7 +26,39 @@
 #include <cstring>
 #include "f_type.hpp"
 
-
+//
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+template <uint16_t galois_size>
+inline float norm_factor_lwht()
+{
+    if (galois_size == 8) {
+        return 0.35355339059f;
+    }else if (galois_size == 16) {
+        return 0.25f;
+    }else if (galois_size == 32) {
+        return 0.17677669529f;
+    }else if (galois_size == 64) {
+        return 0.125f;
+    }else if (galois_size == 128) {
+        return 0.08838834764f;
+    }else if (galois_size == 256) {
+        return 0.0625f;
+    }else if (galois_size == 512) {
+        return 0.04419417382f;
+    }else if (galois_size == 1024) {
+        return 0.03125f;
+    }else if (galois_size == 2048) {
+        return 0.02209708691f;
+    }else if (galois_size == 4096) {
+        return 0.015625f;
+    }else {
+        printf("Error !\n");
+        return -1;
+    }
+}
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

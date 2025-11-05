@@ -6,7 +6,7 @@
 //
 #include "include/ap_fixed.h"
 //
-#define NBITS   24
+#define NBITS   26
 #define NINTG   2
 //
 struct symbols_f {

@@ -38,7 +38,7 @@ void f_function(symbols_t *__restrict dst, symbols_t *__restrict src_a, symbols_
             maxv = fmax(maxv, src_a->value[i].to_float());
             maxv = fmax(maxv, src_b->value[i].to_float());
         }
-        ap_fixed<NBITS, NFRAC> fact = 1.f / maxv;
+        ap_fixed<NBITS, NINTG> fact = 1.f / maxv;
 
         for (size_t i = 0; i < gf_size; i++)
         {

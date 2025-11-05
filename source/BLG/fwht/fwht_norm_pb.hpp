@@ -180,7 +180,7 @@ inline void fwht_2norm_internal<64>(value_type* inp, const float fact) {
 //
 template <>
 inline void fwht_2norm<64>(value_type* inp) {
-    fwht_2norm_internal<64>(inp, 0.125f);
+    fwht_2norm_internal<64>(inp, 0.015625f);
 }
 //
 //

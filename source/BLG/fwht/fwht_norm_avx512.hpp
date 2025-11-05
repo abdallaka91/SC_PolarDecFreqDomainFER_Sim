@@ -314,7 +314,7 @@ inline void fwht_norm_avx512<32>(float x[]) {
 //
 template <>
 inline void fwht_norm_avx512<64>(float x[]) {
-    const __m512 factor = _mm512_set1_ps(0.125f);
+    const __m512 factor = _mm512_set1_ps(0.015625f);
     fwht64_norm_flat_avx512(x, x, factor);
 }
 //

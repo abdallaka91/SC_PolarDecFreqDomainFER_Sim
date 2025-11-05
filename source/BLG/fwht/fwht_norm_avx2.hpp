@@ -434,13 +434,13 @@ inline void fwht_norm_avx2<32>(float x[], float y[]) {
 //
 template <>
 inline void fwht_norm_avx2<64>(float x[]) {
-    // const __m256 factor = _mm256_set1_ps(0.125f);
+    // const __m256 factor = _mm256_set1_ps(0.015625f);
     fwht64_norm_flat_avx2(x, x);
 }
 #if 0
 template <>
 inline void fwht_norm_avx2<64>(float x[], float y[]) {
-    // const __m256 factor = _mm256_set1_ps(0.125f);
+    // const __m256 factor = _mm256_set1_ps(0.015625f);
     fwht64_norm_flat_avx2(x, y);
 }
 #endif

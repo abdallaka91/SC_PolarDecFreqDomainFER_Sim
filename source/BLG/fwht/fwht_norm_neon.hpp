@@ -203,7 +203,7 @@ inline void fwht64_norm_flat_neon(float x[], float y[]) {
     const float32x4x2_t X6 = vld1q_x2_f32(x + 48);
     const float32x4x2_t X7 = vld1q_x2_f32(x + 56);
 
-    const float32x4_t factor = {0.125f, 0.125f, 0.125f, 0.125f};
+    const float32x4_t factor = {0.015625f, 0.015625f, 0.015625f, 0.015625f};
 
     const float32x4x2_t A0 = vaddq_x2_f32(X0, X4), A1 = vaddq_x2_f32(X1, X5);
     const float32x4x2_t A2 = vaddq_x2_f32(X2, X6), A3 = vaddq_x2_f32(X3, X7);

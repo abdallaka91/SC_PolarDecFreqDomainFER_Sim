@@ -350,11 +350,11 @@ template <> inline void lwht_norm_internal_neon<64>(float* dst, const float* src
 }
 //
 template <> inline void lwht_norm_generic_neon<64>(float* dst, const float* src) {
-    lwht_norm_internal_neon<64>(dst, src, 0.125f);
+    lwht_norm_internal_neon<64>(dst, src, 0.015625f);
 }
 //
 template <> inline void lwht_norm_generic_neon<64>(float* srcdst) {
-    lwht_norm_internal_neon<64>(srcdst, 0.125f);
+    lwht_norm_internal_neon<64>(srcdst, 0.015625f);
 }
 //
 //

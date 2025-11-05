@@ -32,14 +32,14 @@
 //
 //
 template <uint16_t galois_size>
-inline void fwht(ap_fixed<NBITS, NFRAC> x[]) {
+inline void fwht(ap_fixed<NBITS, NINTG> x[]) {
     assert(x != 0);
     assert(true);
     exit(x != NULL); // pour gerer le release mode
 }
 
 template <uint16_t galois_size>
-inline void fwht(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> * src) {
+inline void fwht(ap_fixed<NBITS, NINTG> * dst, const ap_fixed<NBITS, NINTG> * src) {
     assert(src != nullptr);
     assert(dst != nullptr);
     assert(true);
@@ -47,7 +47,7 @@ inline void fwht(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> * sr
 }
 
 template <uint16_t galois_size>
-inline void normalize(ap_fixed<NBITS, NFRAC> x[], const ap_fixed<NBITS, NFRAC> fact) {
+inline void normalize(ap_fixed<NBITS, NINTG> x[], const ap_fixed<NBITS, NINTG> fact) {
     for (int i = 0; i < galois_size; i++)
         x[i] = x[i] * fact;
 }
@@ -57,9 +57,9 @@ inline void normalize(ap_fixed<NBITS, NFRAC> x[], const ap_fixed<NBITS, NFRAC> f
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-//inline void fwht_tuile(const ap_fixed<NBITS, NFRAC> inp[8], ap_fixed<NBITS, NFRAC> outp[8]) {
-inline void fwht_tuile(const ap_fixed<NBITS, NFRAC>* inp, ap_fixed<NBITS, NFRAC>* outp) {
-    ap_fixed<NBITS, NFRAC> L1[8], L2[8];
+//inline void fwht_tuile(const ap_fixed<NBITS, NINTG> inp[8], ap_fixed<NBITS, NINTG> outp[8]) {
+inline void fwht_tuile(const ap_fixed<NBITS, NINTG>* inp, ap_fixed<NBITS, NINTG>* outp) {
+    ap_fixed<NBITS, NINTG> L1[8], L2[8];
     L1[0] = inp[0] + inp[4];
     L1[1] = inp[1] + inp[5];
     L1[2] = inp[2] + inp[6];
@@ -93,8 +93,8 @@ inline void fwht_tuile(const ap_fixed<NBITS, NFRAC>* inp, ap_fixed<NBITS, NFRAC>
 //
 //
 template <>
-inline void fwht<8>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[8];
+inline void fwht<8>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[8];
     for (int i = 0; i < 4; i++) {
         part_1[i]     = inp[i] + inp[i + 4];
         part_1[4 + i] = inp[i] - inp[i + 4];
@@ -105,8 +105,8 @@ inline void fwht<8>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<8>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> * src) {
-    // ap_fixed<NBITS, NFRAC> part_1[8];
+inline void fwht<8>(ap_fixed<NBITS, NINTG> * dst, const ap_fixed<NBITS, NINTG> * src) {
+    // ap_fixed<NBITS, NINTG> part_1[8];
     for (int i = 0; i < 4; i++) {
         dst[i]     = src[i] + src[i + 4];
         dst[4 + i] = src[i] - src[i + 4];
@@ -119,9 +119,9 @@ inline void fwht<8>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> *
 //
 //
 template <>
-inline void fwht<16>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[8];
-    ap_fixed<NBITS, NFRAC> part_2[8];
+inline void fwht<16>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[8];
+    ap_fixed<NBITS, NINTG> part_2[8];
 
     for (int i = 0; i < 8; i++)
         part_1[i] = inp[i] + inp[i + 8];
@@ -135,7 +135,7 @@ inline void fwht<16>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<16>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> * src) {
+inline void fwht<16>(ap_fixed<NBITS, NINTG> * dst, const ap_fixed<NBITS, NINTG> * src) {
     for (int i = 0; i < 8; i++) {
         dst[i]     = src[i] + src[i + 8];
         dst[8 + i] = src[i] - src[i + 8];
@@ -149,9 +149,9 @@ inline void fwht<16>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> 
 //
 //
 template <>
-inline void fwht<32>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[16];
-    ap_fixed<NBITS, NFRAC> part_2[16];
+inline void fwht<32>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[16];
+    ap_fixed<NBITS, NINTG> part_2[16];
 
     for (int i = 0; i < 16; i++) {
         part_1[i] = inp[i] + inp[i + 16];
@@ -170,7 +170,7 @@ inline void fwht<32>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<32>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> * src) {
+inline void fwht<32>(ap_fixed<NBITS, NINTG> * dst, const ap_fixed<NBITS, NINTG> * src) {
     for (int i = 0; i < 16; i++) {
         dst[i]      = src[i] + src[i + 16];
         dst[16 + i] = src[i] - src[i + 16];
@@ -184,9 +184,9 @@ inline void fwht<32>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> 
 //
 //
 template <>
-inline void fwht<64>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[32];
-    ap_fixed<NBITS, NFRAC> part_2[32];
+inline void fwht<64>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[32];
+    ap_fixed<NBITS, NINTG> part_2[32];
 
     for (int i = 0; i < 32; i++) {
         part_1[i] = inp[i] + inp[i + 32];
@@ -205,7 +205,7 @@ inline void fwht<64>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<64>(ap_fixed<NBITS, NFRAC>* dst, const ap_fixed<NBITS, NFRAC>* src) {
+inline void fwht<64>(ap_fixed<NBITS, NINTG>* dst, const ap_fixed<NBITS, NINTG>* src) {
     for (int i = 0; i < 32; i++) {
         dst[i]      = src[i] + src[i + 32];
         dst[32 + i] = src[i] - src[i + 32];
@@ -219,8 +219,8 @@ inline void fwht<64>(ap_fixed<NBITS, NFRAC>* dst, const ap_fixed<NBITS, NFRAC>* 
 //
 //
 template <>
-inline void fwht<128>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[64], part_2[64];
+inline void fwht<128>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[64], part_2[64];
 
     for (int i = 0; i < 64; i++) {
         part_1[i] = inp[i] + inp[i + 64];
@@ -239,7 +239,7 @@ inline void fwht<128>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<128>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC> * src) {
+inline void fwht<128>(ap_fixed<NBITS, NINTG> * dst, const ap_fixed<NBITS, NINTG> * src) {
     for (int i = 0; i < 64; i++) {
         dst[i]      = src[i] + src[i + 64];
         dst[64 + i] = src[i] - src[i + 64];
@@ -253,9 +253,9 @@ inline void fwht<128>(ap_fixed<NBITS, NFRAC> * dst, const ap_fixed<NBITS, NFRAC>
 //
 //
 template <>
-inline void fwht<256>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[128];
-    ap_fixed<NBITS, NFRAC> part_2[128];
+inline void fwht<256>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[128];
+    ap_fixed<NBITS, NINTG> part_2[128];
 
     for (int i = 0; i < 128; i++) {
         part_1[i] = inp[i] + inp[i + 128];
@@ -274,7 +274,7 @@ inline void fwht<256>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<256>(ap_fixed<NBITS, NFRAC>* dst, const ap_fixed<NBITS, NFRAC>* src) {
+inline void fwht<256>(ap_fixed<NBITS, NINTG>* dst, const ap_fixed<NBITS, NINTG>* src) {
     for (int i = 0; i < 128; i++) {
         dst[i]       = src[i] + src[i + 128];
         dst[128 + i] = src[i] - src[i + 128];
@@ -293,9 +293,9 @@ inline void fwht<256>(ap_fixed<NBITS, NFRAC>* dst, const ap_fixed<NBITS, NFRAC>*
 //
 //
 template <>
-inline void fwht<512>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[256];
-    ap_fixed<NBITS, NFRAC> part_2[256];
+inline void fwht<512>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[256];
+    ap_fixed<NBITS, NINTG> part_2[256];
 
     for (int i = 0; i < 256; i++) {
         part_1[i] = inp[i] + inp[i + 256];
@@ -314,7 +314,7 @@ inline void fwht<512>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<512>(ap_fixed<NBITS, NFRAC>* dst, const ap_fixed<NBITS, NFRAC>* src) {
+inline void fwht<512>(ap_fixed<NBITS, NINTG>* dst, const ap_fixed<NBITS, NINTG>* src) {
     for (int i = 0; i < 256; i++) {
         dst[i]       = src[i] + src[i + 256];
         dst[256 + i] = src[i] - src[i + 256];
@@ -328,9 +328,9 @@ inline void fwht<512>(ap_fixed<NBITS, NFRAC>* dst, const ap_fixed<NBITS, NFRAC>*
 //
 //
 template <>
-inline void fwht<1024>(ap_fixed<NBITS, NFRAC>* inp) {
-    ap_fixed<NBITS, NFRAC> part_1[512];
-    ap_fixed<NBITS, NFRAC> part_2[512];
+inline void fwht<1024>(ap_fixed<NBITS, NINTG>* inp) {
+    ap_fixed<NBITS, NINTG> part_1[512];
+    ap_fixed<NBITS, NINTG> part_2[512];
 
     for (int i = 0; i < 512; i++) {
         part_1[i] = inp[i] + inp[i + 512];
@@ -349,7 +349,7 @@ inline void fwht<1024>(ap_fixed<NBITS, NFRAC>* inp) {
 //
 //
 template <>
-inline void fwht<1024>(ap_fixed<NBITS, NFRAC>* dst, const ap_fixed<NBITS, NFRAC>* src) {
+inline void fwht<1024>(ap_fixed<NBITS, NINTG>* dst, const ap_fixed<NBITS, NINTG>* src) {
     for (int i = 0; i < 256; i++) {
         dst[i]       = src[i] + src[i + 256];
         dst[256 + i] = src[i] - src[i + 256];

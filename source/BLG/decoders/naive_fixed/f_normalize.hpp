@@ -10,22 +10,31 @@
 //
 //
 template <int gf_size>
-void f_normalize(ap_fixed<NBITS, NFRAC> * tab) {
-    ap_fixed<NBITS, NFRAC> sum = 1e-24f;
-    for (int i = 0; i < gf_size; i += 1) {
+void f_normalize(ap_fixed<NBITS, NINTG> *tab)
+{
+    ap_fixed<NBITS, NINTG> sum = 1e-24f;
+    for (int i = 0; i < gf_size; i += 1)
+    {
         sum += tab[i];
     }
-
-    const ap_fixed<NBITS, NFRAC> zero = 0.f;
-    if ( zero == sum ) {
+    const ap_fixed<NBITS, NINTG> zero = 0.f;
+    if (zero == sum)
+    {
         sum = 1.f;
     }
+    float sum1 = (float)sum;
 
-    const ap_fixed<NBITS, NFRAC> one    = 1.f;
-    const ap_fixed<NBITS, NFRAC> factor = one / sum;
-    for (int i = 0; i < gf_size; i++) {
-        tab[i] *= factor;
+    for (int i = 0; i < gf_size; i++)
+    {
+        tab[i] /= sum;
     }
+
+    float sum2 =0.0f;
+    for (int i = 0; i < gf_size; i += 1)
+    {
+        sum2 += float(tab[i]);
+    }
+    // printf("%f, %f\n", sum1, sum2);
 }
 //
 //

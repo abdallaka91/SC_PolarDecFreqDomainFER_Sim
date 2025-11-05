@@ -156,7 +156,7 @@ inline void fwht_norm_internal<64>(float* inp, const float fact) {
 //
 template <>
 inline void fwht_norm<64>(float* inp) {
-    fwht_norm_internal<64>(inp, 0.125f);
+    fwht_norm_internal<64>(inp, 0.015625f);
 }
 //
 //

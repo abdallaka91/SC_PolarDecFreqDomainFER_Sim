@@ -6,11 +6,11 @@
 //
 #include "include/ap_fixed.h"
 //
-#define NBITS   32
-#define NFRAC   24
+#define NBITS   24
+#define NINTG   2
 //
 struct symbols_f {
-    ap_fixed<NBITS, NFRAC> value[_GF_];
+    ap_fixed<NBITS, NINTG> value[_GF_];
     bool is_freq;
 };
 //
@@ -18,7 +18,7 @@ struct symbols_f {
 //
 //
 //
-inline float is_issue(const ap_fixed<NBITS, NFRAC>* value)
+inline float is_issue(const ap_fixed<NBITS, NINTG>* value)
 {
     float maxv = 0.f;
     for (size_t i = 0; i < _GF_; i++)

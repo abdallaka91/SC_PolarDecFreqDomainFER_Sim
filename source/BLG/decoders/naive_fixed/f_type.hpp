@@ -8,6 +8,7 @@
 //
 #define NBITS   26
 #define NINTG   2
+#define FRA_BITS 24
 //
 struct symbols_f {
     ap_fixed<NBITS, NINTG> value[_GF_];

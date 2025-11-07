@@ -186,7 +186,7 @@ private:
             printf("> Leaf REP_F node found (%d) [elmt : %d]\n", n, curr_elmnt);
             array[curr_elmnt] = REP_FROM_F;
             next_elmnt = curr_elmnt + 1;
-#if 1
+#if 0
         } else if ( (suml == 1) && (frozen[curr_frozen] == true) ) {
             for (int z = 0; z < level; z += 1) printf("+  ");
             printf("> Leaf SPC_FROM_F node found (%d) [elmt : %d]\n", n, curr_elmnt);

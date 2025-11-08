@@ -1,6 +1,7 @@
-#include "utility_functions.hpp"
+#include "utilities/utility_functions.hpp"
 
-#include "custom_types.hpp"
+#include "definitions/const_config_GF64_N64.hpp"
+#include "definitions/custom_types.hpp"
 
 void local_remove_xors(uint16_t *values, int size)
 {

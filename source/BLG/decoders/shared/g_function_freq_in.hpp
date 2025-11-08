@@ -46,7 +46,7 @@
 #include "definitions/const_config_GF64_N64.hpp"
 #include "features/archi.hpp"
 #include "hadamard/hadamard_64.hpp"
-#include "custom_types.hpp"
+#include "definitions/custom_types.hpp"
 
 // #define debug_g_function
 template <int gf_size>

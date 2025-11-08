@@ -1,6 +1,6 @@
 #pragma once
-#include "custom_types.hpp"
-#include "decoder.hpp"
+#include "definitions/custom_types.hpp"
+#include "decoders/decoder.hpp"
 //
 //
 //

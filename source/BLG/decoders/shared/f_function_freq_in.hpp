@@ -1,7 +1,7 @@
 #pragma once
 
 #include "features/archi.hpp"
-#include "custom_types.hpp"
+#include "definitions/custom_types.hpp"
 template <uint32_t gf_size>
 inline __attribute__((always_inline)) void f_function_freq_in(
     symbols_t *__restrict dst,

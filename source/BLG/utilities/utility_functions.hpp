@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cstdio>
 
-#include "custom_types.hpp"
+#include "definitions/custom_types.hpp"
 #include "features/archi.hpp"
 
 void local_remove_xors(uint16_t *values, int size);

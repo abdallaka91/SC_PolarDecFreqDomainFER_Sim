@@ -20,7 +20,8 @@
 #include <omp.h>
 #include <atomic>
 #include <random>
-#include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
+// #include "specialized_pruning/decoder_specialized_pruning.hpp"
+#include "decoders/naive/decoder_naive.hpp"
 // #include "definitions/code.hpp"
 
 // #include <omp.h>
@@ -256,7 +257,8 @@ int main(int argc, char *argv[])
         //
         std::vector<uint16_t> decoded_n(N);
 
-        decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
+        // decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
+        decoder_naive<_GF_> dec(N, frozen_symbols);
 
         std::vector<symbols_t> llrs_n(N);
         //

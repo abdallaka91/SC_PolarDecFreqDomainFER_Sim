@@ -24,20 +24,22 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "definitions/const_config_GF64_N64.hpp"
-
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <uint16_t GF> inline void fwht_2norm(value_type x[]) {
+template <uint16_t GF>
+inline void fwht_2norm(value_type x[])
+{
     assert(x != 0);
     assert(true);
     exit(x != NULL); // pour gerer le release mode
 }
-template <uint16_t GF> inline float fwht_2norm_internal(value_type x[], const float fact) {
-    assert(x    != nullptr);
+template <uint16_t GF>
+inline float fwht_2norm_internal(value_type x[], const float fact)
+{
+    assert(x != nullptr);
     assert(fact != 0.f);
     assert(true);
     exit(x != NULL); // pour gerer le release mode
@@ -48,7 +50,8 @@ template <uint16_t GF> inline float fwht_2norm_internal(value_type x[], const fl
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-inline float fwht_2norm_tuile(const value_type* inp, value_type* outp, const float fact) {
+inline float fwht_2norm_tuile(const value_type *inp, value_type *outp, const float fact)
+{
     value_type L1[8], L2[8];
     L1[0] = (inp[0] + inp[4]);
     L1[1] = (inp[1] + inp[5]);
@@ -92,14 +95,18 @@ inline float fwht_2norm_tuile(const value_type* inp, value_type* outp, const flo
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <> inline float fwht_2norm_internal<8>(value_type* inp, const float fact) {
+template <>
+inline float fwht_2norm_internal<8>(value_type *inp, const float fact)
+{
     value_type part_1[8];
     for (int i = 0; i < 4; i++)
         part_1[i] = inp[i] + inp[i + 4];
     return fwht_2norm_tuile(part_1, inp, fact);
 }
 //
-template <> inline void fwht_2norm<8>(value_type* inp) {
+template <>
+inline void fwht_2norm<8>(value_type *inp)
+{
     fwht_2norm_internal<8>(inp, 0.35355339059f);
 }
 //
@@ -108,19 +115,24 @@ template <> inline void fwht_2norm<8>(value_type* inp) {
 //
 //
 template <>
-inline float fwht_2norm_internal<16>(value_type* inp, const float fact) {
+inline float fwht_2norm_internal<16>(value_type *inp, const float fact)
+{
     value_type part_1[8];
     value_type part_2[8];
 
-    for (int i = 0; i < 8; i++) part_1[i] = inp[i] + inp[i + 8];
-    for (int i = 0; i < 8; i++) part_2[i] = inp[i] - inp[i + 8];
+    for (int i = 0; i < 8; i++)
+        part_1[i] = inp[i] + inp[i + 8];
+    for (int i = 0; i < 8; i++)
+        part_2[i] = inp[i] - inp[i + 8];
     const float v1 = fwht_2norm_tuile(part_1, inp + 0, fact);
     const float v2 = fwht_2norm_tuile(part_2, inp + 8, fact);
     return (v1 + v2);
 }
 //
-template <> inline void fwht_2norm<16>(value_type* inp) {
-    const float v  = fwht_2norm_internal<16>(inp, 0.25f);
+template <>
+inline void fwht_2norm<16>(value_type *inp)
+{
+    const float v = fwht_2norm_internal<16>(inp, 0.25f);
     const float inv = 1.f / v;
     for (int i = 0; i < 16; i++)
         inp[i] *= inv;
@@ -131,27 +143,31 @@ template <> inline void fwht_2norm<16>(value_type* inp) {
 //
 //
 template <>
-inline float fwht_2norm_internal<32>(value_type* inp, const float fact) {
+inline float fwht_2norm_internal<32>(value_type *inp, const float fact)
+{
     value_type part_1[16];
     value_type part_2[16];
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++)
+    {
         part_1[i] = inp[i] + inp[i + 16];
         part_2[i] = inp[i] - inp[i + 16];
     }
 
-    const float v1  = fwht_2norm_internal<16>(part_1, fact);
-    const float v2  = fwht_2norm_internal<16>(part_2, fact);
+    const float v1 = fwht_2norm_internal<16>(part_1, fact);
+    const float v2 = fwht_2norm_internal<16>(part_2, fact);
     const float inv = 1.f / (v1 + v2);
 
-    for (int i = 0; i < 16; i++) {
-        inp[     i] = part_1[i] * inv;
+    for (int i = 0; i < 16; i++)
+    {
+        inp[i] = part_1[i] * inv;
         inp[16 + i] = part_2[i] * inv;
     }
 }
 //
 template <>
-inline void fwht_2norm<32>(value_type* inp) {
+inline void fwht_2norm<32>(value_type *inp)
+{
     fwht_2norm_internal<32>(inp, 0.17677669529f);
 }
 //
@@ -160,11 +176,13 @@ inline void fwht_2norm<32>(value_type* inp) {
 //
 //
 template <>
-inline void fwht_2norm_internal<64>(value_type* inp, const float fact) {
+inline void fwht_2norm_internal<64>(value_type *inp, const float fact)
+{
     value_type part_1[32];
     value_type part_2[32];
 
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 32; i++)
+    {
         part_1[i] = inp[i] + inp[i + 32];
         part_2[i] = inp[i] - inp[i + 32];
     }
@@ -172,14 +190,16 @@ inline void fwht_2norm_internal<64>(value_type* inp, const float fact) {
     const float v1 = fwht_2norm_internal<32>(part_1, fact);
     const float v2 = fwht_2norm_internal<32>(part_2, fact);
     const float inv = 1.f / (v1 + v2);
-    for (int i = 0; i < 32; i++) {
-        inp[i]      = part_1[i] * inv;
+    for (int i = 0; i < 32; i++)
+    {
+        inp[i] = part_1[i] * inv;
         inp[32 + i] = part_2[i] * inv;
     }
 }
 //
 template <>
-inline void fwht_2norm<64>(value_type* inp) {
+inline void fwht_2norm<64>(value_type *inp)
+{
     fwht_2norm_internal<64>(inp, 0.125f);
 }
 //
@@ -188,10 +208,12 @@ inline void fwht_2norm<64>(value_type* inp) {
 //
 //
 template <>
-inline void fwht_2norm_internal<128>(value_type* inp, const float fact) {
+inline void fwht_2norm_internal<128>(value_type *inp, const float fact)
+{
     value_type part_1[64], part_2[64];
 
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 64; i++)
+    {
         part_1[i] = inp[i] + inp[i + 64];
         part_2[i] = inp[i] - inp[i + 64];
     }
@@ -199,14 +221,16 @@ inline void fwht_2norm_internal<128>(value_type* inp, const float fact) {
     const float v1 = fwht_2norm_internal<64>(part_1, fact);
     const float v2 = fwht_2norm_internal<64>(part_2, fact);
     const float inv = 1.f / (v1 + v2);
-    for (int i = 0; i < 64; i++) {
-        inp[i + 0]  = part_1[i] * inv;
+    for (int i = 0; i < 64; i++)
+    {
+        inp[i + 0] = part_1[i] * inv;
         inp[i + 64] = part_2[i] * inv;
     }
 }
 //
 template <>
-inline void fwht_2norm<128>(value_type* inp) {
+inline void fwht_2norm<128>(value_type *inp)
+{
     fwht_2norm_internal<128>(inp, 0.08838834764f);
 }
 //
@@ -215,26 +239,30 @@ inline void fwht_2norm<128>(value_type* inp) {
 //
 //
 template <>
-inline void fwht_2norm_internal<256>(value_type* inp, const float fact) {
+inline void fwht_2norm_internal<256>(value_type *inp, const float fact)
+{
     value_type part_1[128];
     value_type part_2[128];
 
-    for (int i = 0; i < 128; i++) {
+    for (int i = 0; i < 128; i++)
+    {
         part_1[i] = inp[i] + inp[i + 128];
         part_2[i] = inp[i] - inp[i + 128];
     }
 
-    const float v1  = fwht_2norm_internal<128>(part_1, fact);
-    const float v2  = fwht_2norm_internal<128>(part_2, fact);
+    const float v1 = fwht_2norm_internal<128>(part_1, fact);
+    const float v2 = fwht_2norm_internal<128>(part_2, fact);
     const float inv = 1.f / (v1 + v2);
-    for (int i = 0; i < 128; i++) {
-        inp[i +   0] = part_1[i] * inv;
+    for (int i = 0; i < 128; i++)
+    {
+        inp[i + 0] = part_1[i] * inv;
         inp[i + 128] = part_2[i] * inv;
     }
 }
 //
 template <>
-inline void fwht_2norm<256>(value_type* inp) {
+inline void fwht_2norm<256>(value_type *inp)
+{
     fwht_2norm_internal<256>(inp, 0.0625f);
 }
 //

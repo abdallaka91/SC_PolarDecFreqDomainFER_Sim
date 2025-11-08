@@ -20,7 +20,6 @@
 #pragma once
 #ifdef __AVX512F__
 
-#include "definitions/const_config_GF64_N64.hpp"
 #include <cassert>
 #include <cstdint>
 #include <cstdio>

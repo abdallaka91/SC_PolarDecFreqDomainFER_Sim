@@ -25,32 +25,33 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "definitions/const_config_GF64_N64.hpp"
-
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
 template <uint16_t galois_size>
-inline void fwht_norm(float* x) {
+inline void fwht_norm(float *x)
+{
     assert(x != 0);
     assert(true);
     exit(x != NULL); // pour gerer le release mode
 }
 template <uint16_t galois_size>
-inline void fwht_norm_internal(float* x, const float fact) {
-    assert(x    != nullptr);
+inline void fwht_norm_internal(float *x, const float fact)
+{
+    assert(x != nullptr);
     assert(fact != 0.f);
     assert(true);
-    exit( (x != nullptr) && (fact != 0.f)); // pour gerer le release mode
+    exit((x != nullptr) && (fact != 0.f)); // pour gerer le release mode
 }
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-inline void fwht_norm_tuile(float* inp,  const float fact) {
+inline void fwht_norm_tuile(float *inp, const float fact)
+{
     float L1[8], L2[8];
     L1[0] = (inp[0] + inp[4]);
     L1[1] = (inp[1] + inp[5]);
@@ -84,15 +85,19 @@ inline void fwht_norm_tuile(float* inp,  const float fact) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <> inline void fwht_norm_internal<8>(float* inp, const float fact) {
-//    for (int i = 0; i < 4; i++) {
-//
-//    }
-//        part_1[i] = inp[i] + inp[i + 4];
+template <>
+inline void fwht_norm_internal<8>(float *inp, const float fact)
+{
+    //    for (int i = 0; i < 4; i++) {
+    //
+    //    }
+    //        part_1[i] = inp[i] + inp[i + 4];
     fwht_norm_tuile(inp, fact);
 }
 //
-template <> inline void fwht_norm<8>(float* inp) {
+template <>
+inline void fwht_norm<8>(float *inp)
+{
     fwht_norm_internal<8>(inp, 0.35355339059f);
 }
 //
@@ -100,12 +105,15 @@ template <> inline void fwht_norm<8>(float* inp) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <> inline void fwht_norm_internal<16>(float* inp, const float fact) {
+template <>
+inline void fwht_norm_internal<16>(float *inp, const float fact)
+{
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++)
+    {
         const float A = inp[i] + inp[i + 8];
         const float B = inp[i] - inp[i + 8];
-        inp[i    ] = A;
+        inp[i] = A;
         inp[i + 8] = B;
     }
 
@@ -113,7 +121,9 @@ template <> inline void fwht_norm_internal<16>(float* inp, const float fact) {
     fwht_norm_tuile(inp + 8, fact);
 }
 //
-template <> inline void fwht_norm<16>(float* inp) {
+template <>
+inline void fwht_norm<16>(float *inp)
+{
     fwht_norm_internal<16>(inp, 0.25f);
 }
 //
@@ -121,20 +131,24 @@ template <> inline void fwht_norm<16>(float* inp) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-template <> inline void fwht_norm_internal<32>(float* inp, const float fact) {
+template <>
+inline void fwht_norm_internal<32>(float *inp, const float fact)
+{
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++)
+    {
         const float A = inp[i] + inp[i + 16];
         const float B = inp[i] - inp[i + 16];
-        inp[i     ] = A;
+        inp[i] = A;
         inp[i + 16] = B;
     }
-    fwht_norm_internal<16>(inp,      fact);
+    fwht_norm_internal<16>(inp, fact);
     fwht_norm_internal<16>(inp + 16, fact);
 }
 //
 template <>
-inline void fwht_norm<32>(float* inp) {
+inline void fwht_norm<32>(float *inp)
+{
     fwht_norm_internal<32>(inp, 0.17677669529f);
 }
 //
@@ -143,19 +157,22 @@ inline void fwht_norm<32>(float* inp) {
 //
 //
 template <>
-inline void fwht_norm_internal<64>(float* inp, const float fact) {
-    for (int i = 0; i < 32; i++) {
+inline void fwht_norm_internal<64>(float *inp, const float fact)
+{
+    for (int i = 0; i < 32; i++)
+    {
         const float A = inp[i] + inp[i + 32];
         const float B = inp[i] - inp[i + 32];
-        inp[i     ] = A;
+        inp[i] = A;
         inp[i + 32] = B;
     }
-    fwht_norm_internal<32>(inp,      fact);
+    fwht_norm_internal<32>(inp, fact);
     fwht_norm_internal<32>(inp + 32, fact);
 }
 //
 template <>
-inline void fwht_norm<64>(float* inp) {
+inline void fwht_norm<64>(float *inp)
+{
     fwht_norm_internal<64>(inp, 0.125f);
 }
 //
@@ -164,20 +181,22 @@ inline void fwht_norm<64>(float* inp) {
 //
 //
 template <>
-inline void fwht_norm_internal<128>(float* inp, const float fact)
+inline void fwht_norm_internal<128>(float *inp, const float fact)
 {
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 64; i++)
+    {
         const float A = inp[i] + inp[i + 64];
         const float B = inp[i] - inp[i + 64];
-        inp[i     ] = A;
+        inp[i] = A;
         inp[i + 64] = B;
     }
-    fwht_norm_internal<64>(inp +  0, fact);
+    fwht_norm_internal<64>(inp + 0, fact);
     fwht_norm_internal<64>(inp + 64, fact);
 }
 //
 template <>
-inline void fwht_norm<128>(float* inp) {
+inline void fwht_norm<128>(float *inp)
+{
     fwht_norm_internal<128>(inp, 0.08838834764f);
 }
 //
@@ -186,19 +205,22 @@ inline void fwht_norm<128>(float* inp) {
 //
 //
 template <>
-inline void fwht_norm_internal<256>(float* inp, const float fact) {
-    for (int i = 0; i < 128; i++) {
+inline void fwht_norm_internal<256>(float *inp, const float fact)
+{
+    for (int i = 0; i < 128; i++)
+    {
         const float A = inp[i] + inp[i + 128];
         const float B = inp[i] - inp[i + 128];
-        inp[i      ] = A;
+        inp[i] = A;
         inp[i + 128] = B;
     }
-    fwht_norm_internal<128>(inp,       fact);
+    fwht_norm_internal<128>(inp, fact);
     fwht_norm_internal<128>(inp + 128, fact);
 }
 //
 template <>
-inline void fwht_norm<256>(float* inp) {
+inline void fwht_norm<256>(float *inp)
+{
     fwht_norm_internal<256>(inp, 0.0625f);
 }
 //
@@ -207,19 +229,22 @@ inline void fwht_norm<256>(float* inp) {
 //
 //
 template <>
-inline void fwht_norm_internal<512>(float* inp, const float fact) {
-    for (int i = 0; i < 256; i++) {
+inline void fwht_norm_internal<512>(float *inp, const float fact)
+{
+    for (int i = 0; i < 256; i++)
+    {
         const float A = inp[i] + inp[i + 256];
         const float B = inp[i] - inp[i + 256];
-        inp[i      ] = A;
+        inp[i] = A;
         inp[i + 256] = B;
     }
-    fwht_norm_internal<256>(inp +   0, fact);
+    fwht_norm_internal<256>(inp + 0, fact);
     fwht_norm_internal<256>(inp + 256, fact);
 }
 //
 template <>
-inline void fwht_norm<512>(float* inp) {
+inline void fwht_norm<512>(float *inp)
+{
     fwht_norm_internal<512>(inp, 0.04419417382f);
 }
 //
@@ -228,19 +253,22 @@ inline void fwht_norm<512>(float* inp) {
 //
 //
 template <>
-inline void fwht_norm_internal<1024>(float* inp, const float fact) {
-    for (int i = 0; i < 512; i++) {
+inline void fwht_norm_internal<1024>(float *inp, const float fact)
+{
+    for (int i = 0; i < 512; i++)
+    {
         const float A = inp[i] + inp[i + 512];
         const float B = inp[i] - inp[i + 512];
-        inp[i      ] = A;
+        inp[i] = A;
         inp[i + 512] = B;
     }
-    fwht_norm_internal<512>(inp +   0, fact);
+    fwht_norm_internal<512>(inp + 0, fact);
     fwht_norm_internal<512>(inp + 512, fact);
 }
 //
 template <>
-inline void fwht_norm<1024>(float* inp) {
+inline void fwht_norm<1024>(float *inp)
+{
     fwht_norm_internal<1024>(inp, 0.03125f);
 }
 //
@@ -249,19 +277,22 @@ inline void fwht_norm<1024>(float* inp) {
 //
 //
 template <>
-inline void fwht_norm_internal<2048>(float* inp, const float fact) {
-    for (int i = 0; i < 1024; i++) {
+inline void fwht_norm_internal<2048>(float *inp, const float fact)
+{
+    for (int i = 0; i < 1024; i++)
+    {
         const float A = inp[i] + inp[i + 1024];
         const float B = inp[i] - inp[i + 1024];
-        inp[i       ] = A;
+        inp[i] = A;
         inp[i + 1024] = B;
     }
-    fwht_norm_internal<1024>(inp +    0, fact);
+    fwht_norm_internal<1024>(inp + 0, fact);
     fwht_norm_internal<1024>(inp + 1024, fact);
 }
 //
 template <>
-inline void fwht_norm<2048>(float* inp) {
+inline void fwht_norm<2048>(float *inp)
+{
     fwht_norm_internal<2048>(inp, 0.02209708691f);
 }
 //
@@ -270,19 +301,22 @@ inline void fwht_norm<2048>(float* inp) {
 //
 //
 template <>
-inline void fwht_norm_internal<4096>(float* inp, const float fact) {
-    for (int i = 0; i < 2048; i++) {
+inline void fwht_norm_internal<4096>(float *inp, const float fact)
+{
+    for (int i = 0; i < 2048; i++)
+    {
         const float A = inp[i] + inp[i + 2048];
         const float B = inp[i] - inp[i + 2048];
-        inp[i       ] = A;
+        inp[i] = A;
         inp[i + 2048] = B;
     }
-    fwht_norm_internal<2048>(inp +    0, fact);
+    fwht_norm_internal<2048>(inp + 0, fact);
     fwht_norm_internal<2048>(inp + 2048, fact);
 }
 //
 template <>
-inline void fwht_norm<4096>(float* inp) {
+inline void fwht_norm<4096>(float *inp)
+{
     fwht_norm_internal<4096>(inp, 0.015625f);
 }
 //

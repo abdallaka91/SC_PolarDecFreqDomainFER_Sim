@@ -65,7 +65,10 @@
         "complex": "cpp",
         "cinttypes": "cpp",
         "cassert": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
     },
-    "cmake.sourceDirectory": "${workspaceFolder}"
+      "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+
+  "cmake.sourceDirectory": "${workspaceFolder}"
 }

@@ -54,7 +54,7 @@ target_include_directories(Sim2 PRIVATE
     ${CMAKE_SOURCE_DIR}/BLG/decoders/features
 )
 
-target_compile_definitions(Sim2 PRIVATE ABD_OPTIM)
+# target_compile_definitions(Sim2 PRIVATE ABD_OPTIM)
 
 
 # ===========================

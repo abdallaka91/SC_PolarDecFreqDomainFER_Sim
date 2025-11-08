@@ -42,16 +42,16 @@ set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/source/sim_cpp_sources)
 
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/sim_cpp_sources/*.cpp"
-    "${CMAKE_SOURCE_DIR}/source/BLG/**/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/**/*.cpp"
 )
 add_executable(Sim2 ${SRC_FILES})
 
 target_include_directories(Sim2 PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/source
-    ${CMAKE_SOURCE_DIR}/source/BLG
-    ${CMAKE_SOURCE_DIR}/source/BLG/decoders
-    ${CMAKE_SOURCE_DIR}/source/BLG/decoders/features
+    ${CMAKE_SOURCE_DIR}/BLG
+    ${CMAKE_SOURCE_DIR}/BLG/decoders
+    ${CMAKE_SOURCE_DIR}/BLG/decoders/features
 )
 
 target_compile_definitions(Sim2 PRIVATE ABD_OPTIM)

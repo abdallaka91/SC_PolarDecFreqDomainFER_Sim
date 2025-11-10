@@ -194,6 +194,11 @@ int main(int argc, char *argv[])
     cout << "Simulation starts..." << endl;
 
     decoder_parameters dec_param(code_param);
+    // for (int i = 0; i < N; i++)
+    //     dec_param.reliab_sequence[i] = N - 1 - i;
+    // dec_param.reliab_sequence[N / 2] = N / 2 - 2;
+    // dec_param.reliab_sequence[N / 2 + 1] = N / 2;
+    // dec_param.reliab_sequence = {15, 14, 13, 12, 11, 10, 9, 8, 5, 7, 6, 4, 3, 2, 1, 0};
 
     CCSK_seq ccsk_seq;
     vector<vector<uint16_t>> CCSK_rotated_codes(q, vector<uint16_t>());

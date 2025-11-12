@@ -38,15 +38,21 @@ find_package(OpenMP REQUIRED)
 
 add_compile_options(-mavx2)
 
-set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/source)
+set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
 
-file(GLOB_RECURSE SRC_FILES "${SOURCE_DIR}/*.cpp")
+file(GLOB_RECURSE SRC_FILES
+    "${CMAKE_SOURCE_DIR}/source/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_SOURCE_DIR}/simulator_dec_fft.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/**/*.cpp"
+)
+
 add_executable(Sim2 ${SRC_FILES})
 
 target_include_directories(Sim2 PRIVATE
     ${CMAKE_SOURCE_DIR}/include
-     ${CMAKE_SOURCE_DIR}/source/BLG/include
-    ${CMAKE_SOURCE_DIR}/source/BLG
+     ${CMAKE_SOURCE_DIR}/BLG/include
+    ${CMAKE_SOURCE_DIR}/BLG
 )
 
 

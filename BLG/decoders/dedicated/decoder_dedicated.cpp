@@ -76,4 +76,8 @@ decoder_dedicated<gf_size>::~decoder_dedicated()
     template class decoder_dedicated<512>;
 #elif _GF_ == 1024
     template class decoder_dedicated<1024>;
+#elif _GF_ == 2048
+    template class decoder_dedicated<2048>;
+#elif _GF_ == 4096
+    template class decoder_dedicated<4096>;
 #endif

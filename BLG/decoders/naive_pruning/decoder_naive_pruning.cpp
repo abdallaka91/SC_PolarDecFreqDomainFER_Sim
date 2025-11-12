@@ -8,19 +8,16 @@
 //
 //
 //
-void remove_xors1(uint16_t *values, int size)
-{
-    if (size == 1)
-    {
-        return;
-    }
-    for (int i = 0; i < size / 2; i += 1)
-    {
-        values[i] ^= values[i + size / 2];
-    }
-    remove_xors1(values, size / 2);
-    remove_xors1(values + size / 2, size / 2);
-}
+// void remove_xors(uint16_t * values, int size) {
+//     if (size == 1) {
+//         return;
+//     }
+//     for (int i = 0; i < size / 2; i += 1) {
+//         values[i] ^= values[i + size / 2];
+//     }
+//     remove_xors(values, size / 2);
+//     remove_xors(values + size / 2, size / 2);
+// }
 //
 //
 //
@@ -256,7 +253,7 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
             printf("-> hard decision [%2d] = %d\n", symbol_id + i, symbols[symbol_id + i]);
 #endif
         }
-        remove_xors1(decoded + symbol_id, size);
+        remove_xors(decoded + symbol_id, size);
         return;
     }
 #endif
@@ -313,7 +310,7 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
     //
     // SINGLE PARITY NODE
     //
-// #define SPC_NODE
+#define SPC_NODE
 #if defined(SPC_NODE)
     if ((sum == 1) && (frozen[symbol_id] == true))
     {
@@ -335,7 +332,7 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
         //
         //
         int check_node = 0;
-        uint16_t arg_1[256];
+        uint16_t arg_1[512];
         for (int i = 0; i < size; i++)
         {
             int value = argmax<gf_size>(inputs[i].value);
@@ -347,11 +344,11 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
 
         if (check_node == 0)
         {
-            remove_xors1(decoded + symbol_id, size);
+            remove_xors(decoded + symbol_id, size);
             return;
         }
 
-        uint16_t arg_2[256];
+        uint16_t arg_2[512];
         for (int j = 0; j < size; j++)
         {
             arg_2[j] = argmax2<gf_size>(inputs[j].value, arg_1[j]);
@@ -364,7 +361,7 @@ void decoder_naive_pruning<gf_size>::middle_node_with_pruning(
             symbols[symbol_id + j] = arg_1[j];
             decoded[symbol_id + j] = arg_1[j]; // should be corrected (it is systematic solution actually)
         }
-        remove_xors1(decoded + symbol_id, size);
+        remove_xors(decoded + symbol_id, size);
         return;
     }
 #endif
@@ -515,4 +512,8 @@ template class decoder_naive_pruning<256>;
 template class decoder_naive_pruning<512>;
 #elif _GF_ == 1024
 template class decoder_naive_pruning<1024>;
+#elif _GF_ == 2048
+template class decoder_naive_pruning<2048>;
+#elif _GF_ == 4096
+template class decoder_naive_pruning<4096>;
 #endif

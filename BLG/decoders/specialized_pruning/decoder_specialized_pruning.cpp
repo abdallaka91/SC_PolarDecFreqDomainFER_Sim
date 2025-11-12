@@ -136,4 +136,8 @@ void decoder_specialized_pruning<gf_size>::execute(symbols_t * channel, uint16_t
     template class decoder_specialized_pruning<512>;
 #elif _GF_ == 1024
     template class decoder_specialized_pruning<1024>;
+#elif _GF_ == 2048
+    template class decoder_specialized_pruning<2048>;
+#elif _GF_ == 4096
+    template class decoder_specialized_pruning<4096>;
 #endif

@@ -31,7 +31,7 @@ void decoder_specialized_pruning<gf_size>::middle_node_pruned_spc_after_f(
     }
     //
     int check_node = 0;
-    uint16_t arg_1[256];
+    uint16_t arg_1[512];
     for (int i = 0; i < size; i++) {
         int value              = argmax<gf_size>(inputs[i].value);
         check_node            ^= value;
@@ -45,7 +45,7 @@ void decoder_specialized_pruning<gf_size>::middle_node_pruned_spc_after_f(
         return;
     }
     //
-    uint16_t arg_2[256];
+    uint16_t arg_2[512];
     for (int j = 0; j < size; j++) {
         arg_2[j] = argmax2<gf_size>(inputs[j].value, arg_1[j]);
     }

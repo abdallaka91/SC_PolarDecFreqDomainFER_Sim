@@ -99,4 +99,8 @@ template class decoder_specialized< 16>;
     template class decoder_specialized<512>;
 #elif _GF_ == 1024
     template class decoder_specialized<1024>;
+#elif _GF_ == 2048
+    template class decoder_specialized<2048>;
+#elif _GF_ == 4096
+    template class decoder_specialized<4096>;
 #endif

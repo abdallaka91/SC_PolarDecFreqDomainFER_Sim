@@ -64,7 +64,6 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     for (int i = 0; i < K; i++)
         dec_param.ucap[dec_param.n][dec_param.reliab_sequence[i]] = KSYMB[i];
 
@@ -90,7 +89,6 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     printf(" |\n");
 #endif
 
-
     Encoder(table.ADDDEC, table.MULDEC, dec_param.polar_coeff, dec_param.ucap, NSYMB);
     // for (int y = 0; y < N; y++)
     //     std::cout << y<< ":" << dec_param.ucap[dec_param.n][y] << " , ";
@@ -111,7 +109,6 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
 #endif
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     vector<vector<softdata_t>> noisy_sig(N, vector<softdata_t>(bin_table[0].size(), (softdata_t)0.0));
 
@@ -167,6 +164,4 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     printf(" |\n");
     exit( EXIT_SUCCESS );
 #endif
-
 }
-

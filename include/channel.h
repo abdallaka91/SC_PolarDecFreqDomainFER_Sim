@@ -22,6 +22,7 @@ namespace PoAwN
                                     const vector<vector<uint16_t>> &bin_table,
                                     vector<decoder_t> &chan_LLR_sorted,
                                     vector<uint16_t> &KSYMB,
+                                    vector<uint16_t> &NSYMB,
                                     const vector<vector<softdata_t>> &bin_mod_dict);
 
         void EncodeChanGF_CCSK(std::mt19937 &gen, decoder_parameters &dec_param,

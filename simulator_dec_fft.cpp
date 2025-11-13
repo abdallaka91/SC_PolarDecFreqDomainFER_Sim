@@ -21,7 +21,8 @@
 #include <atomic>
 #include <random>
 // #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
-#include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
+// #include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
+#include "decoders/naive/decoder_naive.hpp"
 // #include "definitions/code.hpp"
 
 // #include <omp.h>
@@ -262,25 +263,40 @@ int main(int argc, char *argv[])
 
         // decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
         decoder *dec;
-        dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
+        dec = new decoder_naive<_GF_>(N, frozen_symbols);
+        // dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
 
         std::vector<symbols_t> llrs_n(N);
         //
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        vector<uint16_t> NSYMB(N);
         while (true)
         {
 
             bool succ_dec = true;
             vector<uint16_t> KSYMB(K);
 
-            EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+            EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, NSYMB, bin_mod_dict);
+            // Hard decision
 
             for (int i = 0; i < N; i++)
             {
                 llrs_n[i].is_freq = false;
                 for (int j = 0; j < _GF_; j++)
                     llrs_n[i].value[j] = L[0][i].intrinsic_LLR[j];
+            }
+
+            vector<uint16_t> HD(code_param.N);
+            for (int j0 = 0; j0 < N; j0++)
+            {
+                HD[j0] = 0;
+                softdata_t prb = llrs_n[j0].value[0];
+                for (int j1 = 1; j1 < q; j1++)
+                    if (llrs_n[j0].value[j1] > prb)
+                    {
+                        prb = llrs_n[j0].value[j1];
+                        HD[j0] = j1;
+                    }
             }
 
             const auto m_start = std::chrono::system_clock::now();

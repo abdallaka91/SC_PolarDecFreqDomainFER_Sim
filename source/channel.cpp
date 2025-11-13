@@ -34,12 +34,13 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
                                             const vector<vector<uint16_t>> &bin_table,
                                             vector<decoder_t> &chan_LLR_sorted,
                                             vector<uint16_t> &KSYMB,
+                                            vector<uint16_t> &NSYMB,
                                             const vector<vector<softdata_t>> &bin_mod_dict)
 {
     uint16_t N = dec_param.N, K = dec_param.K, q = dec_param.q;
     uint16_t nm = dec_param.nm;
     float sigma = sqrt(1.0 / (pow(10, SNR / 10.0))); // N0/2 or N0?
-    vector<uint16_t> NSYMB(N);
+
     // RandomSymbGenerator(K, q, RepRndGn, 0, KSYMB);
     // std::mt19937 gen(0);
     std::uniform_int_distribution<int> unif_dist(0, q - 1);
@@ -63,7 +64,6 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
 #endif
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     for (int i = 0; i < K; i++)
         dec_param.ucap[dec_param.n][dec_param.reliab_sequence[i]] = KSYMB[i];
@@ -90,7 +90,6 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     printf(" |\n");
 #endif
 
-
     Encoder(table.ADDDEC, table.MULDEC, dec_param.polar_coeff, dec_param.ucap, NSYMB);
     // for (int y = 0; y < N; y++)
     //     std::cout << y<< ":" << dec_param.ucap[dec_param.n][y] << " , ";
@@ -111,7 +110,6 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
 #endif
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     vector<vector<softdata_t>> noisy_sig(N, vector<softdata_t>(bin_table[0].size(), (softdata_t)0.0));
 
@@ -167,6 +165,4 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     printf(" |\n");
     exit( EXIT_SUCCESS );
 #endif
-
 }
-

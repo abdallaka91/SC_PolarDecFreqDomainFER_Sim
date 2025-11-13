@@ -22,7 +22,8 @@
 #include <random>
 // #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
 // #include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
-#include "decoders/naive/decoder_naive.hpp"
+// #include "decoders/naive/decoder_naive.hpp"
+#include "decoders/naive_fixed/decoder_naive_fixed.hpp"
 // #include "definitions/code.hpp"
 
 // #include <omp.h>
@@ -263,7 +264,7 @@ int main(int argc, char *argv[])
 
         // decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
         decoder *dec;
-        dec = new decoder_naive<_GF_>(N, frozen_symbols);
+        dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
         // dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
 
         std::vector<symbols_t> llrs_n(N);

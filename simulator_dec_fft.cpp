@@ -180,6 +180,10 @@ int main(int argc, char *argv[])
 
     cout << "(II) Loading code_param [START]" << endl;
     LoadCode(code_param, EbN0);
+
+    for (int i = 0; i < code_param.N; i++)
+        cout << code_param.reliab_sequence[i] << " ";
+    cout << endl;
     cout << "(II) Loading code_param [END OK]" << endl;
     // void LoadTables(base_code_t & code, table_GF & table,  const uint16_t *GF_polynom_primitive)
 

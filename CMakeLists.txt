@@ -36,88 +36,40 @@ find_package(OpenMP REQUIRED)
 #  Source setup
 # ===========================
 
-# add_compile_options(-mavx2)
+add_compile_options(-mavx2)
 
-# set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/source/sim_cpp_sources)
+set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
 
-# file(GLOB_RECURSE SRC_FILES
-#     "${CMAKE_SOURCE_DIR}/source/sim_cpp_sources/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/**/*.cpp"
-# )
-# add_executable(Sim2 ${SRC_FILES})
+file(GLOB_RECURSE SRC_FILES
+    "${CMAKE_SOURCE_DIR}/source/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/**/*.cpp"
+    "${CMAKE_SOURCE_DIR}/simulator_dec_fft_A.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/features/**/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/utilities/*.cpp"
+    )
 
-# target_include_directories(Sim2 PRIVATE
-#     ${CMAKE_SOURCE_DIR}/include
-#     ${CMAKE_SOURCE_DIR}/source
-#     ${CMAKE_SOURCE_DIR}/BLG
-#     ${CMAKE_SOURCE_DIR}/BLG/decoders
-#     ${CMAKE_SOURCE_DIR}/BLG/decoders/features
-# )
+    list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")
+add_executable(Sim2 ${SRC_FILES})
+
+target_include_directories(Sim2 PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+     ${CMAKE_SOURCE_DIR}/BLG/src/include
+    ${CMAKE_SOURCE_DIR}/BLG/src/decoders
+    ${CMAKE_SOURCE_DIR}/BLG/src/definitions
+    ${CMAKE_SOURCE_DIR}/BLG/src/hadamard
+    ${CMAKE_SOURCE_DIR}/BLG/src/utilities
+    ${CMAKE_SOURCE_DIR}/BLG/src/
+
+)
+
+
 
 # ===========================
 #  Linker configuration
 # ===========================
-# if(OpenMP_CXX_FOUND)
-#     target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
-# endif()
-
-
-# target_compile_definitions(Sim1 PRIVATE ABD_OPTIM)
-#=============================================================
-add_compile_options(-mavx2)
-
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/source/sim_cpp_sources)
-set(BLG_DIR ${CMAKE_SOURCE_DIR}/BLG)
-
-# Common source files (exclude mains)
-file(GLOB_RECURSE COMMON_SRC
-    "${SRC_DIR}/*.cpp"
-    "${BLG_DIR}/**/*.cpp"
-)
-# Remove main files from common sources
-list(FILTER COMMON_SRC EXCLUDE REGEX "simulator_dec_fft_[AB]\\.cpp$")
-
-# Executable 1: SimA
-add_executable(SimA
-    ${COMMON_SRC}
-    "${SRC_DIR}/simulator_dec_fft_A.cpp"
-)
-target_include_directories(SimA PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/source
-    ${CMAKE_SOURCE_DIR}/BLG
-    ${CMAKE_SOURCE_DIR}/BLG/decoders
-    ${CMAKE_SOURCE_DIR}/BLG/decoders/features
-)
-target_compile_definitions(SimA PRIVATE ABD_OPTIM)
-
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(SimA PRIVATE OpenMP::OpenMP_CXX)
+    target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
 endif()
-
-# Executable 2: SimB
-add_executable(SimB
-    ${COMMON_SRC}
-    "${SRC_DIR}/simulator_dec_fft_B.cpp"
-)
-target_include_directories(SimB PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/source
-    ${CMAKE_SOURCE_DIR}/BLG
-    ${CMAKE_SOURCE_DIR}/BLG/decoders
-    ${CMAKE_SOURCE_DIR}/BLG/decoders/features
-)
-target_compile_definitions(SimB PRIVATE ABD_OPTIM)
-
-
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(SimB PRIVATE OpenMP::OpenMP_CXX)
-endif()
-
-
-
-
-
 
 # ===========================
 #  Optional diagnostics

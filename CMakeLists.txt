@@ -91,6 +91,10 @@ target_include_directories(SimA PRIVATE
 )
 target_compile_definitions(SimA PRIVATE ABD_OPTIM)
 
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(SimA PRIVATE OpenMP::OpenMP_CXX)
+endif()
+
 # Executable 2: SimB
 add_executable(SimB
     ${COMMON_SRC}
@@ -105,9 +109,6 @@ target_include_directories(SimB PRIVATE
 )
 target_compile_definitions(SimB PRIVATE ABD_OPTIM)
 
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(SimA PRIVATE OpenMP::OpenMP_CXX)
-endif()
 
 if(OpenMP_CXX_FOUND)
     target_link_libraries(SimB PRIVATE OpenMP::OpenMP_CXX)

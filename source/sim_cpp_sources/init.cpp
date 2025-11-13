@@ -8,82 +8,199 @@
 #include "init.h"
 #include <sstream>
 #include <cmath>
+// void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR)
+// {
+//     code.Rate = (float)code.K / (float)code.N;
+//     code.reliab_sequence.resize(code.q, 0);
+
+//     std::ostringstream fname;
+//     std::string mat_direct;
+//     if (code.sig_mod == "BPSK")
+//         mat_direct = "./matrices/bpsk/N";
+//     else if (code.sig_mod == "CCSK_BIN")
+//         mat_direct = "./matrices/ccsk_bin/N";
+//     else
+//         mat_direct = "./matrices/ccsk_nb/N";
+
+//     fname << mat_direct << code.N << "/mat_N" << code.N << "_GF"
+//           << code.q << "_SNR" << std::fixed << std::setprecision(3) << SNR
+//           << ".txt";
+
+//     std::cout << fname.str() << std::endl;
+//     std::ifstream opfile(fname.str());
+//     if (!opfile)
+//     {
+//         std::cerr << "Sequence Unavailable!!" << std::endl;
+//         exit(-1010);
+//     }
+
+//     int tmp;
+//     int temp_cnt = 0;
+//     code.reliab_sequence.resize(code.N);
+//     for (int k = 0; k < 2; k++) // if k<1 then read the first reliability sequence existed in the file, if k<2 then cosider the second.
+//     // I did this loop because my files contain 2  sequnces, the first generated taking Entropies as measurments, while the second is
+//     //  generated from probability of errors. what has been noticed is at very low SNR (FER<0.1) taking probability of error is better
+//     {
+//         temp_cnt = 0;
+//         for (int i = 0; i < code.N; i++)
+//         {
+//             if (opfile >> tmp)
+//             {
+//                 code.reliab_sequence[i] = static_cast<uint16_t>(tmp);
+//                 temp_cnt++;
+//             }
+//             else
+//             {
+//                 std::cerr << "Invalid or missing value at index " << i << " of Reliabilities sequence nb  " << k << std::endl;
+//                 exit(EXIT_FAILURE);
+//             }
+
+//         }
+//         if (temp_cnt < code.N)
+//         {
+//             std::cerr << "Reliabilities sequence nb " << k << " is not complete" << std::endl;
+//             exit(EXIT_FAILURE);
+//         }
+//     }
+//     if (code.sig_mod == "BPSK")
+//     {
+//         code.polar_coeff.resize(code.n, std::vector<uint16_t>(code.N / 2));
+//         // Read polar coefficients
+//         for (int i = 0; i < code.n; i++)
+//         {
+//             for (int j = 0; j < code.N / 2; j++)
+//             {
+//                 opfile >> tmp;
+//                 code.polar_coeff[i][j] = tmp;
+//             }
+//         }
+//     }
+//     else
+//     {
+//         code.polar_coeff.resize(code.n, std::vector<uint16_t>(code.N / 2));
+//         for (int i = 0; i < code.n; i++)
+//         {
+//             for (int j = 0; j < code.N / 2; j++)
+//             {
+//                 code.polar_coeff[i][j] = 1;
+//             }
+//         }
+//     }
+// }
+
 void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR)
 {
     code.Rate = (float)code.K / (float)code.N;
-    code.reliab_sequence.resize(code.q, 0);
+
+    // ------------------------------------------------------
+    // Select directory depending on modulation
+    // ------------------------------------------------------
+    std::string base_dir;
+
+    if (code.sig_mod == "CCSK_BIN")
+        base_dir = "./matrices/ccsk_bin/";
+    else
+        base_dir = "./matrices/ccsk_nb/";
+
+    // ------------------------------------------------------
+    // Build folder + file name
+    // ------------------------------------------------------
+    std::ostringstream folder;
+    folder << base_dir << "GF" << code.q << "/";
 
     std::ostringstream fname;
-    std::string mat_direct;
-    if (code.sig_mod == "BPSK")
-        mat_direct = "./matrices/bpsk/N";
-    else if (code.sig_mod == "CCSK_BIN")
-        mat_direct = "./matrices/ccsk_bin/N";
-    else
-        mat_direct = "./matrices/ccsk_nb/N";
+    fname << folder.str() << "GF" << code.q << "N" << code.N << ".txt";
 
-    fname << mat_direct << code.N << "/mat_N" << code.N << "_GF"
-          << code.q << "_SNR" << std::fixed << std::setprecision(3) << SNR
-          << ".txt";
+    std::cout << "Reading reliability file: " << fname.str() << std::endl;
 
-    std::cout << fname.str() << std::endl;
     std::ifstream opfile(fname.str());
     if (!opfile)
     {
-        std::cerr << "Sequence Unavailable!!" << std::endl;
+        std::cerr << "Cannot open reliability file!" << std::endl;
         exit(-1010);
     }
 
-    int tmp;
-    int temp_cnt = 0;
-    code.reliab_sequence.resize(code.N);
-    for (int k = 0; k < 2; k++) // if k<1 then read the first reliability sequence existed in the file, if k<2 then cosider the second.
-    // I did this loop because my files contain 2  sequnces, the first generated taking Entropies as measurments, while the second is
-    //  generated from probability of errors. what has been noticed is at very low SNR (FER<0.1) taking probability of error is better
+    // ------------------------------------------------------
+    // Read SNR + sequence blocks
+    // ------------------------------------------------------
+    struct entry_t
     {
-        temp_cnt = 0;
-        for (int i = 0; i < code.N; i++)
-        {
-            if (opfile >> tmp) 
-            {
-                code.reliab_sequence[i] = static_cast<uint16_t>(tmp);
-                temp_cnt++;
-            }
-            else
-            {
-                std::cerr << "Invalid or missing value at index " << i << " of Reliabilities sequence nb  " << k << std::endl;
-                exit(EXIT_FAILURE);
-            }
+        float snr;
+        std::vector<uint16_t> seq;
+    };
 
-        }
-        if (temp_cnt < code.N)
+    std::vector<entry_t> entries;
+
+    while (true)
+    {
+        std::string tag;
+        float snr_val;
+
+        if (!(opfile >> tag >> snr_val))
+            break; // End of file
+
+        if (tag != "SNR")
         {
-            std::cerr << "Reliabilities sequence nb " << k << " is not complete" << std::endl;
+            std::cerr << "Invalid format: expected 'SNR'" << std::endl;
             exit(EXIT_FAILURE);
         }
-    }
-    if (code.sig_mod == "BPSK")
-    {
-        code.polar_coeff.resize(code.n, std::vector<uint16_t>(code.N / 2));
-        // Read polar coefficients
-        for (int i = 0; i < code.n; i++)
+
+        // Read reliability sequence (1 line containing N ints)
+        std::vector<uint16_t> seq(code.N);
+        for (int i = 0; i < code.N; i++)
         {
-            for (int j = 0; j < code.N / 2; j++)
+            int t;
+            if (!(opfile >> t))
             {
-                opfile >> tmp;
-                code.polar_coeff[i][j] = tmp;
+                std::cerr << "Missing sequence entry at index " << i << std::endl;
+                exit(EXIT_FAILURE);
             }
+            seq[i] = (uint16_t)t;
+        }
+
+        entries.push_back({snr_val, seq});
+    }
+
+    if (entries.empty())
+    {
+        std::cerr << "No SNR entries found in file!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // ------------------------------------------------------
+    // Find nearest SNR to the requested SNR
+    // ------------------------------------------------------
+    float best_dist = 2;
+    int best_idx = -1;
+
+    for (int i = 0; i < (int)entries.size(); i++)
+    {
+        float d = std::abs(entries[i].snr - SNR);
+        if (d < best_dist)
+        {
+            best_dist = d;
+            best_idx = i;
         }
     }
-    else
+
+    if (best_idx < 0)
     {
-        code.polar_coeff.resize(code.n, std::vector<uint16_t>(code.N / 2));
-        for (int i = 0; i < code.n; i++)
+        std::cerr << "Nearest SNR not found!" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    std::cout << "Requested SNR: " << SNR
+              << "  --> Using nearest SNR: " << entries[best_idx].snr
+              << std::endl;
+
+    code.reliab_sequence = entries[best_idx].seq;
+
+    code.polar_coeff.resize(code.n, std::vector<uint16_t>(code.N / 2));
+    for (int i = 0; i < code.n; i++)
+    {
+        for (int j = 0; j < code.N / 2; j++)
         {
-            for (int j = 0; j < code.N / 2; j++)
-            {
-                code.polar_coeff[i][j] = 1;
-            }
+            code.polar_coeff[i][j] = 1;
         }
     }
 }
@@ -230,20 +347,20 @@ void PoAwN::init::LoadTables(PoAwN::structures::base_code_t &code,
                              const uint16_t *GF_polynom_primitive)
 {
     uint16_t prim_pol = GF_polynom_primitive[code.p - 2];
-    
+
     std::cout << "(II) - PoAwN::GFtools::GF_bin_seq_gen" << std::endl;
     PoAwN::GFtools::GF_bin_seq_gen(code.q, prim_pol, table.BINGF, table.BINDEC);
-    
+
     std::cout << "(II) - PoAwN::GFtools::GF_bin2GF" << std::endl;
-    PoAwN::GFtools::GF_bin2GF     (table.BINGF, table.DECGF, table.GFDEC); // x^-inf=GFDEC[0]=0, x^0=GFDEC[1]=1, , x^1=GFDEC[2]=2,.., , x^(q-2)=GFDEC[q-1] and GFDEC[DECGF[i]]=i
-    
+    PoAwN::GFtools::GF_bin2GF(table.BINGF, table.DECGF, table.GFDEC); // x^-inf=GFDEC[0]=0, x^0=GFDEC[1]=1, , x^1=GFDEC[2]=2,.., , x^(q-2)=GFDEC[q-1] and GFDEC[DECGF[i]]=i
+
     std::cout << "(II) - PoAwN::GFtools::GF_add_mat_gen" << std::endl;
     PoAwN::GFtools::GF_add_mat_gen(table.BINGF, table.DECGF, table.GFDEC, table.ADDGF, table.ADDDEC);
-    
+
     std::cout << "(II) - PoAwN::GFtools::GF_mul_mat_gen" << std::endl;
     PoAwN::GFtools::GF_mul_mat_gen(table.DECGF, table.MULGF, table.MULDEC);
-    
+
     std::cout << "(II) - PoAwN::GFtools::GF_div_mat_gen" << std::endl;
-//  PoAwN::GFtools::GF_div_mat_gen(table.DECGF, table.DIVGF, table.DIVDEC);
+    //  PoAwN::GFtools::GF_div_mat_gen(table.DECGF, table.DIVGF, table.DIVDEC);
     std::cout << "(II) - End of PoAwN::GFtools section" << std::endl;
 }

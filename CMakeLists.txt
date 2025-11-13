@@ -42,17 +42,23 @@ set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
 
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
-    "${CMAKE_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/**/*.cpp"
     "${CMAKE_SOURCE_DIR}/simulator_dec_fft.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/**/*.cpp"
-)
+    "${CMAKE_SOURCE_DIR}/BLG/src/features/**/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/utilities/*.cpp"
+    )
 
 add_executable(Sim2 ${SRC_FILES})
 
 target_include_directories(Sim2 PRIVATE
     ${CMAKE_SOURCE_DIR}/include
-     ${CMAKE_SOURCE_DIR}/BLG/include
-    ${CMAKE_SOURCE_DIR}/BLG
+     ${CMAKE_SOURCE_DIR}/BLG/src/include
+    ${CMAKE_SOURCE_DIR}/BLG/src/decoders
+    ${CMAKE_SOURCE_DIR}/BLG/src/definitions
+    ${CMAKE_SOURCE_DIR}/BLG/src/hadamard
+    ${CMAKE_SOURCE_DIR}/BLG/src/utilities
+    ${CMAKE_SOURCE_DIR}/BLG/src/
+
 )
 
 

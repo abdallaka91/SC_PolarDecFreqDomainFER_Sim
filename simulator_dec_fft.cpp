@@ -23,7 +23,7 @@
 // #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
 // #include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
 // #include "decoders/naive/decoder_naive.hpp"
-#include "decoders/naive_fixed/decoder_naive_fixed.hpp"
+#include "decoders/naive_fixed1/decoder_naive_fixed.hpp"
 // #include "definitions/code.hpp"
 
 // #include <omp.h>

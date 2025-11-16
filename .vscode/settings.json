@@ -65,7 +65,19 @@
         "complex": "cpp",
         "cinttypes": "cpp",
         "cassert": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "cfenv": "cpp",
+        "charconv": "cpp",
+        "format": "cpp",
+        "semaphore": "cpp",
+        "span": "cpp",
+        "stop_token": "cpp"
     },
-    "cmake.sourceDirectory": "${workspaceFolder}"
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true
+},
+"C_Cpp.formatting": "clangFormat"
 }

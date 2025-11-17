@@ -266,6 +266,10 @@ int main(int argc, char *argv[])
         decoder *dec;
         dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
         // dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
+
+        symbols_t1 *chan_llr;
+        chan_llr = new symbols_t1[_N_];
+
         //
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         vector<uint16_t> NSYMB(N);
@@ -278,21 +282,25 @@ int main(int argc, char *argv[])
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, NSYMB, bin_mod_dict);
             // Hard decision
 
+            for (int j0 = 0; j0 < N; j0++)
+            {
+                for (int j1 = 0; j1 < q; j1++)
+                    chan_llr[j0].value[j1] = 0.95 * L[0][j0].intrinsic_LLR[j1];
+            }
             vector<uint16_t> HD(code_param.N);
             for (int j0 = 0; j0 < N; j0++)
             {
                 HD[j0]         = 0;
-                softdata_t prb = llrs_n[j0].value[0];
+                softdata_t prb = chan_llr[j0].value[0];
                 for (int j1 = 1; j1 < q; j1++)
-                    if (llrs_n[j0].value[j1] > prb)
+                    if (chan_llr[j0].value[j1] > prb)
                     {
-                        prb    = 0.95 * llrs_n[j0].value[j1];
                         HD[j0] = j1;
                     }
             }
 
             const auto m_start = std::chrono::system_clock::now();
-            dec->execute(llrs_n.data(), decoded_n.data());
+            dec->execute(chan_llr, decoded_n.data());
             const auto m_stop = std::chrono::system_clock::now();
             time_base[thread_id] += std::chrono::duration_cast<std::chrono::microseconds>(m_stop - m_start).count();
 

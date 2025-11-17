@@ -1,25 +1,24 @@
-#include <cmath>
-#include <cstdio>
-#include <iostream>
-#include <cstdlib>
-#include <vector>
 #include "Decoder_functions.h"
 #include "GF_tools.h"
+#include "HelperFunc.h"
+#include "channel.h"
 #include "init.h"
 #include "struct.h"
 #include "tools.h"
-#include "HelperFunc.h"
+#include <algorithm>
+#include <atomic>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
-#include <cstring>
-#include <string>
-#include <iomanip>
-#include <algorithm>
-#include "channel.h"
-#include <filesystem>
+#include <iostream>
 #include <omp.h>
-#include <atomic>
 #include <random>
+#include <string>
+#include <vector>
 // #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
 // #include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
 // #include "decoders/naive/decoder_naive.hpp"
@@ -41,23 +40,23 @@ using std::stoi;
 using std::string;
 using std::vector;
 
-#include <fstream>
-#include <string>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
+#include <string>
 
 namespace fs = std::filesystem;
 
 void append_results_to_file(
     const std::string &modulation,
-    int GFx,
-    int Nx,
-    int Kx,
-    double SNR,
-    unsigned long nb_err,
-    unsigned long nb_gen_frame,
-    float debit,
-    int tSimuSec)
+    int                GFx,
+    int                Nx,
+    int                Kx,
+    double             SNR,
+    unsigned long      nb_err,
+    unsigned long      nb_gen_frame,
+    float              debit,
+    int                tSimuSec)
 {
     // Directory path
     fs::path dir = "results";
@@ -99,12 +98,12 @@ void append_results_to_file(
 
 void append_results_to_file(
     const std::string &modulation,
-    int GFx,
-    int Nx,
-    int Kx,
-    double SNR,
-    unsigned long nb_err,
-    unsigned long nb_gen_frame)
+    int                GFx,
+    int                Nx,
+    int                Kx,
+    double             SNR,
+    unsigned long      nb_err,
+    unsigned long      nb_gen_frame)
 {
     // Directory path
     fs::path dir = "results";
@@ -160,23 +159,23 @@ int main(int argc, char *argv[])
         cout << "validate: NbMonteCarlo, SNR, q, N, K" << std::endl;
         return 1;
     }
-    uint16_t q, N, K, n, p, frozen_val = 0;
+    uint16_t   q, N, K, n, p, frozen_val = 0;
     softdata_t offset;
-    uint64_t NbMonteCarlo = stoi(argv[1]);
-    float EbN0 = stod(argv[2]);
-    q = stoi(argv[3]);
-    p = log2(q);
-    N = stoi(argv[4]);
-    K = stoi(argv[5]);
-    n = log2(N);
-    int FER_STOP = 100000;
+    uint64_t   NbMonteCarlo = stoi(argv[1]);
+    float      EbN0         = stod(argv[2]);
+    q                       = stoi(argv[3]);
+    p                       = log2(q);
+    N                       = stoi(argv[4]);
+    K                       = stoi(argv[5]);
+    n                       = log2(N);
+    int FER_STOP            = 100000;
 
     base_code_t code_param(N, K, n, q, p, frozen_val);
     code_param.sig_mod = "CCSK_BIN";
 
-    int gf_rand_SEED = 0;
-    float nse_rand_SEED = 1.2544;
-    bool repeatable_randgen = 0;
+    int   gf_rand_SEED       = 0;
+    float nse_rand_SEED      = 0.2;
+    bool  repeatable_randgen = 0;
 
     table_GF table;
 
@@ -197,7 +196,7 @@ int main(int argc, char *argv[])
 
     decoder_parameters dec_param(code_param);
 
-    CCSK_seq ccsk_seq;
+    CCSK_seq                 ccsk_seq;
     vector<vector<uint16_t>> CCSK_rotated_codes(q, vector<uint16_t>());
     if (code_param.sig_mod == "CCSK_BIN")
         create_ccsk_rotated_table(ccsk_seq.CCSK_bin_seq[code_param.p - 2], ccsk_seq.CCSK_bin_seq[code_param.p - 2].size(), CCSK_rotated_codes);
@@ -220,11 +219,11 @@ int main(int argc, char *argv[])
 
     dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
     dec_param.ucap[n].assign(N, dec_param.frozen_val);
-    uint64_t FER_out = 0, gen_frames_out = 0;
-    std::atomic<int> global_counter(0);
-    std::atomic<int> FER(0);
+    uint64_t          FER_out = 0, gen_frames_out = 0;
+    std::atomic<int>  global_counter(0);
+    std::atomic<int>  FER(0);
     std::atomic<bool> stop(false);
-    unsigned base_seed = 0; // std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned          base_seed = 0; // std::chrono::system_clock::now().time_since_epoch().count();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -245,9 +244,9 @@ int main(int argc, char *argv[])
 #pragma omp parallel
     {
         PoAwN::structures::decoder_parameters dec_param_local = dec_param;
-        int thread_id = omp_get_thread_num();
-        std::mt19937 gen(thread_id + base_seed);
-        vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
+        int                                   thread_id       = omp_get_thread_num();
+        std::mt19937                          gen(thread_id + base_seed);
+        vector<vector<decoder_t>>             L(n + 1, vector<decoder_t>(N));
 
         for (int i = 0; i <= n; i++)
             for (int j = 0; j < N; j++)
@@ -274,7 +273,7 @@ int main(int argc, char *argv[])
         while (true)
         {
 
-            bool succ_dec = true;
+            bool             succ_dec = true;
             vector<uint16_t> KSYMB(K);
 
             EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0, CCSK_rotated_codes, L[0], KSYMB, NSYMB, bin_mod_dict);
@@ -290,12 +289,12 @@ int main(int argc, char *argv[])
             vector<uint16_t> HD(code_param.N);
             for (int j0 = 0; j0 < N; j0++)
             {
-                HD[j0] = 0;
+                HD[j0]         = 0;
                 softdata_t prb = llrs_n[j0].value[0];
                 for (int j1 = 1; j1 < q; j1++)
                     if (llrs_n[j0].value[j1] > prb)
                     {
-                        prb = llrs_n[j0].value[j1];
+                        prb    = llrs_n[j0].value[j1];
                         HD[j0] = j1;
                     }
             }
@@ -332,7 +331,7 @@ int main(int argc, char *argv[])
                     int local_success = global_counter.load() - FER.load();
                     if ((global_counter.load() >= NbMonteCarlo) || (FER.load() >= FER_STOP))
                         stop.store(true); // Set the flag
-                    FER_out = FER.load();
+                    FER_out        = FER.load();
                     gen_frames_out = global_counter.load();
                     cout << "\rSNR: " << EbN0 << " dB, FER = " << FER
                          << "/" << global_counter << " = "
@@ -343,14 +342,14 @@ int main(int argc, char *argv[])
                 break;
         }
     }
-    const auto s_stop = std::chrono::system_clock::now();
-    const int tSimuSec = std::chrono::duration_cast<std::chrono::seconds>(s_stop - s_start).count();
+    const auto s_stop   = std::chrono::system_clock::now();
+    const int  tSimuSec = std::chrono::duration_cast<std::chrono::seconds>(s_stop - s_start).count();
 
     double total_us = 0.0;
     for (int i = 0; i < 64; i += 1)
         total_us = (total_us >= time_base[i]) ? total_us : time_base[i];
     const float time_run = (total_us / (double)gen_frames_out);
-    const float debit = ((double)N * (double)_logGF_) / time_run;
+    const float debit    = ((double)N * (double)_logGF_) / time_run;
 
     cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
          << " = " << (float)FER_out / (float)gen_frames_out << std::flush;

@@ -1,18 +1,18 @@
+#include "channel.h"
+#include "Decoder_functions.h"
+#include "GF_tools.h"
+#include "HelperFunc.h"
+#include "init.h"
+#include "struct.h"
+#include "tools.h"
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <vector>
-#include "Decoder_functions.h"
-#include "GF_tools.h"
-#include "init.h"
-#include "struct.h"
-#include "tools.h"
-#include "channel.h"
-#include "HelperFunc.h"
 #include <random>
+#include <vector>
 
-#define PI 3.14159265358979323846
+#define PI       3.14159265358979323846
 #define RepRndGn false
 
 using namespace PoAwN::structures;
@@ -27,19 +27,19 @@ using std::stoi;
 using std::string;
 using std::vector;
 
-void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
-                                            decoder_parameters &dec_param,
-                                            const table_GF &table,
-                                            const float SNR,
-                                            const vector<vector<uint16_t>> &bin_table,
-                                            vector<decoder_t> &chan_LLR_sorted,
-                                            vector<uint16_t> &KSYMB,
-                                            vector<uint16_t> &NSYMB,
+void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937                     &gen,
+                                            decoder_parameters               &dec_param,
+                                            const table_GF                   &table,
+                                            const float                       SNR,
+                                            const vector<vector<uint16_t>>   &bin_table,
+                                            vector<decoder_t>                &chan_LLR_sorted,
+                                            vector<uint16_t>                 &KSYMB,
+                                            vector<uint16_t>                 &NSYMB,
                                             const vector<vector<softdata_t>> &bin_mod_dict)
 {
     uint16_t N = dec_param.N, K = dec_param.K, q = dec_param.q;
-    uint16_t nm = dec_param.nm;
-    float sigma = sqrt(1.0 / (pow(10, SNR / 10.0))); // N0/2 or N0?
+    uint16_t nm    = dec_param.nm;
+    float    sigma = sqrt(1.0 / (pow(10, SNR / 10.0))); // N0/2 or N0?
 
     // RandomSymbGenerator(K, q, RepRndGn, 0, KSYMB);
     // std::mt19937 gen(0);
@@ -117,8 +117,8 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
         noisy_sig[i] = bin_mod_dict[NSYMB[i]];
     // awgn_channel_noise(sigma, RepRndGn, 0, noisy_sig);
     {
-        uint16_t q1 = noisy_sig[0].size();
-        vector<vector<softdata_t>> noise_table(N, vector<softdata_t>(q1, 0));
+        uint16_t                         q1 = noisy_sig[0].size();
+        vector<vector<softdata_t>>       noise_table(N, vector<softdata_t>(q1, 0));
         std::normal_distribution<double> norm_dist(0, sigma);
         {
             for (int i = 0; i < N; i++)

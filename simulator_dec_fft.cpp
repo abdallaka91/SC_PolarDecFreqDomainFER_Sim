@@ -294,7 +294,7 @@ int main(int argc, char *argv[])
                 for (int j1 = 1; j1 < q; j1++)
                     if (llrs_n[j0].value[j1] > prb)
                     {
-                        prb    = llrs_n[j0].value[j1];
+                        prb    = 0.95 * llrs_n[j0].value[j1];
                         HD[j0] = j1;
                     }
             }

@@ -1,0 +1,4 @@
+[submodule "BLG"]
+	path = BLG
+	url = https://github.com/blegal/fwht_simd.git
+	branch = devel-cm

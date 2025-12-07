@@ -226,10 +226,6 @@ int main(int argc, char *argv[]) {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //
 
-  for (int i = 0; i < N; i += 1)
-    printf("%d ", dec_param.reliab_sequence[i]);
-  printf("\n");
-
   vector<uint16_t> Shortened_seq(N);
   vector<uint16_t> reliab_sequence_LH(N);
   for (int i = 0; i < N; i++)
@@ -240,6 +236,26 @@ int main(int argc, char *argv[]) {
   std::vector<uint16_t> short_pos(Shortened_seq.begin(),
                                   Shortened_seq.begin() + short_cnt);
 
+  if (short_cnt != 0) {
+    printf("used channels after shortening:\n");
+    for (int i = N - 1; i > (short_cnt - 1); i -= 1) {
+      printf("%6d", Shortened_seq[i]);
+      if (((i % 16) == 0) && (i != 0))
+        printf("\n");
+      else if (((i % 8) == 0) && (i != 0))
+        printf("   |");
+    }
+
+    printf("Shortened channels:\n");
+    for (int i = 0; i < short_cnt; i += 1) {
+      if (((i % 16) == 0) && (i != 0))
+        printf("\n");
+      else if (((i % 8) == 0) && (i != 0))
+        printf("   |");
+      printf("%6d", Shortened_seq[i]);
+    }
+    printf("\n");
+  }
   std::vector<uint16_t> FS_p1 =
       froz_from_short(N, reliab_sequence_LH, Froz_cnt, short_pos);
   int frozen_symbols[N];

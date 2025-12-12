@@ -42,16 +42,16 @@ set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
 
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/**/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/**.cpp"
     "${CMAKE_SOURCE_DIR}/simulator_dec_fft_A.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/features/**/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/utilities/*.cpp"
-    )
+)
 
-    list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")
+list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")
+list(FILTER SRC_FILES EXCLUDE REGEX "decoder_naive_int32_t")
 add_executable(Sim2 ${SRC_FILES})
 
-target_include_directories(Sim2 PRIVATE
+target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/include
      ${CMAKE_SOURCE_DIR}/BLG/src/include
     ${CMAKE_SOURCE_DIR}/BLG/src/decoders
@@ -59,7 +59,7 @@ target_include_directories(Sim2 PRIVATE
     ${CMAKE_SOURCE_DIR}/BLG/src/hadamard
     ${CMAKE_SOURCE_DIR}/BLG/src/utilities
     ${CMAKE_SOURCE_DIR}/BLG/src/
-
+    ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
 )
 
 

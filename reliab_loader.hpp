@@ -1,0 +1,99 @@
+#pragma once
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+// Load reliability sequence (method selectable)
+// method = 1 → first sequence
+// method = 2 → second sequence
+inline std::vector<uint16_t> load_reliability_sequence(int GF, int N,
+                                                       float SNR) {
+  // Determine the base path relative to the current working directory
+  std::string base_dir = "../matrices/";
+
+  // Build the folder path: ./BLG/matrices/GF64/
+  std::ostringstream folder;
+  folder << base_dir << "GF" << GF << "/";
+
+  // Build the file path: ./BLG/matrices/GF64/GF64N64.txt
+  std::ostringstream fname;
+  fname << folder.str() << "GF" << GF << "N" << N << ".txt";
+
+  std::string filename = fname.str();
+  std::cout << "Reading reliability file: " << filename << std::endl;
+
+  std::ifstream file(filename);
+  if (!file) {
+    std::cerr << "❌ Cannot open reliability file: " << filename << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  // --- Read SNR + sequence blocks (Matching the LoadCode structure) ---
+  struct entry_t {
+    float snr;
+    std::vector<uint16_t> seq;
+  };
+  std::vector<entry_t> entries;
+
+  while (true) {
+    std::string tag;
+    float snr_val;
+
+    // Try to read "SNR" tag and the float value
+    if (!(file >> tag >> snr_val))
+      break; // End of file or read error
+
+    if (tag != "SNR") {
+      std::cerr << "❌ Invalid format: expected 'SNR' tag in file: " << filename
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+
+    // Read reliability sequence (N integers)
+    std::vector<uint16_t> seq(N);
+    for (int i = 0; i < N; i++) {
+      int t;
+      if (!(file >> t)) {
+        std::cerr << "❌ Missing sequence entry at index " << i << " for SNR "
+                  << snr_val << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+      seq[i] = static_cast<uint16_t>(t);
+    }
+
+    entries.push_back({snr_val, seq});
+  }
+
+  if (entries.empty()) {
+    std::cerr << "❌ No SNR entries found in file: " << filename << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  // --- Find nearest SNR to the requested SNR ---
+  float best_dist = 1000.0f; // Use a large number instead of hard-coded 2
+  int best_idx = -1;
+
+  for (int i = 0; i < (int)entries.size(); i++) {
+    float d = std::abs(entries[i].snr - SNR);
+    if (d < best_dist) {
+      best_dist = d;
+      best_idx = i;
+    }
+  }
+
+  if (best_idx < 0) {
+    std::cerr << "❌ Nearest SNR not found!" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  // --- Output and Return ---
+  std::cout << "✅ Requested SNR: " << SNR
+            << " --> Using nearest SNR: " << entries[best_idx].snr << " from "
+            << filename << std::endl;
+
+  return entries[best_idx].seq;
+}

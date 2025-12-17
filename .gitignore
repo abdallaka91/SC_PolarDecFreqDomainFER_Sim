@@ -21,3 +21,4 @@ compile_commands.json
 
 src/decoders/dedicated/dedicated_execute.hpp
 src/definitions/code.hpp
+apps/generator_app

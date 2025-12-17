@@ -75,7 +75,7 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
     # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
-    "${CMAKE_SOURCE_DIR}/simulator_dec_fft_A.cpp"
+    "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
 )
 
 list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")

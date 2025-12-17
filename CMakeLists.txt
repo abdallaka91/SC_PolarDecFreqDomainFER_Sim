@@ -52,19 +52,29 @@ set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
 #     "${CMAKE_SOURCE_DIR}/simulator_dec_fft_A.cpp"
 # )
 
+# add_executable(benchmarking
+#         ${CMAKE_CURRENT_SOURCE_DIR}/apps/benchmarking.cpp
+#         src/decoders/specialized_pruning/decoder_specialized_pruning.cpp
+#         src/decoders/specialized/decoder_specialized.cpp
+#         src/decoders/dedicated/decoder_dedicated.cpp
+#         src/decoders/naive/decoder_naive.cpp
+#         src/decoders/basic/decoder_basic.cpp
+#         src/decoders/naive_fixed/decoder_naive_fixed.cpp
+#         src/decoders/naive_cfloat/decoder_naive_cfloat.cpp
+#         src/encoder/polar_encoder.cpp
+# )
+
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/nb_sc_decoder/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"    
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
-    # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
     # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_pruning/*.cpp"
-
     "${CMAKE_SOURCE_DIR}/simulator_dec_fft_A.cpp"
 )
 

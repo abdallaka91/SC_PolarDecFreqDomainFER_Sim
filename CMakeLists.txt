@@ -5,10 +5,10 @@ cmake_minimum_required(VERSION 3.16)
 # ===========================
 project(TEST1 LANGUAGES CXX)
 
-option(DISABLE_FWHT_NORM "Disable FWHT normalization" ON)
-if (DISABLE_FWHT_NORM)
-	add_compile_definitions (DISABLE_FWHT_NORM=1)
-endif ()
+# option(DISABLE_FWHT_NORM "Disable FWHT normalization" ON)
+# if (DISABLE_FWHT_NORM)
+# 	add_compile_definitions (DISABLE_FWHT_NORM=1)
+# endif ()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -62,6 +62,7 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
     # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
+    # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_pruning/*.cpp"
 
     "${CMAKE_SOURCE_DIR}/simulator_dec_fft_A.cpp"
@@ -81,6 +82,7 @@ target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/BLG/src/utilities
     ${CMAKE_SOURCE_DIR}/BLG/src/
     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
+    # ${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/
 )
 
 # ===========================

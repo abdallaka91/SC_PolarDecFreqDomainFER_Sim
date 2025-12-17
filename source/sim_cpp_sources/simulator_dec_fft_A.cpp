@@ -2,14 +2,8 @@
 #include "GF_tools.h"
 #include "HelperFunc.h"
 #include "channel.h"
-#include "decoders/naive/decoder_naive.hpp"
-#include "decoders/naive_int32_t/decoder_naive_int32_t.hpp"
-#include "dedicated/decoder_dedicated.hpp"
 #include "definitions/code.hpp"
 #include "init.h"
-#include "naive_pruning/decoder_naive_pruning.hpp"
-#include "specialized/decoder_specialized.hpp"
-#include "specialized_pruning/decoder_specialized_pruning.hpp"
 #include "struct.h"
 #include "tools.h"
 #include <algorithm>
@@ -28,7 +22,17 @@
 #include <string>
 #include <vector>
 
-// #include <omp.h>
+#include "decoders/basic/decoder_basic.hpp"
+#include "decoders/dedicated/decoder_dedicated.hpp"
+#include "decoders/naive/decoder_naive.hpp"
+#include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
+#include "decoders/naive_fixed/decoder_naive_fixed.hpp"
+#include "decoders/specialized/decoder_specialized.hpp"
+#include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
+#include "demodulator/demodulator.hpp"
+#include "encoder/polar_encoder.hpp"
+
+#include "utilities/utility_functions.hpp"
 
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
@@ -266,25 +270,30 @@ int main(int argc, char *argv[]) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     std::vector<uint16_t> decoded_n(N);
-    decoder *dec; // Not 'decoder * dec;' but same thing
+
+    decoder<_GF_> *dec;
 
     if (dec_type == "dec1") {
       dec = new decoder_naive<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec2") {
-      dec = new decoder_naive_pruning<_GF_>(N, frozen_symbols);
+    } else if (dec_type == "dec1_fixed") {
+      dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
+    } else if (dec_type == "dec1_cfloat") {
+      dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec3") {
       dec = new decoder_specialized<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec4") {
       dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec5") {
       dec = new decoder_dedicated<_GF_>(N, frozen_symbols);
-      // } else if (dec_type == "dec6") {
-      //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
+    } else if (dec_type == "dec0") {
+      dec = new decoder_basic<_GF_>(N, frozen_symbols);
     } else {
       printf("#(II) Error : unknown decoder type\n");
       exit(1);
     }
-    std::vector<symbols_t> llrs_n(N);
+
+    std::vector<symbols_s<_GF_>> llrs_n(N);
+
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -297,7 +306,6 @@ int main(int argc, char *argv[]) {
                              CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
 
       for (int i = 0; i < N; i++) {
-        llrs_n[i].is_freq = false;
         for (int j = 0; j < _GF_; j++)
           llrs_n[i].value[j] = L[0][i].intrinsic_LLR[j];
       }

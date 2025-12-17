@@ -18,3 +18,6 @@ compile_commands.json
 
 .vscode/
 .DS_Store
+
+src/decoders/dedicated/dedicated_execute.hpp
+src/definitions/code.hpp

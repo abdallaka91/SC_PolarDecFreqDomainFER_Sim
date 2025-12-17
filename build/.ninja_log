@@ -1,0 +1,17 @@
+# ninja log v5
+1	2020	1766007762314420633	CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o	2a429b86eece07ac
+2	1327	1766007761627470225	CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o	2f70d809b06ac68c
+1	1306	1766007761602789372	CMakeFiles/Sim2.dir/BLG/src/decoders/dedicated/decoder_dedicated.cpp.o	4faada714b74f543
+3	1271	1766007761569881568	CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o	64ab4072d57cf1b
+3	1142	1766007761438250352	CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o	4d59909d2904507b
+2	1082	1766007761380668617	CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o	48e71806256824fb
+2	992	1766007761290228082	CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o	3e765e03f9645cef
+4	1129	1766007761425909925	CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o	a6c8fd1d9e618cac
+3	970	1766007761269673415	CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o	cbb644c0b8eaa57b
+1	1098	1766007761397115596	CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o	4844e896f73810b5
+3	632	1766007760932576875	CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o	6bbdf87926c220a4
+0	44	1766008488833750977	build.ninja	f747aeba03b4288c
+1	605	1766008489442467228	CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o	45443be424ff954e
+2	748	1766008489598638403	CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o	a6b1769057a31f98
+2	1644	1766008490494567768	CMakeFiles/Sim2.dir/source/sim_cpp_sources/simulator_dec_fft_A.cpp.o	6859c6ffe6f2bffe
+1644	3747	1766008492594659077	Sim2	aa810eacd8dc70e3

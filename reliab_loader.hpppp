@@ -13,7 +13,7 @@
 inline std::vector<uint16_t> load_reliability_sequence(int GF, int N,
                                                        float SNR) {
   // Determine the base path relative to the current working directory
-  std::string base_dir = "../matrices/";
+  std::string base_dir = "BLG/matrices/";
 
   // Build the folder path: ./BLG/matrices/GF64/
   std::ostringstream folder;

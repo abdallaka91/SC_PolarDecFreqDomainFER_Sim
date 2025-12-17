@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
   table_GF table;
 
   cout << "(II) Loading code_param [START]" << endl;
-  LoadCode(code_param, EbN0);
+  LoadCode(code_param, EbN0, "./matrices/");
   cout << "(II) Loading code_param [END OK]" << endl;
   // void LoadTables(base_code_t & code, table_GF & table,  const uint16_t
   // *GF_polynom_primitive)

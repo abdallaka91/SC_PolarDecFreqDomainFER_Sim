@@ -124,6 +124,10 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx,
        << " = " << FER_value << "\n";
 }
 
+#define STR(S) #S
+
+#define EVAL(x) STR(x)
+
 int main(int argc, char *argv[]) {
 #ifdef __AVX512BW__
   printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
@@ -169,7 +173,7 @@ int main(int argc, char *argv[]) {
   table_GF table;
 
   cout << "(II) Loading code_param [START]" << endl;
-  LoadCode(code_param, EbN0);
+  LoadCode(code_param, EbN0, "./matrices/");
   cout << "(II) Loading code_param [END OK]" << endl;
   // void LoadTables(base_code_t & code, table_GF & table,  const uint16_t
   // *GF_polynom_primitive)
@@ -177,6 +181,9 @@ int main(int argc, char *argv[]) {
   cout << "(II) Loading tables [START]" << endl;
   LoadTables(code_param, table, GF_polynom_primitive.data());
   cout << "(II) Loading tables [END OK]" << endl;
+
+  cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations."
+       << endl;
 
   cout << "Simulation starts..." << endl;
 

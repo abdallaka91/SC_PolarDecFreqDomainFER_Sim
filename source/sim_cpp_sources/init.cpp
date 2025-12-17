@@ -9,15 +9,9 @@
 #include <iostream>
 #include <sstream>
 
-void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR) {
+void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR,
+                           const std::string &base_dir) {
   code.Rate = (float)code.K / (float)code.N;
-
-  // ------------------------------------------------------
-  // Select directory depending on modulation
-  // ------------------------------------------------------
-  std::string base_dir;
-
-  base_dir = "./BLG/matrices/";
 
   // ------------------------------------------------------
   // Build folder + file name

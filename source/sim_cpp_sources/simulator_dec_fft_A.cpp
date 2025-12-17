@@ -23,8 +23,8 @@
 // #include "decoders/naive/decoder_naive.hpp"
 // #include "definitions/code.hpp"
 // #include "specialized/decoder_specialized.hpp"
-// #include "specialized_pruning/decoder_specialized_pruning.hpp"
-#include "dedicated/decoder_dedicated.hpp"
+#include "specialized_pruning/decoder_specialized_pruning.hpp"
+// #include "dedicated/decoder_dedicated.hpp"
 
 // #include <omp.h>
 
@@ -328,10 +328,10 @@ int main(int argc, char *argv[]) {
     //
     std::vector<uint16_t> decoded_n(N);
     // decoder_naive<_GF_> dec(N, frozen_symbols);
-    // decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
+    decoder_specialized_pruning<_GF_> dec(N, frozen_symbols);
     // decoder_naive_pruning<_GF_> dec(N, frozen_symbols);
     // decoder_specialized<_GF_> dec(N, frozen_symbols);
-    decoder_dedicated<_GF_> dec(N, frozen_symbols);
+    // decoder_dedicated<_GF_> dec(N, frozen_symbols);
 
     std::vector<symbols_t> llrs_n(N);
     //

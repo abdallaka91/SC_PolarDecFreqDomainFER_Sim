@@ -5,10 +5,7 @@ cmake_minimum_required(VERSION 3.16)
 # ===========================
 project(TEST1 LANGUAGES CXX)
 
-# option(DISABLE_FWHT_NORM "Disable FWHT normalization" ON)
-# if (DISABLE_FWHT_NORM)
-# 	add_compile_definitions (DISABLE_FWHT_NORM=1)
-# endif ()
+add_compile_options(-Wno-unused-parameter -Wno-deprecated-copy -Wno-int-in-bool-context -Wno-type-limits -Wno-strict-aliasing -Wno-extra)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

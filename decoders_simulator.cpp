@@ -27,10 +27,12 @@
 #include "decoders/naive/decoder_naive.hpp"
 #include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
 #include "decoders/naive_fixed/decoder_naive_fixed.hpp"
+// #include "decoders/naive_int32_t/decoder_naive_int32_t.hpp"
 #include "decoders/specialized/decoder_specialized.hpp"
 #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
 #include "demodulator/demodulator.hpp"
 #include "encoder/polar_encoder.hpp"
+#include "features/fwht/fwht_counter.hpp"
 
 #include "utilities/utility_functions.hpp"
 
@@ -169,6 +171,10 @@ int main(int argc, char *argv[]) {
   dec_type = std::string(argv[6]);
   std::transform(dec_type.begin(), dec_type.end(), dec_type.begin(), ::tolower);
 
+  // FWHT counter
+  uint64_t fwht_call_counter = 0;
+  reset_fwht_counter();
+
   int FER_STOP = 100000;
   // N = 1024;
   // K = 513;
@@ -271,10 +277,11 @@ int main(int argc, char *argv[]) {
     //
     std::vector<uint16_t> decoded_n(N);
 
-    decoder<_GF_> *dec;
-
+    decoder *dec;
     if (dec_type == "dec1") {
       dec = new decoder_naive<_GF_>(N, frozen_symbols);
+      // } else if (dec_type == "dec1_int32") {
+      //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec1_fixed") {
       dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec1_cfloat") {

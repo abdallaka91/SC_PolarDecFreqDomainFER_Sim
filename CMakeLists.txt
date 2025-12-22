@@ -1,3 +1,99 @@
+# cmake_minimum_required(VERSION 3.16)
+
+# # ===========================
+# #  Project setup
+# # ===========================
+# project(TEST1 LANGUAGES CXX)
+
+# add_compile_options(-Wno-unused-parameter -Wno-deprecated-copy -Wno-int-in-bool-context -Wno-type-limits -Wno-strict-aliasing -Wno-extra)
+
+# set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For VSCode IntelliSense
+
+# # ===========================
+# #  Build type configuration
+# # ===========================
+# if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+#     message(STATUS "Configuring Debug build")
+#     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
+#     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
+# elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+#     message(STATUS "Configuring Release build")
+#     set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+#     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+# else()
+#     message(STATUS "No build type selected, defaulting to Release")
+#     set(CMAKE_BUILD_TYPE Release)
+#     set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+#     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+# endif()
+
+# # ===========================
+# #  Dependencies
+# # ===========================
+# find_package(OpenMP REQUIRED)
+
+# # ===========================
+# #  Source setup
+# # ===========================
+
+# add_compile_options(-mavx2)
+
+# set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
+
+# file(GLOB_RECURSE SRC_FILES
+#     "${CMAKE_SOURCE_DIR}/source/*.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"    
+#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
+#     # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
+#     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
+#     # "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
+#     "${CMAKE_SOURCE_DIR}/single_frame_dec.cpp"
+# )
+
+# list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")
+# list(FILTER SRC_FILES EXCLUDE REGEX "decoder_naive_int32_t")
+
+# add_executable(Sim2 ${SRC_FILES})
+
+# target_include_directories(Sim2 PUBLIC
+#     ${CMAKE_SOURCE_DIR}/include
+#      ${CMAKE_SOURCE_DIR}/BLG/src/include
+#     ${CMAKE_SOURCE_DIR}/BLG/src/decoders
+#     ${CMAKE_SOURCE_DIR}/BLG/src/definitions
+#     ${CMAKE_SOURCE_DIR}/BLG/src/hadamard
+#     ${CMAKE_SOURCE_DIR}/BLG/src/utilities
+#     ${CMAKE_SOURCE_DIR}/BLG/src/
+#     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
+#     # ${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/
+# )
+
+# # ===========================
+# #  Linker configuration
+# # ===========================
+# if(OpenMP_CXX_FOUND)
+#     target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
+# endif()
+
+# # ===========================
+# #  Optional diagnostics
+# # ===========================
+# message(STATUS "C++ Compiler : ${CMAKE_CXX_COMPILER}")
+# message(STATUS "Build type   : ${CMAKE_BUILD_TYPE}")
+# message(STATUS "C++ Flags    : ${CMAKE_CXX_FLAGS}")
+
+
+#############################################################################
+#single thread
+
+
 cmake_minimum_required(VERSION 3.16)
 
 # ===========================
@@ -5,11 +101,25 @@ cmake_minimum_required(VERSION 3.16)
 # ===========================
 project(TEST1 LANGUAGES CXX)
 
+# ===========================
+#  Configuration options
+# ===========================
+# option(FWHT_COUNTER_ENABLE "Enable FWHT call counter" ON)
+# message(STATUS "FWHT counter enabled: ${FWHT_COUNTER_ENABLE}")
+
+if(FWHT_COUNTER_ENABLE)
+    add_compile_definitions(FWHT_COUNTER_ENABLE=1)
+    message(STATUS "FWHT counter compilation is ENABLED")
+else()
+    add_compile_definitions(FWHT_COUNTER_ENABLE=0)
+    message(STATUS "FWHT counter compilation is DISABLED")
+endif()
+
 add_compile_options(-Wno-unused-parameter -Wno-deprecated-copy -Wno-int-in-bool-context -Wno-type-limits -Wno-strict-aliasing -Wno-extra)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For VSCode IntelliSense
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ===========================
 #  Build type configuration
@@ -20,19 +130,14 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 else()
     message(STATUS "No build type selected, defaulting to Release")
     set(CMAKE_BUILD_TYPE Release)
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 endif()
-
-# ===========================
-#  Dependencies
-# ===========================
-find_package(OpenMP REQUIRED)
 
 # ===========================
 #  Source setup
@@ -41,25 +146,6 @@ find_package(OpenMP REQUIRED)
 add_compile_options(-mavx2)
 
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
-
-# file(GLOB_RECURSE SRC_FILES
-#     "${CMAKE_SOURCE_DIR}/source/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/**.cpp"
-#     "${CMAKE_SOURCE_DIR}/simulator_dec_fft_A.cpp"
-# )
-
-# add_executable(benchmarking
-#         ${CMAKE_CURRENT_SOURCE_DIR}/apps/benchmarking.cpp
-#         src/decoders/specialized_pruning/decoder_specialized_pruning.cpp
-#         src/decoders/specialized/decoder_specialized.cpp
-#         src/decoders/dedicated/decoder_dedicated.cpp
-#         src/decoders/naive/decoder_naive.cpp
-#         src/decoders/basic/decoder_basic.cpp
-#         src/decoders/naive_fixed/decoder_naive_fixed.cpp
-#         src/decoders/naive_cfloat/decoder_naive_cfloat.cpp
-#         src/encoder/polar_encoder.cpp
-# )
 
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
@@ -71,12 +157,13 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"    
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
-    # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
-    "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
+    "${CMAKE_SOURCE_DIR}/single_frame_dec.cpp"
 )
 
 list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")
 list(FILTER SRC_FILES EXCLUDE REGEX "decoder_naive_int32_t")
+
 
 add_executable(Sim2 ${SRC_FILES})
 
@@ -89,15 +176,7 @@ target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/BLG/src/utilities
     ${CMAKE_SOURCE_DIR}/BLG/src/
     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
-    # ${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/
 )
-
-# ===========================
-#  Linker configuration
-# ===========================
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
-endif()
 
 # ===========================
 #  Optional diagnostics

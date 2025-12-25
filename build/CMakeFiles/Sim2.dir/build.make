@@ -195,19 +195,19 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.cpp -o CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.s
 
-CMakeFiles/Sim2.dir/single_frame_dec.cpp.o: CMakeFiles/Sim2.dir/flags.make
-CMakeFiles/Sim2.dir/single_frame_dec.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/single_frame_dec.cpp
-CMakeFiles/Sim2.dir/single_frame_dec.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/Sim2.dir/single_frame_dec.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/single_frame_dec.cpp.o -MF CMakeFiles/Sim2.dir/single_frame_dec.cpp.o.d -o CMakeFiles/Sim2.dir/single_frame_dec.cpp.o -c /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/single_frame_dec.cpp
+CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: CMakeFiles/Sim2.dir/flags.make
+CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp
+CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/Sim2.dir/decoders_simulator.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/decoders_simulator.cpp.o -MF CMakeFiles/Sim2.dir/decoders_simulator.cpp.o.d -o CMakeFiles/Sim2.dir/decoders_simulator.cpp.o -c /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp
 
-CMakeFiles/Sim2.dir/single_frame_dec.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/single_frame_dec.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/single_frame_dec.cpp > CMakeFiles/Sim2.dir/single_frame_dec.cpp.i
+CMakeFiles/Sim2.dir/decoders_simulator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/decoders_simulator.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp > CMakeFiles/Sim2.dir/decoders_simulator.cpp.i
 
-CMakeFiles/Sim2.dir/single_frame_dec.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/single_frame_dec.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/single_frame_dec.cpp -o CMakeFiles/Sim2.dir/single_frame_dec.cpp.s
+CMakeFiles/Sim2.dir/decoders_simulator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/decoders_simulator.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp -o CMakeFiles/Sim2.dir/decoders_simulator.cpp.s
 
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/Decoder_functions.cpp
@@ -290,7 +290,7 @@ Sim2_OBJECTS = \
 "CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o" \
-"CMakeFiles/Sim2.dir/single_frame_dec.cpp.o" \
+"CMakeFiles/Sim2.dir/decoders_simulator.cpp.o" \
 "CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o" \
 "CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o" \
 "CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o" \
@@ -309,13 +309,15 @@ Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o
-Sim2: CMakeFiles/Sim2.dir/single_frame_dec.cpp.o
+Sim2: CMakeFiles/Sim2.dir/decoders_simulator.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o
 Sim2: CMakeFiles/Sim2.dir/build.make
+Sim2: /usr/lib/gcc/x86_64-linux-gnu/13/libgomp.so
+Sim2: /usr/lib/x86_64-linux-gnu/libpthread.a
 Sim2: CMakeFiles/Sim2.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX executable Sim2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Sim2.dir/link.txt --verbose=$(VERBOSE)

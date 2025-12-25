@@ -345,29 +345,29 @@ BLG/src/utilities/utility_functions.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.s
 .PHONY : BLG/src/utilities/utility_functions.cpp.s
 
-single_frame_dec.o: single_frame_dec.cpp.o
-.PHONY : single_frame_dec.o
+decoders_simulator.o: decoders_simulator.cpp.o
+.PHONY : decoders_simulator.o
 
 # target to build an object file
-single_frame_dec.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/single_frame_dec.cpp.o
-.PHONY : single_frame_dec.cpp.o
+decoders_simulator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/decoders_simulator.cpp.o
+.PHONY : decoders_simulator.cpp.o
 
-single_frame_dec.i: single_frame_dec.cpp.i
-.PHONY : single_frame_dec.i
+decoders_simulator.i: decoders_simulator.cpp.i
+.PHONY : decoders_simulator.i
 
 # target to preprocess a source file
-single_frame_dec.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/single_frame_dec.cpp.i
-.PHONY : single_frame_dec.cpp.i
+decoders_simulator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/decoders_simulator.cpp.i
+.PHONY : decoders_simulator.cpp.i
 
-single_frame_dec.s: single_frame_dec.cpp.s
-.PHONY : single_frame_dec.s
+decoders_simulator.s: decoders_simulator.cpp.s
+.PHONY : decoders_simulator.s
 
 # target to generate assembly for a file
-single_frame_dec.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/single_frame_dec.cpp.s
-.PHONY : single_frame_dec.cpp.s
+decoders_simulator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/decoders_simulator.cpp.s
+.PHONY : decoders_simulator.cpp.s
 
 source/sim_cpp_sources/Decoder_functions.o: source/sim_cpp_sources/Decoder_functions.cpp.o
 .PHONY : source/sim_cpp_sources/Decoder_functions.o
@@ -525,9 +525,9 @@ help:
 	@echo "... BLG/src/utilities/utility_functions.o"
 	@echo "... BLG/src/utilities/utility_functions.i"
 	@echo "... BLG/src/utilities/utility_functions.s"
-	@echo "... single_frame_dec.o"
-	@echo "... single_frame_dec.i"
-	@echo "... single_frame_dec.s"
+	@echo "... decoders_simulator.o"
+	@echo "... decoders_simulator.i"
+	@echo "... decoders_simulator.s"
 	@echo "... source/sim_cpp_sources/Decoder_functions.o"
 	@echo "... source/sim_cpp_sources/Decoder_functions.i"
 	@echo "... source/sim_cpp_sources/Decoder_functions.s"

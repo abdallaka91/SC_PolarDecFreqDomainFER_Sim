@@ -23,7 +23,7 @@
 #include <vector>
 
 #include "decoders/basic/decoder_basic.hpp"
-#include "decoders/dedicated/decoder_dedicated.hpp"
+// #include "decoders/dedicated/decoder_dedicated.hpp"
 #include "decoders/naive/decoder_naive.hpp"
 #include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
 #include "decoders/naive_fixed/decoder_naive_fixed.hpp"
@@ -56,10 +56,9 @@ using std::vector;
 
 namespace fs = std::filesystem;
 
-void append_results_to_file(const std::string &modulation, int GFx, int Nx,
-                            int Kx, double SNR, unsigned long nb_err,
-                            unsigned long nb_gen_frame, float debit,
-                            int tSimuSec) {
+void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
+                             double SNR, unsigned long nb_err,
+                             unsigned long nb_gen_frame) {
   // Directory path
   fs::path dir = "results";
 
@@ -75,8 +74,8 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx,
 
   // Compose filename
   fs::path filename =
-      dir / (modulation + "_GF" + std::to_string(GFx) + "_N" +
-             std::to_string(Nx) + "_K" + std::to_string(Kx) + ".txt");
+      dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
+             std::to_string(Kx) + "_" + dec.c_str() + ".txt");
 
   // Open file in append mode
   FILE *fou = fopen(filename.c_str(), "a");
@@ -89,11 +88,8 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx,
   double FER_value =
       (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 
-  fprintf(fou, "%+6.2f ", SNR);
-  fprintf(fou, "%1.16f ", FER_value);
-  fprintf(fou, "%1.2e ", FER_value);
-  fprintf(fou, "%5.2f ", debit);
-  fprintf(fou, "%6d\n", tSimuSec);
+  fprintf(fou, "%+7.3f %1.8f %6d %8d", SNR, FER_value, nb_err, nb_gen_frame);
+  fprintf(fou, "\n");
   fclose(fou);
 }
 
@@ -156,8 +152,10 @@ int main(int argc, char *argv[]) {
 
   string dec_type;
 
-  if (argc != 7) {
-    cout << "validate: NbMonteCarlo, SNR, q, N, K, dec1...dec5" << std::endl;
+  if (argc < 7) {
+    cout << "validate: NbMonteCarlo, SNR, q, N, K, dec1...dec5 and optionnally "
+            "nb of FER"
+         << std::endl;
     return 1;
   }
   uint16_t q, N, K, n, p, frozen_val = 0;
@@ -172,10 +170,10 @@ int main(int argc, char *argv[]) {
   std::transform(dec_type.begin(), dec_type.end(), dec_type.begin(), ::tolower);
 
   // FWHT counter
-  uint64_t fwht_call_counter = 0;
-  reset_fwht_counter();
 
-  int FER_STOP = 100000;
+  int FER_STOP = 100;
+  if (argc == 8)
+    FER_STOP = stoi(argv[7]);
   // N = 1024;
   // K = 513;
   n = log2(N);
@@ -280,20 +278,23 @@ int main(int argc, char *argv[]) {
     decoder *dec;
     if (dec_type == "dec1") {
       dec = new decoder_naive<_GF_>(N, frozen_symbols);
+      printf("Simulate decoder 1...\n");
       // } else if (dec_type == "dec1_int32") {
       //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec1_fixed") {
       dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
+      printf("Simulate decoder 1 fixed...\n");
     } else if (dec_type == "dec1_cfloat") {
       dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec3") {
       dec = new decoder_specialized<_GF_>(N, frozen_symbols);
+      printf("Simulate decoder 3...\n");
     } else if (dec_type == "dec4") {
       dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec5") {
-      dec = new decoder_dedicated<_GF_>(N, frozen_symbols);
+      printf("Simulate decoder 4...\n");
     } else if (dec_type == "dec0") {
       dec = new decoder_basic<_GF_>(N, frozen_symbols);
+      printf("Simulate decoder 0...\n");
     } else {
       printf("#(II) Error : unknown decoder type\n");
       exit(1);
@@ -376,7 +377,6 @@ int main(int argc, char *argv[]) {
   cout << " :: débit = " << debit << " Mbps";
   cout << endl;
 
-  append_results_to_file(dec_param.sig_mod.c_str(), dec_param.q, dec_param.N,
-                         dec_param.K, EbN0, FER_out, gen_frames_out, debit,
-                         tSimuSec);
+  // append_results_to_file1(dec_type, dec_param.q, dec_param.N, dec_param.K,
+  // EbN0, FER_out, gen_frames_out);
 }

@@ -32,15 +32,15 @@ def run_simulation(num_frames, GF, N, K, decoder, snr_values):
     print(f"\n✓ Completed all simulations for K={K}")
 
 def main():
-    num_frames = 1000000
-    GF = 256
+    num_frames = 5000000
+    GF = 64
     N =64
-    decoder = "dec4"
+    decoder = "dec1"
     
-    K1 = 48
+    K1 = 16
     snr_range1 = []
-    snr = -15
-    while snr <= -5:
+    snr = -10.5
+    while snr <= -10.5:
         snr_range1.append(round(snr, 3))
         snr += 0.5
     

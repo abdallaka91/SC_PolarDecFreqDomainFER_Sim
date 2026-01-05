@@ -5,7 +5,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o: /home/abdallah_u
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/decoder.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -238,8 +238,15 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/dedicated/decoder_dedicated.cpp.o: /home/ab
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/decoder.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/decoder_dedicated.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/dedicated_execute.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/fix_xor_list.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/f_function.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/g_function.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_rate_0.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_rate_1.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_rep.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_spc.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -250,6 +257,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/dedicated/decoder_dedicated.cpp.o: /home/ab
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize_avx2.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/scale_by_inverse_avx2.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/frozen_tree.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -536,7 +544,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o: /home/abdallah_u
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/f_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/g_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -791,7 +799,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o: /h
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/impl/f_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/impl/g_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -1149,7 +1157,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: /hom
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_fixed/impl/f_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_fixed/impl/g_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -1523,7 +1531,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: /hom
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/middle_node_after_f.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/middle_node_after_g.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -1792,7 +1800,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_rep.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_spc.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -2095,14 +2103,23 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
 
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_1024.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_128.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_16.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_2048.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_256.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_32.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_4096.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_512.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_8.hpp \
   /usr/include/stdc-predef.h
 
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.cpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
@@ -2355,7 +2372,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah_ubuntu/Desktop/NBPo
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/decoder_specialized.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/demodulator/demodulator.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/encoder/polar_encoder.hpp \
@@ -3982,8 +3999,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/c++/13/bits/random.tcc:
 
-/usr/include/c++/13/bits/fstream.tcc:
-
 /usr/include/c++/13/bits/fs_fwd.h:
 
 /usr/include/c++/13/bits/atomic_base.h:
@@ -4002,7 +4017,17 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp:
 
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_8.hpp:
+
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_64.hpp:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_512.hpp:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_256.hpp:
+
+/usr/include/c++/13/bits/fstream.tcc:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_1024.hpp:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp:
 
@@ -4204,8 +4229,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.hpp:
 
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp:
-
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/g_function.hpp:
 
 /usr/include/c++/13/deque:
@@ -4268,7 +4291,25 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/c++/13/bits/stl_bvector.h:
 
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_32.hpp:
+
 /usr/include/c++/13/bits/refwrap.h:
+
+/usr/include/c++/13/bits/postypes.h:
+
+/usr/include/c++/13/bits/ostream_insert.h:
+
+/usr/include/c++/13/bits/memoryfwd.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_2048.hpp:
+
+/usr/include/c++/13/streambuf:
+
+/usr/include/c++/13/bits/memory_resource.h:
+
+/usr/include/c++/13/bits/localefwd.h:
+
+/usr/include/c++/13/bits/invoke.h:
 
 /usr/include/c++/13/pstl/pstl_config.h:
 
@@ -4289,6 +4330,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/c++/13/bits/stl_pair.h:
 
 /usr/include/c++/13/cstdio:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_128.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx5124fmapsintrin.h:
 
@@ -4319,10 +4362,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_counter.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/amxtileintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512fp16intrin.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_rep.hpp:
 
@@ -4360,7 +4399,7 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/c++/13/bits/std_abs.h:
 
-/usr/include/c++/13/bits/postypes.h:
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/include/struct.h:
 
@@ -4369,8 +4408,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.cpp:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/pmmintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/xsavecintrin.h:
 
@@ -4399,8 +4436,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/c++/13/bits/streambuf_iterator.h:
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
-
-/usr/include/c++/13/bits/localefwd.h:
 
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
 
@@ -4566,9 +4601,17 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/fmaintrin.h:
 
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/types.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512ifmavlintrin.h:
+
 /usr/include/x86_64-linux-gnu/bits/time.h:
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_4096.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/xtestintrin.h:
 
@@ -4600,6 +4643,10 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/c++/13/type_traits:
 
+/usr/include/c++/13/bits/range_access.h:
+
+/usr/include/c++/13/tr1/hypergeometric.tcc:
+
 /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h:
 
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
@@ -4611,10 +4658,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h:
 
 /usr/include/assert.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
-
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/decoder_naive.hpp:
 
@@ -4629,6 +4672,10 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/c++/13/tr1/ell_integral.tcc:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/pmmintrin.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_rate_1.hpp:
 
 /usr/include/c++/13/cstdint:
 
@@ -4666,10 +4713,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
 
-/usr/include/c++/13/tr1/hypergeometric.tcc:
-
-/usr/include/c++/13/bits/range_access.h:
-
 /usr/include/limits.h:
 
 /usr/include/c++/13/initializer_list:
@@ -4688,6 +4731,12 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/xsaveintrin.h:
 
+/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512fp16intrin.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_rep.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/13/include/vpclmulqdqintrin.h:
 
 /usr/include/features.h:
@@ -4700,15 +4749,7 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/c++/13/bits/requires_hosted.h:
 
-/usr/include/c++/13/ext/type_traits.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/immintrin.h:
-
 /usr/include/c++/13/tr1/gamma.tcc:
-
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/fix_xor_list.hpp:
-
-/usr/include/c++/13/tr1/riemann_zeta.tcc:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
 
@@ -4719,8 +4760,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/lib/gcc/x86_64-linux-gnu/13/include/amxbf16intrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/rtmintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/amxcomplexintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/amxfp16intrin.h:
 
@@ -4752,10 +4791,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512ifmaintrin.h:
 
-/usr/include/x86_64-linux-gnu/bits/types.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/avx512ifmavlintrin.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h:
 
 /usr/include/c++/13/tr1/modified_bessel_func.tcc:
@@ -4769,6 +4804,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/decoder_specialized.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512vbmi2vlintrin.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_16.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/time64.h:
 
@@ -4876,10 +4913,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/pkuintrin.h:
 
-/usr/include/c++/13/streambuf:
-
-/usr/include/c++/13/bits/memory_resource.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/13/include/popcntintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512vbmiintrin.h:
@@ -4922,11 +4955,31 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/decoder_dedicated.cpp:
 
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp:
+
+/usr/include/c++/13/tr1/riemann_zeta.tcc:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/fix_xor_list.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/dedicated_execute.hpp:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/f_function.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/amxcomplexintrin.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/g_function.hpp:
+
+/usr/include/c++/13/ext/type_traits.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/13/include/immintrin.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_rate_0.hpp:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/impl/node_spc.hpp:
 
 /usr/include/c++/13/bits/stl_iterator_base_funcs.h:
 
@@ -4941,9 +4994,3 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/c++/13/bits/cxxabi_forced.h:
 
 /usr/include/c++/13/bits/functional_hash.h:
-
-/usr/include/c++/13/bits/invoke.h:
-
-/usr/include/c++/13/bits/memoryfwd.h:
-
-/usr/include/c++/13/bits/ostream_insert.h:

@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 
   // FWHT counter
 
-  int FER_STOP = 100;
+  int FER_STOP = 25;
   if (argc == 8)
     FER_STOP = stoi(argv[7]);
   // N = 1024;
@@ -377,6 +377,6 @@ int main(int argc, char *argv[]) {
   cout << " :: débit = " << debit << " Mbps";
   cout << endl;
 
-  // append_results_to_file1(dec_type, dec_param.q, dec_param.N, dec_param.K,
-  // EbN0, FER_out, gen_frames_out);
+  append_results_to_file1(dec_type, dec_param.q, dec_param.N, dec_param.K, EbN0,
+                          FER_out, gen_frames_out);
 }

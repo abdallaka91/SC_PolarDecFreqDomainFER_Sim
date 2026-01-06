@@ -230,7 +230,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/c++/13/pstl/glue_numeric_defs.h \
  /usr/include/c++/13/pstl/execution_defs.h \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF256.hpp \
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/include/init.h \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/include/struct.h \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/include/tools.h \

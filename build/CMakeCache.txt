@@ -189,8 +189,11 @@ CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Compile with all GF sizes
-ENABLE_ALL_GFs:BOOL=ON
+//Path to a file.
+FFTW3_INCLUDE_DIR:PATH=/usr/include
+
+//Path to a library.
+FFTW3_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libfftw3.so
 
 //CXX compiler flags for OpenMP parallelization
 OpenMP_CXX_FLAGS:STRING=-fopenmp
@@ -212,6 +215,9 @@ TEST1_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 TEST1_SOURCE_DIR:STATIC=/home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim
+
+//Enable ALL_GFs compilation
+USE_ALL_GFs:BOOL=OFF
 
 
 ########################

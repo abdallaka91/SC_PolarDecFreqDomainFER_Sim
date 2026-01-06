@@ -256,6 +256,24 @@ int main(int argc, char *argv[]) {
 
   const auto s_start = std::chrono::system_clock::now();
 
+  if (dec_type == "dec1") {
+    printf("Simulate decoder 1...\n");
+    // } else if (dec_type == "dec1_int32") {
+    //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
+  } else if (dec_type == "dec1_fixed") {
+    printf("Simulate decoder 1 fixed...\n");
+  } else if (dec_type == "dec1_cfloat") {
+  } else if (dec_type == "dec3") {
+    printf("Simulate decoder 3...\n");
+  } else if (dec_type == "dec4") {
+    printf("Simulate decoder 4...\n");
+  } else if (dec_type == "dec0") {
+    printf("Simulate decoder 0...\n");
+  } else {
+    printf("#(II) Error : unknown decoder type\n");
+    exit(1);
+  }
+
 #pragma omp parallel
   {
     PoAwN::structures::decoder_parameters dec_param_local = dec_param;
@@ -278,25 +296,19 @@ int main(int argc, char *argv[]) {
     decoder *dec;
     if (dec_type == "dec1") {
       dec = new decoder_naive<_GF_>(N, frozen_symbols);
-      printf("Simulate decoder 1...\n");
       // } else if (dec_type == "dec1_int32") {
       //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec1_fixed") {
       dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
-      printf("Simulate decoder 1 fixed...\n");
     } else if (dec_type == "dec1_cfloat") {
       dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec3") {
       dec = new decoder_specialized<_GF_>(N, frozen_symbols);
-      printf("Simulate decoder 3...\n");
     } else if (dec_type == "dec4") {
       dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
-      printf("Simulate decoder 4...\n");
     } else if (dec_type == "dec0") {
       dec = new decoder_basic<_GF_>(N, frozen_symbols);
-      printf("Simulate decoder 0...\n");
     } else {
-      printf("#(II) Error : unknown decoder type\n");
       exit(1);
     }
 

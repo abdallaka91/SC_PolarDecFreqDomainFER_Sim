@@ -98,7 +98,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
  /usr/include/c++/13/tr1/poly_laguerre.tcc \
  /usr/include/c++/13/tr1/riemann_zeta.tcc \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF256.hpp \
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
  /usr/include/c++/13/cassert /usr/include/assert.h \
@@ -265,7 +265,6 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/f_function.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/g_function.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp \
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_leaf.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_rate_0.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_rate_1.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.hpp \
@@ -276,6 +275,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
  /usr/include/c++/13/bits/stl_tempbuf.h \
  /usr/include/c++/13/pstl/glue_algorithm_defs.h \
  /usr/include/c++/13/pstl/execution_defs.h \
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_rep.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_spc.hpp \
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/fix_xor_list.hpp
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/dedicated/fix_xor_list.hpp \
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_rep.hpp \
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_leaf.hpp

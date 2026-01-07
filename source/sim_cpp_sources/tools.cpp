@@ -98,7 +98,7 @@ void PoAwN::tools::Encoder(const vector<vector<uint16_t>> &ADDGF,
       b = pw1 + 2 * k - k % pw1;
       tmp_add = ADDGF[ucap[l + 1][a]][ucap[l + 1][b]];
       ucap[l][a] = tmp_add;
-      tmp_mul = MULGF[ucap[l + 1][b]][polar_coeff[n - l - 1][k]];
+      tmp_mul = MULGF[ucap[l + 1][b]][1];
       ucap[l][b] = tmp_mul;
     }
   }

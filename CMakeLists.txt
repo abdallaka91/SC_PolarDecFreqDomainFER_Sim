@@ -57,15 +57,9 @@ endif()
 add_compile_options(-mavx2)
 
 file(GLOB_RECURSE SRC_FILES
-    "${CMAKE_SOURCE_DIR}/source/*.cpp"
+    "${CMAKE_SOURCE_DIR}/source/**/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
 )

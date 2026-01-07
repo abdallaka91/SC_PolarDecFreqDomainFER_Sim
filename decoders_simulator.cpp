@@ -275,11 +275,11 @@ int main(int argc, char *argv[]) {
        << " " << mode_string << "\n";
   if (lower_mode == "probability") {
     for (int i = 0; i < N; i++) {
-      out2 << std::setw(4) << one_err_pairs[i].second;
+      out2 << std::setw(6) << one_err_pairs[i].second << " ";
     }
   } else {
     for (int i = 0; i < N; i++) {
-      out2 << std::setw(4) << entrop_pairs[i].second;
+      out2 << std::setw(6) << entrop_pairs[i].second << " ";
     }
   }
   out2 << "\n";

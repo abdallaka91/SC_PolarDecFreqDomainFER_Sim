@@ -1,8 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o"
   "CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o.d"
-  "CMakeFiles/Sim2.dir/BLG/src/decoders/dedicated/decoder_dedicated.cpp.o"
-  "CMakeFiles/Sim2.dir/BLG/src/decoders/dedicated/decoder_dedicated.cpp.o.d"
   "CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o"
   "CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o.d"
   "CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o"

@@ -276,6 +276,8 @@ int main(int argc, char *argv[]) {
 
 #pragma omp parallel
   {
+        #pragma omp single
+    printf("Used threads = %d\n", omp_get_num_threads());
     PoAwN::structures::decoder_parameters dec_param_local = dec_param;
     int thread_id = omp_get_thread_num();
     std::mt19937 gen(thread_id + base_seed);

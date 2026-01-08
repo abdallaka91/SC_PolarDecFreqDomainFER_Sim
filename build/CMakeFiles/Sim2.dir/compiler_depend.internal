@@ -8,7 +8,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/naive/f_function.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/naive/g_function.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/custom_types.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/archi.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/argmax/argmax.hpp
@@ -254,15 +254,15 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard.cpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard.hpp
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard_256.hpp
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard_64.hpp
  /usr/include/stdc-predef.h
 
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/utilities/utility_functions.cpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/custom_types.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/archi.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/argmax/argmax.hpp
@@ -508,7 +508,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/decoder.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/naive/decoder_naive.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/custom_types.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/encoder/polar_encoder.hpp
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/archi.hpp

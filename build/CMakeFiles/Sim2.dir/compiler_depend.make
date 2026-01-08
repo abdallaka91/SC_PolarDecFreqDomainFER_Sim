@@ -7,7 +7,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o: /home/abdallah_u
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/naive/f_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/naive/g_function.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/argmax/argmax.hpp \
@@ -252,14 +252,14 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o: /home/abdallah_u
 
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard.cpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard_256.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard_64.hpp \
   /usr/include/stdc-predef.h
 
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/utilities/utility_functions.cpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/archi.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/argmax/argmax.hpp \
@@ -504,7 +504,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah_ubuntu/Desktop/NBPo
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/decoder.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/decoders/naive/decoder_naive.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp \
-  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/custom_types.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/encoder/polar_encoder.hpp \
   /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/features/archi.hpp \
@@ -2107,6 +2107,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h:
 
+/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
@@ -2351,12 +2353,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
-/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
-
-/usr/include/c++/13/bits/parse_numbers.h:
-
-/usr/include/c++/13/bits/std_abs.h:
-
 /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
 
 /usr/include/c++/13/string_view:
@@ -2442,10 +2438,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/locale.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512vpopcntdqintrin.h:
-
-/usr/include/c++/13/bits/stl_relops.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
 
 /usr/include/c++/13/bits/fs_path.h:
 
@@ -2555,6 +2547,12 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/rtmintrin.h:
 
+/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
+
+/usr/include/c++/13/bits/parse_numbers.h:
+
+/usr/include/c++/13/bits/std_abs.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/13/include/xsavesintrin.h:
 
 /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/decoders_simulator.cpp:
@@ -2568,10 +2566,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
 /usr/include/c++/13/bits/requires_hosted.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
-
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp:
 
 /usr/include/assert.h:
 
@@ -2773,6 +2767,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/include/c++/13/ext/string_conversions.h:
 
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/13/include/avx512ifmaintrin.h:
 
 /usr/include/c++/13/tr1/modified_bessel_func.tcc:
@@ -2919,7 +2915,11 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah_ubuntu/De
 
 /usr/lib/gcc/x86_64-linux-gnu/13/include/wbnoinvdintrin.h:
 
-/home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard_256.hpp:
+/usr/include/c++/13/bits/stl_relops.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+/home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/hadamard/Hadamard_64.hpp:
 
 /usr/include/c++/13/vector:
 

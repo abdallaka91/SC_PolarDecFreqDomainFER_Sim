@@ -230,7 +230,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/c++/13/pstl/glue_numeric_defs.h \
  /usr/include/c++/13/pstl/execution_defs.h \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/code.hpp \
- /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF256.hpp \
+ /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/BLG/src/definitions/codes/N1024_GF64.hpp \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/include/init.h \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/include/struct.h \
  /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/include/tools.h \

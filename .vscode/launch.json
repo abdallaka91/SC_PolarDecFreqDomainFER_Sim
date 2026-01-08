@@ -6,7 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/Sim2",
-      "args": ["100", "-15", "256", "64"],
+      "args": ["100", "-15", "64", "1024"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [

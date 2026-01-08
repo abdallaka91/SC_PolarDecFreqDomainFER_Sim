@@ -221,7 +221,7 @@ int main(int argc, char *argv[]) {
 
   for (int i = 0; i < N; i++) {
     global_entrop[i] /= static_cast<float>(NbMonteCarlo);
-    global_entrop[i] *= inv_log_q;
+    // global_entrop[i] *= inv_log_q;
     global_one_err_prob[i] /= static_cast<float>(NbMonteCarlo);
   }
 
@@ -240,7 +240,8 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < N; i++) {
     out1 << i << "   " << std::scientific << std::setprecision(10)
          << global_one_err_prob[i] << std::scientific << std::setprecision(10)
-         << "   " << global_entrop[i] << "\n";
+         << "   " << global_entrop[i] << "   " << std::scientific
+         << std::setprecision(7) << global_succ[i] << "\n";
   }
   out1.close();
 

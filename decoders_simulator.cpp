@@ -27,7 +27,8 @@
 #include "decoders/naive/decoder_naive.hpp"
 #include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
 #include "decoders/naive_fixed/decoder_naive_fixed.hpp"
-// #include "decoders/naive_int32_t/decoder_naive_int32_t.hpp"
+#include "decoders/naive_int32_t/decoder_naive_int32_t.hpp"
+#include "decoders/naive_integer/decoder_naive_integer.hpp"
 #include "decoders/specialized/decoder_specialized.hpp"
 #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
 #include "demodulator/demodulator.hpp"
@@ -258,8 +259,10 @@ int main(int argc, char *argv[]) {
 
   if (dec_type == "dec1") {
     printf("Simulate decoder 1...\n");
-    // } else if (dec_type == "dec1_int32") {
-    //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
+  } else if (dec_type == "dec1_int32") {
+    printf("Simulate decoder 1 int32...\n");
+  } else if (dec_type == "dec1_integer") {
+    printf("Simulate decoder 1 integer...\n");
   } else if (dec_type == "dec1_fixed") {
     printf("Simulate decoder 1 fixed...\n");
   } else if (dec_type == "dec1_cfloat") {
@@ -276,7 +279,7 @@ int main(int argc, char *argv[]) {
 
 #pragma omp parallel
   {
-        #pragma omp single
+#pragma omp single
     printf("Used threads = %d\n", omp_get_num_threads());
     PoAwN::structures::decoder_parameters dec_param_local = dec_param;
     int thread_id = omp_get_thread_num();
@@ -298,8 +301,10 @@ int main(int argc, char *argv[]) {
     decoder *dec;
     if (dec_type == "dec1") {
       dec = new decoder_naive<_GF_>(N, frozen_symbols);
-      // } else if (dec_type == "dec1_int32") {
-      //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
+    } else if (dec_type == "dec1_int32") {
+      dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
+    } else if (dec_type == "dec1_integer") {
+      dec = new decoder_naive_integer<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec1_fixed") {
       dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
     } else if (dec_type == "dec1_cfloat") {

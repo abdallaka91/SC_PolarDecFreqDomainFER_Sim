@@ -65,6 +65,8 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_integer/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"

@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.16)
-add_compile_options(-Wno-error=conversion -Wno-conversion)
 
 # ===========================
 # Project setup
@@ -16,8 +15,8 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    # Maximum throughput for AVX-512 capable CPU
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto -ffast-math -funroll-loops -fno-math-errno")
+    # Safe optimization that works everywhere
+    set(CMAKE_CXX_FLAGS "-O3 -march=haswell -mtune=haswell -flto -ffast-math -funroll-loops -fno-math-errno")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
@@ -37,10 +36,12 @@ add_compile_options(
     -Wno-conversion
     -Wno-error=conversion
     -Wno-aggressive-loop-optimizations
+    -Wno-strict-aliasing
 )
 
-# Enable AVX-512 and FMA for your CPU
-add_compile_options(-mavx512f -mavx512dq -mavx512cd -mavx512bw -mavx512vl -mavx2 -mfma)
+# Safe SIMD for both machines (AVX2 works everywhere)
+add_compile_options(-mavx2 -mfma -mbmi2)
+add_compile_options(-ftree-vectorize -fvect-cost-model=unlimited)
 
 # ===========================
 # Dependencies
@@ -48,20 +49,20 @@ add_compile_options(-mavx512f -mavx512dq -mavx512cd -mavx512bw -mavx512vl -mavx2
 find_package(OpenMP REQUIRED)
 
 # ===========================
-# Source files - ADD MISSING FILES
+# Source files
 # ===========================
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"           # Was missing
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_integer/*.cpp"       # ADD THIS LINE
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"       # ADD THIS LINE
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_integer/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
 )
@@ -94,9 +95,20 @@ endif()
 # Link libraries
 # ===========================
 target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
-target_link_libraries(Sim2 PRIVATE m)  # math library
+target_link_libraries(Sim2 PRIVATE m)
+
+# Link-time optimization
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto")
+endif()
 
 # ===========================
-# Minimal status
+# Performance diagnostics
 # ===========================
-message(STATUS "Build: ${CMAKE_BUILD_TYPE}")
+message(STATUS "========================================")
+message(STATUS "Build Configuration")
+message(STATUS "========================================")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "C++ flags: ${CMAKE_CXX_FLAGS}")
+message(STATUS "========================================")

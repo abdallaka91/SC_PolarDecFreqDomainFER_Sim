@@ -1,72 +1,61 @@
 cmake_minimum_required(VERSION 3.16)
 
 # ===========================
-#  Project setup
+# Project setup
 # ===========================
-project(TEST1 LANGUAGES CXX)
+project(PolarDecoder LANGUAGES CXX)
 
-add_compile_options(-Wno-unused-parameter -Wno-deprecated-copy -Wno-int-in-bool-context -Wno-type-limits -Wno-strict-aliasing -Wno-extra)
+# ===========================
+# Build type configuration
+# ===========================
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    # Maximum throughput for AVX-512 capable CPU
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto -ffast-math -funroll-loops -fno-math-errno")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
+# ===========================
+# Compiler options
+# ===========================
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# ===========================
-#  Build type configuration
-# ===========================
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring Debug build")
-    set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Configuring Release build")
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-else()
-    message(STATUS "No build type selected, defaulting to Release")
-    set(CMAKE_BUILD_TYPE Release)
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-endif()
+# Silence warnings and GCC 14.2.0 bug
+add_compile_options(
+    -Wno-unused-parameter
+    -Wno-deprecated-copy
+    -Wno-int-in-bool-context
+    -Wno-type-limits
+    -Wno-conversion
+    -Wno-error=conversion
+)
+
+# Enable AVX-512 and FMA for your CPU
+add_compile_options(-mavx512f -mavx512dq -mavx512cd -mavx512bw -mavx512vl -mavx2 -mfma)
 
 # ===========================
-#  Dependencies
+# Dependencies
 # ===========================
 find_package(OpenMP REQUIRED)
 
-# Simple FFTW3 detection (works on Ubuntu)
-find_path(FFTW3_INCLUDE_DIR fftw3.h
-    PATHS /usr/include /usr/local/include
-)
-
-find_library(FFTW3_LIBRARY fftw3
-    PATHS /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib
-)
-
-if(FFTW3_INCLUDE_DIR AND FFTW3_LIBRARY)
-    set(FFTW3_FOUND TRUE)
-    message(STATUS "Found FFTW3: ${FFTW3_LIBRARY}")
-else()
-    set(FFTW3_FOUND FALSE)
-    message(WARNING "FFTW3 not found. Install with: sudo apt install libfftw3-dev")
-endif()
-
 # ===========================
-#  Source setup
+# Source files
 # ===========================
-add_compile_options(-mavx2)
-
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
-    # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_integer/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_int32_t/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
@@ -75,7 +64,7 @@ file(GLOB_RECURSE SRC_FILES
 add_executable(Sim2 ${SRC_FILES})
 
 # ===========================
-#  Include Directories
+# Include directories
 # ===========================
 target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/include
@@ -88,133 +77,20 @@ target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
 )
 
-if(FFTW3_FOUND)
-    target_include_directories(Sim2 PUBLIC ${FFTW3_INCLUDE_DIR})
-    target_compile_definitions(Sim2 PUBLIC USE_FFTW3)
-endif()
-
-# Option for ALL_GFs
+# ===========================
+# Optional features
+# ===========================
 option(USE_ALL_GFs "Enable ALL_GFs compilation" OFF)
-message(STATUS "USE_ALL_GFs value: ${USE_ALL_GFs}")
 if(USE_ALL_GFs)
     target_compile_definitions(Sim2 PUBLIC ALL_GFs)
-    message(STATUS "ALL_GFs compilation enabled")
-else()
-    message(STATUS "ALL_GFs compilation disabled")
 endif()
 
 # ===========================
-#  Link Libraries
+# Link libraries
 # ===========================
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
-endif()
-
-if(FFTW3_FOUND)
-    target_link_libraries(Sim2 PRIVATE ${FFTW3_LIBRARY})
-    # Link math library for exp(), cos(), etc.
-    target_link_libraries(Sim2 PRIVATE m)
-endif()
+target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(Sim2 PRIVATE m)  # math library
 
 # ===========================
-#  Diagnostics
-# ===========================
-message(STATUS "C++ Compiler : ${CMAKE_CXX_COMPILER}")
-message(STATUS "Build type   : ${CMAKE_BUILD_TYPE}")
-message(STATUS "C++ Flags    : ${CMAKE_CXX_FLAGS}")
-
-#############################################################################
-#single thread
-
-
-# cmake_minimum_required(VERSION 3.16)
-
-# # ===========================
-# #  Project setup
-# # ===========================
-# project(TEST1 LANGUAGES CXX)
-
-# # ===========================
-# #  Configuration options
-# # ===========================
-# # option(FWHT_COUNTER_ENABLE "Enable FWHT call counter" ON)
-# # message(STATUS "FWHT counter enabled: ${FWHT_COUNTER_ENABLE}")
-
-# if(FWHT_COUNTER_ENABLE)
-#     add_compile_definitions(FWHT_COUNTER_ENABLE=1)
-#     message(STATUS "FWHT counter compilation is ENABLED")
-# else()
-#     add_compile_definitions(FWHT_COUNTER_ENABLE=0)
-#     message(STATUS "FWHT counter compilation is DISABLED")
-# endif()
-
-# add_compile_options(-Wno-unused-parameter -Wno-deprecated-copy -Wno-int-in-bool-context -Wno-type-limits -Wno-strict-aliasing -Wno-extra)
-
-# set(CMAKE_CXX_STANDARD 17)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# # ===========================
-# #  Build type configuration
-# # ===========================
-# if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-#     message(STATUS "Configuring Debug build")
-#     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
-#     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-# elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-#     message(STATUS "Configuring Release build")
-#     set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
-#     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-# else()
-#     message(STATUS "No build type selected, defaulting to Release")
-#     set(CMAKE_BUILD_TYPE Release)
-#     set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
-#     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-# endif()
-
-# # ===========================
-# #  Source setup
-# # ===========================
-
-# add_compile_options(-mavx2)
-
-# set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
-
-# file(GLOB_RECURSE SRC_FILES
-#     "${CMAKE_SOURCE_DIR}/source/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"    
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
-#     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
-#     "${CMAKE_SOURCE_DIR}/single_frame_dec.cpp"
-#     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
-#     )
-
-# list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")
-# list(FILTER SRC_FILES EXCLUDE REGEX "decoder_naive_int32_t")
-
-
-# add_executable(Sim2 ${SRC_FILES})
-
-# target_include_directories(Sim2 PUBLIC
-#     ${CMAKE_SOURCE_DIR}/include
-#      ${CMAKE_SOURCE_DIR}/BLG/src/include
-#     ${CMAKE_SOURCE_DIR}/BLG/src/decoders
-#     ${CMAKE_SOURCE_DIR}/BLG/src/definitions
-#     ${CMAKE_SOURCE_DIR}/BLG/src/hadamard
-#     ${CMAKE_SOURCE_DIR}/BLG/src/utilities
-#     ${CMAKE_SOURCE_DIR}/BLG/src/
-#     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
-# )
-
-# # ===========================
-# #  Optional diagnostics
-# # ===========================
-# message(STATUS "C++ Compiler : ${CMAKE_CXX_COMPILER}")
-# message(STATUS "Build type   : ${CMAKE_BUILD_TYPE}")
-# message(STATUS "C++ Flags    : ${CMAKE_CXX_FLAGS}")
+message(STATUS "Build: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Flags: ${CMAKE_CXX_FLAGS}")

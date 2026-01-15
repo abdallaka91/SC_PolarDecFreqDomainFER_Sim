@@ -5,8 +5,8 @@
       "name": "Debug Sim2",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/SimA",
-      "args": ["1000", "-10", "64", "1024", "512"],
+      "program": "${workspaceFolder}/build/Sim2",
+      "args": ["10", "-7.5", "64", "64", "42", "dec1_integer", "10"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [

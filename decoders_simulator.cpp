@@ -35,6 +35,8 @@
 #include "encoder/polar_encoder.hpp"
 #include "features/fwht/fwht_counter.hpp"
 
+#include "definitions/custom_types.hpp"
+
 #include "utilities/utility_functions.hpp"
 
 using namespace PoAwN::structures;
@@ -89,7 +91,16 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
   double FER_value =
       (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 
+  
   fprintf(fou, "%+7.3f %1.8f %6d %8d", SNR, FER_value, nb_err, nb_gen_frame);
+  if (dec == "dec1_integer") {
+      fprintf(fou, " %5d", INTEGER_BITS);
+  } else
+
+  {
+    /* code */
+  }
+  
   fprintf(fou, "\n");
   fclose(fou);
 }
@@ -371,8 +382,13 @@ int main(int argc, char *argv[]) {
             stop.store(true); // Set the flag
           FER_out = FER.load();
           gen_frames_out = global_counter.load();
-          cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/"
-               << global_counter << " = " << (float)FER_out / gen_frames_out
+          if(dec_type == "dec1_integer") {  
+              cout << "\rSNR: " << std::setprecision(4) << EbN0 << " dB, FER = " << std::setw(5) << FER << "/" 
+               << std::setw(6) << global_counter << " = " << std::fixed << std::setprecision(10) << (float)FER_out / (float)gen_frames_out << ", Nb_bits: " << std::setw(2) << INTEGER_BITS << " "
+               << std::flush;
+          } else
+          cout << "\rSNR: " << std::setprecision(4) << EbN0 << " dB, FER = " << std::setw(5) << FER << "/"
+               << std::setw(6)<< global_counter << " = " << std::fixed << std::setprecision(10) << (float)FER_out / (float)gen_frames_out << " "
                << std::flush;
         }
       }

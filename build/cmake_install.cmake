@@ -1,4 +1,4 @@
-# Install script for directory: /home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder
+# Install script for directory: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/abdallah_ubuntu/Desktop/NBPolar_decoder/GenieAided_reliab_seq_finder/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

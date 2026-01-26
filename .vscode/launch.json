@@ -6,11 +6,19 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/Sim2",
-      "args": ["100", "-15", "64", "1024"],
+      "args": [
+        "100",
+        "-15",
+        "2048",
+        "1024"
+      ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [
-        { "name": "OMP_NUM_THREADS", "value": "1" }
+        {
+          "name": "OMP_NUM_THREADS",
+          "value": "1"
+        }
       ],
       "externalConsole": false,
       "MIMode": "gdb",

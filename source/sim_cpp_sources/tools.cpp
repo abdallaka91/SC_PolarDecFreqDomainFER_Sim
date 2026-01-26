@@ -10,7 +10,8 @@
 
 using std::vector;
 
-void PoAwN::tools::circshift(vector<uint16_t> &CCSK_seq, int shift) {
+void PoAwN::tools::circshift(vector<uint16_t> &CCSK_seq, int shift)
+{
   const uint16_t q = CCSK_seq.size();
   const auto shift_masked = shift & (q - 1);
   rotate(CCSK_seq.begin(), CCSK_seq.begin() + (q - shift_masked),
@@ -19,11 +20,13 @@ void PoAwN::tools::circshift(vector<uint16_t> &CCSK_seq, int shift) {
 
 void PoAwN::tools::create_ccsk_rotated_table(
     const vector<uint16_t> &CCSK_seq, const uint16_t q,
-    vector<vector<uint16_t>> &ccsk_rotated_table) {
+    vector<vector<uint16_t>> &ccsk_rotated_table)
+{
   std::vector<uint16_t> eta0(CCSK_seq.begin(), CCSK_seq.begin() + q);
   ccsk_rotated_table[0] = eta0;
 
-  for (int i = 1; i < q; ++i) {
+  for (int i = 1; i < q; ++i)
+  {
     circshift(eta0, -1);
     ccsk_rotated_table[i] = eta0;
   }
@@ -31,8 +34,10 @@ void PoAwN::tools::create_ccsk_rotated_table(
 void PoAwN::tools::RandomBinaryGenerator(
     const uint16_t K, const uint16_t q,
     const vector<vector<uint16_t>> &bin_table, const bool repeatable,
-    const int SEED, vector<vector<uint16_t>> &KBIN, vector<uint16_t> &KSYMB) {
-  for (uint16_t k = 0; k < K; k++) {
+    const int SEED, vector<vector<uint16_t>> &KBIN, vector<uint16_t> &KSYMB)
+{
+  for (uint16_t k = 0; k < K; k++)
+  {
     static std::mt19937 gen(repeatable ? SEED : std::random_device{}());
     static std::uniform_int_distribution<int> dist(0, q - 1);
     uint16_t randv = (uint16_t)dist(gen);
@@ -43,8 +48,10 @@ void PoAwN::tools::RandomBinaryGenerator(
 
 void PoAwN::tools::RandomSymbGenerator(const uint16_t K, const uint16_t q,
                                        const bool repeatable, const int SEED,
-                                       vector<uint16_t> &KSYMB) {
-  for (uint16_t k = 0; k < K; k++) {
+                                       vector<uint16_t> &KSYMB)
+{
+  for (uint16_t k = 0; k < K; k++)
+  {
     static std::mt19937 gen(repeatable ? SEED : std::random_device{}());
     static std::uniform_int_distribution<int> dist(0, q - 1);
     uint16_t randv = (uint16_t)dist(gen);
@@ -54,13 +61,16 @@ void PoAwN::tools::RandomSymbGenerator(const uint16_t K, const uint16_t q,
 
 void PoAwN::tools::AWGN_gen(double MEAN, double STD, bool repeatable,
                             double SEED,
-                            vector<vector<softdata_t>> &noise_table) {
+                            vector<vector<softdata_t>> &noise_table)
+{
   static std::mt19937 gen(repeatable ? std::mt19937(SEED)
                                      : std::mt19937(std::random_device{}()));
   int N = noise_table.size();
-  for (int i = 0; i < N; i++) {
+  for (int i = 0; i < N; i++)
+  {
     int q1 = noise_table[i].size();
-    for (int j = 0; j < q1; j++) {
+    for (int j = 0; j < q1; j++)
+    {
       std::normal_distribution<double> dist(MEAN, STD);
       noise_table[i][j] = (softdata_t)dist(gen);
     }
@@ -69,7 +79,8 @@ void PoAwN::tools::AWGN_gen(double MEAN, double STD, bool repeatable,
 
 void PoAwN::tools::awgn_channel_noise(const double sigma, const bool repeatable,
                                       const double SEED,
-                                      vector<vector<softdata_t>> &noisy_sig) {
+                                      vector<vector<softdata_t>> &noisy_sig)
+{
   uint16_t N = noisy_sig.size();
   uint16_t q1 = noisy_sig[0].size();
   vector<vector<softdata_t>> noise_table;
@@ -80,38 +91,39 @@ void PoAwN::tools::awgn_channel_noise(const double sigma, const bool repeatable,
       noisy_sig[i][j] += noise_table[i][j];
 }
 
-void PoAwN::tools::Encoder(const vector<vector<uint16_t>> &ADDGF,
-                           const vector<vector<uint16_t>> &MULGF,
-                           const vector<vector<uint16_t>> &polar_coeff,
-                           vector<vector<uint16_t>> &ucap,
-                           vector<uint16_t> &NSYMB) {
+void PoAwN::tools::Encoder(vector<vector<uint16_t>> &ucap,
+                           vector<uint16_t> &NSYMB)
+{
   uint16_t N = ucap[0].size();
   uint16_t n = ucap.size() - 1;
 
   uint16_t a, b;
   uint16_t tmp_add;
   uint16_t tmp_mul;
-  for (int l = n - 1; l >= 0; l--) {
-    for (uint16_t k = 0; k < N / 2; k++) {
+  for (int l = n - 1; l >= 0; l--)
+  {
+    for (uint16_t k = 0; k < N / 2; k++)
+    {
       uint16_t pw1 = pow(2, n - l - 1);
       a = 2 * k - k % pw1;
       b = pw1 + 2 * k - k % pw1;
-      tmp_add = ADDGF[ucap[l + 1][a]][ucap[l + 1][b]];
+      tmp_add = ucap[l + 1][a] ^ ucap[l + 1][b];
       ucap[l][a] = tmp_add;
-      tmp_mul = MULGF[ucap[l + 1][b]][1];
-      ucap[l][b] = tmp_mul;
+      ucap[l][b] = ucap[l + 1][b];
     }
   }
   for (uint16_t i = 0; i < N; ++i)
     NSYMB[i] = ucap[0][i];
 }
 
-float PoAwN::tools::My_drand48(int *initialise) {
+float PoAwN::tools::My_drand48(int *initialise)
+{
   static thread_local std::mt19937 generator(std::random_device{}());
   static thread_local std::uniform_real_distribution<float> distribution(0.0f,
                                                                          1.0f);
 
-  if (*initialise == -1) {
+  if (*initialise == -1)
+  {
     generator.seed(std::random_device{}());
     *initialise = 0;
   }

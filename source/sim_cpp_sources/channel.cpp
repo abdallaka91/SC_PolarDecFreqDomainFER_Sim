@@ -29,7 +29,6 @@ using std::vector;
 
 void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
                                             decoder_parameters &dec_param,
-                                            const table_GF &table,
                                             const float SNR,
                                             const vector<vector<uint16_t>> &bin_table,
                                             vector<decoder_t> &chan_LLR_sorted,
@@ -37,7 +36,6 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
                                             const vector<vector<softdata_t>> &bin_mod_dict)
 {
     uint16_t N = dec_param.N, K = dec_param.K, q = dec_param.q;
-    uint16_t nm = dec_param.nm;
     float sigma = sqrt(1.0 / (pow(10, SNR / 10.0))); // N0/2 or N0?
     vector<uint16_t> NSYMB(N);
     // RandomSymbGenerator(K, q, RepRndGn, 0, KSYMB);
@@ -89,7 +87,7 @@ void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
     printf(" |\n");
 #endif
 
-    Encoder(table.ADDDEC, table.MULDEC, dec_param.polar_coeff, dec_param.ucap, NSYMB);
+    Encoder(dec_param.ucap, NSYMB);
     // for (int y = 0; y < N; y++)
     //     std::cout << y<< ":" << dec_param.ucap[dec_param.n][y] << " , ";
     // std::cout << endl;

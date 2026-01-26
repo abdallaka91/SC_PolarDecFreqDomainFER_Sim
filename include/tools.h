@@ -39,9 +39,7 @@ namespace PoAwN
                                 const bool repeatable,
                                 const double SEED,
                                 vector<vector<softdata_t>> &noisy_sig);
-        void Encoder(const vector<vector<uint16_t>> &ADDGF, const vector<vector<uint16_t>> &MULGF,
-                     const vector<vector<uint16_t>> &polar_coeff,
-                     vector<vector<uint16_t>> &ucap, vector<uint16_t> &NSYMB);
+        void Encoder(vector<vector<uint16_t>> &ucap, vector<uint16_t> &NSYMB);
         float My_drand48(int *initialise);
         // void inv_Encoder(const vector<vector<uint16_t>> &ADDGF, const vector<vector<uint16_t>> &DIVGF,
         //                                const vector<vector<uint16_t>> &polar_coeff,

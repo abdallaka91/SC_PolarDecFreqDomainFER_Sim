@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "ccsk_sequences.hpp"
+#include "simul_parameters.hpp"
 #include <fftw3.h>
 #include <immintrin.h>
 #include <cmath>

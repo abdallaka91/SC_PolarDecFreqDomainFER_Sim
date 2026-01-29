@@ -18,7 +18,9 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <limits>
 
+#include "./ccsk_simulator/simul_parameters.hpp"
 #include "./ccsk_simulator/ccsk_simulator.hpp"
 #include <iostream>
 #include <chrono>
@@ -246,6 +248,8 @@ int main(int argc, char *argv[])
   std::atomic<int> global_counter(0);
   std::atomic<int> FER(0);
   std::atomic<bool> stop(false);
+  std::atomic<double> global_llr_min{std::numeric_limits<double>::max()};
+  std::atomic<double> global_llr_max{std::numeric_limits<double>::lowest()};
 
   auto start = std::chrono::high_resolution_clock::now();
 
@@ -311,13 +315,48 @@ int main(int argc, char *argv[])
 
       // Simulate CCSK transmission
       double *llr_values = simulator.simulate_frame(u_symb, thread_id);
-      simulator.llr_to_probability<_GF_>(llr_values, N);
-
-      // Convert to decoder format
+#if 0
       for (int i = 0; i < N; i++)
       {
         for (int j = 0; j < _GF_; j++)
-          llrs_n[i].value[j] = llr_values[i * _GF_ + j];
+        {
+          double val = llr_values[i * _GF_ + j];
+          llrs_n[i].value[j] = val;
+
+          // Update min
+          double current_min = global_llr_min.load();
+          while (val < current_min &&
+                 !global_llr_min.compare_exchange_weak(current_min, val))
+          {
+          }
+
+          // Update max
+          double current_max = global_llr_max.load();
+          while (val > current_max &&
+                 !global_llr_max.compare_exchange_weak(current_max, val))
+          {
+          }
+        }
+      }
+#endif
+
+      // simulator.llr_to_probability<_GF_>(llr_values, N);
+      // for (int i = 0; i < N; i++)
+      // {
+      //   for (int j = 0; j < _GF_; j++)
+      //     llrs_n[i].value[j] = llr_values[i * _GF_ + j];
+      // }
+
+      // float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
+      float *probabilities = simulator.llr_to_probability_ultrafast<_GF_>(llr_values, N, thread_id);
+
+      // Convert to your decoder format (if decoder uses float)
+      for (int i = 0; i < N; i++)
+      {
+        for (int j = 0; j < _GF_; j++)
+        {
+          llrs_n[i].value[j] = probabilities[i * _GF_ + j];
+        }
       }
 
       // Decode
@@ -388,4 +427,6 @@ int main(int argc, char *argv[])
   std::cout << "Time: " << sec << " seconds" << std::endl;
   std::cout << "Throughput: " << gen_frames_out / sec << " fps" << std::endl;
   std::cout << "Throughput info: " << (gen_frames_out * K * _logGF_) / sec / 1e6 << " Mbps ( bits/symbol)" << std::endl;
+  // std::cout << "global_llr_max: " << global_llr_max << std::endl;
+  // std::cout << "global_llr_min: " << global_llr_min << std::endl;
 }

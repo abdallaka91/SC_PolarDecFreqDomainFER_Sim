@@ -238,9 +238,9 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/c++/12/bits/random.tcc /usr/include/c++/12/numeric \
  /usr/include/c++/12/bits/stl_numeric.h \
  /usr/include/c++/12/pstl/glue_numeric_defs.h \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/simul_parameters.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/ccsk_simulator.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/ccsk_llr.hpp \
- /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/ccsk_sequences.hpp \
  /usr/local/include/fftw3.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/immintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/x86gprintrin.h \

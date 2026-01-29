@@ -387,5 +387,5 @@ int main(int argc, char *argv[])
   std::cout << "Actual frames: " << gen_frames_out << std::endl;
   std::cout << "Time: " << sec << " seconds" << std::endl;
   std::cout << "Throughput: " << gen_frames_out / sec << " fps" << std::endl;
-  std::cout << "Throughput coded: " << (gen_frames_out * K * _logGF_) / sec / 1e6 << " Mbps ( bits/symbol)" << std::endl;
+  std::cout << "Throughput info: " << (gen_frames_out * K * _logGF_) / sec / 1e6 << " Mbps ( bits/symbol)" << std::endl;
 }

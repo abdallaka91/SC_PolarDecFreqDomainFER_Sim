@@ -353,6 +353,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i64_fwht_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize.hpp \

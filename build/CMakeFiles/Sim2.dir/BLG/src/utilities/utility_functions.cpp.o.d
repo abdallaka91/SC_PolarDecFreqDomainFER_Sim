@@ -85,38 +85,15 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/stdio.h \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
- /usr/include/c++/12/cstdint \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/c++/12/cmath /usr/include/math.h \
- /usr/include/x86_64-linux-gnu/bits/math-vector.h \
- /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
- /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
- /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
- /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
- /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /usr/include/c++/12/bits/specfun.h /usr/include/c++/12/limits \
- /usr/include/c++/12/tr1/gamma.tcc \
- /usr/include/c++/12/tr1/special_function_util.h \
- /usr/include/c++/12/tr1/bessel_function.tcc \
- /usr/include/c++/12/tr1/beta_function.tcc \
- /usr/include/c++/12/tr1/ell_integral.tcc \
- /usr/include/c++/12/tr1/exp_integral.tcc \
- /usr/include/c++/12/tr1/hypergeometric.tcc \
- /usr/include/c++/12/tr1/legendre_function.tcc \
- /usr/include/c++/12/tr1/modified_bessel_func.tcc \
- /usr/include/c++/12/tr1/poly_hermite.tcc \
- /usr/include/c++/12/tr1/poly_laguerre.tcc \
- /usr/include/c++/12/tr1/riemann_zeta.tcc \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
  /usr/include/c++/12/cassert /usr/include/assert.h \
+ /usr/include/c++/12/cstdint \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/immintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/x86gprintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/ia32intrin.h \
@@ -204,8 +181,32 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/amxbf16intrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/prfchwintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/keylockerintrin.h \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i64_fwht_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax_avx2.hpp \
+ /usr/include/c++/12/cmath /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
+ /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
+ /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
+ /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
+ /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
+ /usr/include/c++/12/bits/specfun.h /usr/include/c++/12/limits \
+ /usr/include/c++/12/tr1/gamma.tcc \
+ /usr/include/c++/12/tr1/special_function_util.h \
+ /usr/include/c++/12/tr1/bessel_function.tcc \
+ /usr/include/c++/12/tr1/beta_function.tcc \
+ /usr/include/c++/12/tr1/ell_integral.tcc \
+ /usr/include/c++/12/tr1/exp_integral.tcc \
+ /usr/include/c++/12/tr1/hypergeometric.tcc \
+ /usr/include/c++/12/tr1/legendre_function.tcc \
+ /usr/include/c++/12/tr1/modified_bessel_func.tcc \
+ /usr/include/c++/12/tr1/poly_hermite.tcc \
+ /usr/include/c++/12/tr1/poly_laguerre.tcc \
+ /usr/include/c++/12/tr1/riemann_zeta.tcc \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/scale_by_inverse_avx2.hpp

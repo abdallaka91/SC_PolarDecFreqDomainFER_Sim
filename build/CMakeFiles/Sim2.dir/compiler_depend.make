@@ -106,7 +106,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o: /home/abdallah/D
   /usr/include/c++/12/tr1/poly_laguerre.tcc \
   /usr/include/c++/12/tr1/riemann_zeta.tcc \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /usr/include/c++/12/cassert \
@@ -323,7 +323,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o: /home/abdallah/D
   /usr/include/c++/12/tr1/poly_laguerre.tcc \
   /usr/include/c++/12/tr1/riemann_zeta.tcc \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /usr/include/c++/12/cassert \
@@ -556,7 +556,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o: /h
   /usr/include/c++/12/tr1/poly_laguerre.tcc \
   /usr/include/c++/12/tr1/riemann_zeta.tcc \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /usr/include/c++/12/cassert \
@@ -890,7 +890,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: /hom
   /usr/include/c++/12/tr1/poly_laguerre.tcc \
   /usr/include/c++/12/tr1/riemann_zeta.tcc \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /usr/include/c++/12/cassert \
@@ -1241,7 +1241,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: /hom
   /usr/include/c++/12/tr1/poly_laguerre.tcc \
   /usr/include/c++/12/tr1/riemann_zeta.tcc \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /usr/include/c++/12/cassert \
@@ -1486,7 +1486,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
   /usr/include/c++/12/tr1/poly_laguerre.tcc \
   /usr/include/c++/12/tr1/riemann_zeta.tcc \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /usr/include/c++/12/cassert \
@@ -1674,7 +1674,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp \
   /usr/include/stdc-predef.h \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp \
   /usr/include/c++/12/type_traits \
   /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
@@ -1689,7 +1689,7 @@ CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: /home/abdallah/Documents/VS
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/c++/12/bits/cpu_defines.h \
   /usr/include/c++/12/pstl/pstl_config.h \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_256.hpp
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_64.hpp
 
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.cpp \
   /usr/include/stdc-predef.h \
@@ -1820,7 +1820,7 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: /home/abdallah/Do
   /usr/include/c++/12/tr1/poly_laguerre.tcc \
   /usr/include/c++/12/tr1/riemann_zeta.tcc \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /usr/include/c++/12/cassert \
@@ -2192,7 +2192,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah/Documents/VSCode/SC
   /usr/include/c++/12/pstl/glue_numeric_defs.h \
   /usr/include/c++/12/pstl/execution_defs.h \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/include/init.h \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/include/struct.h \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/include/tools.h \
@@ -2215,13 +2215,10 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah/Documents/VSCode/SC
   /usr/include/c++/12/backward/auto_ptr.h \
   /usr/include/c++/12/pstl/glue_memory_defs.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/omp.h \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/decoder.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
-  /usr/include/c++/12/cassert \
-  /usr/include/assert.h \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/ccsk_simulator.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/ccsk_llr.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/ccsk_sequences.hpp \
+  /usr/local/include/fftw3.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/immintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/x86gprintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/ia32intrin.h \
@@ -2302,6 +2299,44 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah/Documents/VSCode/SC
   /usr/lib/gcc/x86_64-linux-gnu/12/include/amxbf16intrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/prfchwintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/12/include/keylockerintrin.h \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/fast_noise_simple.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp.h \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.h \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.hxx \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.h \
+  /usr/include/c++/12/unordered_map \
+  /usr/include/c++/12/bits/hashtable.h \
+  /usr/include/c++/12/bits/hashtable_policy.h \
+  /usr/include/c++/12/bits/enable_special_members.h \
+  /usr/include/c++/12/bits/node_handle.h \
+  /usr/include/c++/12/bits/unordered_map.h \
+  /usr/include/c++/12/bits/erase_if.h \
+  /usr/include/c++/12/typeindex \
+  /usr/include/c++/12/cstddef \
+  /usr/include/c++/12/cassert \
+  /usr/include/assert.h \
+  /usr/include/c++/12/map \
+  /usr/include/c++/12/bits/stl_tree.h \
+  /usr/include/c++/12/bits/stl_map.h \
+  /usr/include/c++/12/bits/stl_multimap.h \
+  /usr/include/execinfo.h \
+  /usr/include/unistd.h \
+  /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+  /usr/include/x86_64-linux-gnu/bits/environments.h \
+  /usr/include/x86_64-linux-gnu/bits/confname.h \
+  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
+  /usr/include/linux/close_range.h \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_object.hxx \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp.h \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_impl_AVX.hxx \
+  /usr/include/c++/12/chrono \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/decoder.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax_avx2.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize.hpp \
@@ -2344,7 +2379,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah/Documents/VSCode/SC
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/frozen_tree.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/demodulator/demodulator.hpp \
-  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/encoder/polar_encoder.hpp \
+  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/encoder/encoder_1.hpp \
   /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.hpp
 
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/Decoder_functions.cpp \
@@ -3454,7 +3489,31 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/c++/12/queue:
 
-/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/encoder/polar_encoder.hpp:
+/usr/include/x86_64-linux-gnu/bits/confname.h:
+
+/usr/include/x86_64-linux-gnu/bits/environments.h:
+
+/usr/include/unistd.h:
+
+/usr/include/c++/12/bits/stl_multimap.h:
+
+/usr/include/c++/12/bits/stl_map.h:
+
+/usr/include/c++/12/bits/stl_tree.h:
+
+/usr/include/c++/12/typeindex:
+
+/usr/include/c++/12/bits/enable_special_members.h:
+
+/usr/include/c++/12/bits/hashtable_policy.h:
+
+/usr/include/c++/12/bits/hashtable.h:
+
+/usr/include/c++/12/unordered_map:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp.h:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/ccsk_simulator.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/omp.h:
 
@@ -3482,6 +3541,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/c++/12/ext/concurrence.h:
 
+/usr/include/linux/close_range.h:
+
 /usr/include/c++/12/codecvt:
 
 /usr/include/c++/12/bits/parse_numbers.h:
@@ -3504,9 +3565,13 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/c++/12/array:
 
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/include/struct.h:
+
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp:
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.cpp:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_impl_AVX.hxx:
 
 /usr/include/c++/12/bits/shared_ptr_base.h:
 
@@ -3520,6 +3585,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/g_function.hpp:
 
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/ccsk_llr.hpp:
+
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_leaf.hpp:
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/impl/f_function.hpp:
@@ -3529,6 +3596,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/c++/12/bits/stl_vector.h:
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_fixed/impl/f_function.hpp:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/fast_noise_simple.hpp:
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_fixed_ref.h:
 
@@ -3608,6 +3677,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
 
+/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
+
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
 /usr/include/time.h:
@@ -3621,6 +3692,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/sched.h:
 
 /usr/include/x86_64-linux-gnu/c++/12/bits/gthr.h:
+
+/usr/include/c++/12/bits/node_handle.h:
 
 /usr/include/c++/12/ext/atomicity.h:
 
@@ -3643,6 +3716,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/c++/12/ios:
 
 /usr/include/c++/12/bits/basic_string.tcc:
+
+/usr/include/c++/12/map:
 
 /usr/include/c++/12/bits/charconv.h:
 
@@ -3667,6 +3742,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/x86_64-linux-gnu/bits/errno.h:
 
 /usr/include/errno.h:
+
+/usr/include/c++/12/cstddef:
 
 /usr/include/c++/12/cerrno:
 
@@ -3730,6 +3807,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/x86_64-linux-gnu/c++/12/bits/c++locale.h:
 
+/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:
+
 /usr/include/c++/12/bits/new_allocator.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
@@ -3756,11 +3835,7 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp:
 
-/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/include/struct.h:
-
-/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF256.hpp:
-
-/usr/include/x86_64-linux-gnu/sys/select.h:
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.hxx:
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp:
 
@@ -3779,6 +3854,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vnnivlintrin.h:
 
 /usr/include/c++/12/tr1/beta_function.tcc:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_object.hxx:
 
 /usr/include/c++/12/tr1/special_function_util.h:
 
@@ -3803,6 +3880,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
 /usr/include/c++/12/pstl/pstl_config.h:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/ccsk_sequences.hpp:
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize_avx2.hpp:
 
@@ -3842,10 +3921,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
-
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/time.h:
@@ -3857,6 +3932,12 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/c++/12/stdlib.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vbmi2vlintrin.h:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
 /usr/include/assert.h:
 
@@ -3902,11 +3983,15 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/12/include/tsxldtrkintrin.h:
 
 /usr/include/c++/12/bits/char_traits.h:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/c++/12/bits/erase_if.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512ifmaintrin.h:
 
@@ -3988,6 +4073,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
 
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.h:
+
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/serializeintrin.h:
@@ -4032,6 +4119,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_64.hpp:
+
 /usr/include/math.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
@@ -4046,6 +4135,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
 
+/usr/include/execinfo.h:
+
 /usr/include/x86_64-linux-gnu/c++/12/bits/error_constants.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
@@ -4059,6 +4150,10 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/c++/12/bits/locale_conv.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/cetintrin.h:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/pconfigintrin.h:
 
 /usr/include/c++/12/bits/fs_fwd.h:
 
@@ -4088,11 +4183,15 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/amxint8intrin.h:
 
+/usr/local/include/fftw3.h:
+
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
 
 /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h:
+
+/usr/include/c++/12/chrono:
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
 
@@ -4196,13 +4295,13 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/mwaitxintrin.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/pconfigintrin.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/12/include/emmintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/rdseedintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/sgxintrin.h:
+
+/usr/include/c++/12/bits/unordered_map.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/tbmintrin.h:
 
@@ -4217,6 +4316,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/include/c++/12/istream:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/wbnoinvdintrin.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/xsaveintrin.h:
 
@@ -4270,8 +4371,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vp2intersectintrin.h:
 
-/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_256.hpp:
-
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vbmivlintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vp2intersectvlintrin.h:
@@ -4293,6 +4392,8 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents
 /usr/lib/gcc/x86_64-linux-gnu/12/include/vpclmulqdqintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512bf16vlintrin.h:
+
+/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/encoder/encoder_1.hpp:
 
 /usr/include/c++/12/bits/allocator.h:
 

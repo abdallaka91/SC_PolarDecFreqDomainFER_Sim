@@ -84,6 +84,8 @@ target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/BLG/src/utilities
     ${CMAKE_SOURCE_DIR}/BLG/src
     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
+    ${CMAKE_SOURCE_DIR}/ccsk_simulator
+    ${CMAKE_SOURCE_DIR}/ccsk_simulator/aff3ct_randn_gen
 )
 
 if(FFTW3_FOUND)

@@ -22,6 +22,10 @@
 #include <string>
 #include <vector>
 
+#include "./ccsk_simulator/ccsk_simulator.hpp"
+#include <iostream>
+#include <chrono>
+
 #include "decoders/basic/decoder_basic.hpp"
 // #include "decoders/dedicated/decoder_dedicated.hpp"
 #include "decoders/naive/decoder_naive.hpp"
@@ -31,7 +35,7 @@
 #include "decoders/specialized/decoder_specialized.hpp"
 #include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
 #include "demodulator/demodulator.hpp"
-#include "encoder/polar_encoder.hpp"
+#include "encoder/encoder_1.hpp"
 #include "features/fwht/fwht_counter.hpp"
 
 #include "utilities/utility_functions.hpp"
@@ -58,14 +62,17 @@ namespace fs = std::filesystem;
 
 void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
                              double SNR, unsigned long nb_err,
-                             unsigned long nb_gen_frame) {
+                             unsigned long nb_gen_frame)
+{
   // Directory path
   fs::path dir = "results";
 
   // Create directory if not exists
   std::error_code ec;
-  if (!fs::exists(dir)) {
-    if (!fs::create_directories(dir, ec)) {
+  if (!fs::exists(dir))
+  {
+    if (!fs::create_directories(dir, ec))
+    {
       std::cerr << "Error creating directory " << dir << ": " << ec.message()
                 << "\n";
       return;
@@ -80,7 +87,8 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
   // Open file in append mode
   FILE *fou = fopen(filename.c_str(), "a");
 
-  if (fou == nullptr) {
+  if (fou == nullptr)
+  {
     std::cerr << "Error opening file " << filename << " for appending.\n";
     return;
   }
@@ -95,14 +103,17 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
 
 void append_results_to_file(const std::string &modulation, int GFx, int Nx,
                             int Kx, double SNR, unsigned long nb_err,
-                            unsigned long nb_gen_frame) {
+                            unsigned long nb_gen_frame)
+{
   // Directory path
   fs::path dir = "results";
 
   // Create directory if not exists
   std::error_code ec;
-  if (!fs::exists(dir)) {
-    if (!fs::create_directories(dir, ec)) {
+  if (!fs::exists(dir))
+  {
+    if (!fs::create_directories(dir, ec))
+    {
       std::cerr << "Error creating directory " << dir << ": " << ec.message()
                 << "\n";
       return;
@@ -116,7 +127,8 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx,
 
   // Open file in append mode
   std::ofstream file(filename, std::ios::app);
-  if (!file.is_open()) {
+  if (!file.is_open())
+  {
     std::cerr << "Error opening file " << filename << " for appending.\n";
     return;
   }
@@ -132,7 +144,8 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx,
 
 #define EVAL(x) STR(x)
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 #ifdef __AVX512BW__
   printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
          "program (AVX512 version)\n");
@@ -152,7 +165,8 @@ int main(int argc, char *argv[]) {
 
   string dec_type;
 
-  if (argc < 7) {
+  if (argc < 7)
+  {
     cout << "validate: NbMonteCarlo, SNR, q, N, K, dec1...dec5 and optionnally "
             "nb of FER"
          << std::endl;
@@ -169,11 +183,12 @@ int main(int argc, char *argv[]) {
   dec_type = std::string(argv[6]);
   std::transform(dec_type.begin(), dec_type.end(), dec_type.begin(), ::tolower);
 
-  // FWHT counter
+  int num_threads = omp_get_max_threads();
+  std::cout << "Using " << num_threads << " threads" << std::endl;
 
-  int FER_STOP = 25;
+  int MAX_FRAME_ERRORS = 100;
   if (argc == 8)
-    FER_STOP = stoi(argv[7]);
+    MAX_FRAME_ERRORS = stoi(argv[7]);
   // N = 1024;
   // K = 513;
   n = log2(N);
@@ -193,204 +208,202 @@ int main(int argc, char *argv[]) {
   // void LoadTables(base_code_t & code, table_GF & table,  const uint16_t
   // *GF_polynom_primitive)
 
-  cout << "(II) Loading tables [START]" << endl;
-  LoadTables(code_param, table, GF_polynom_primitive.data());
-  cout << "(II) Loading tables [END OK]" << endl;
-
   cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations."
        << endl;
 
   cout << "Simulation starts..." << endl;
 
-  decoder_parameters dec_param(code_param);
-
-  printf("\n");
-  CCSK_seq ccsk_seq;
-  vector<vector<uint16_t>> CCSK_rotated_codes(q, vector<uint16_t>());
-  if (code_param.sig_mod == "CCSK_BIN")
-    create_ccsk_rotated_table(ccsk_seq.CCSK_bin_seq[code_param.p - 2],
-                              ccsk_seq.CCSK_bin_seq[code_param.p - 2].size(),
-                              CCSK_rotated_codes);
-  else if (code_param.sig_mod == "CCSK_NB")
-    create_ccsk_rotated_table(ccsk_seq.CCSK_GF_seq[code_param.p - 2],
-                              ccsk_seq.CCSK_GF_seq[code_param.p - 2].size(),
-                              CCSK_rotated_codes);
-
-  vector<vector<vector<int16_t>>> hst1(
-      n, vector<vector<int16_t>>(N, vector<int16_t>(dec_param.nm, 0)));
-
-  q = code_param.q;
-  p = code_param.p;
-  vector<vector<softdata_t>> bin_mod_dict;
-  if (code_param.sig_mod == "CCSK_BIN") {
-    bin_mod_dict.resize(q, vector<softdata_t>(q, 0));
-
-    for (int i = 0; i < q; i++)
-      for (int j = 0; j < q; j++)
-        bin_mod_dict[i][j] = (CCSK_rotated_codes[i][j] == 0) ? 1 : -1;
-  }
-
-  dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
-  dec_param.ucap[n].assign(N, dec_param.frozen_val);
-  uint64_t FER_out = 0, gen_frames_out = 0;
-  std::atomic<int> global_counter(0);
-  std::atomic<int> FER(0);
-  std::atomic<bool> stop(false);
-  unsigned base_seed =
-      0; // std::chrono::system_clock::now().time_since_epoch().count();
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-
   int frozen_symbols[N];
   for (int i = 0; i < N; i += 1)
     frozen_symbols[i] = true;
   for (int i = 0; i < K; i += 1)
-    frozen_symbols[dec_param.reliab_sequence[i]] = false;
+    frozen_symbols[code_param.reliab_sequence[i]] = false;
   //
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  double time_base[64];
-  for (int i = 0; i < 64; i += 1)
-    time_base[i] = 0.0;
-
   const auto s_start = std::chrono::system_clock::now();
 
-  if (dec_type == "dec1") {
+  if (dec_type == "dec1")
+  {
     printf("Simulate decoder 1...\n");
     // } else if (dec_type == "dec1_int32") {
     //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
-  } else if (dec_type == "dec1_fixed") {
+  }
+  else if (dec_type == "dec1_fixed")
+  {
     printf("Simulate decoder 1 fixed...\n");
-  } else if (dec_type == "dec1_cfloat") {
-  } else if (dec_type == "dec3") {
+  }
+  else if (dec_type == "dec1_cfloat")
+  {
+  }
+  else if (dec_type == "dec3")
+  {
     printf("Simulate decoder 3...\n");
-  } else if (dec_type == "dec4") {
+  }
+  else if (dec_type == "dec4")
+  {
     printf("Simulate decoder 4...\n");
-  } else if (dec_type == "dec0") {
+  }
+  else if (dec_type == "dec0")
+  {
     printf("Simulate decoder 0...\n");
-  } else {
+  }
+  else
+  {
     printf("#(II) Error : unknown decoder type\n");
     exit(1);
   }
 
+  float sigma = sqrt(1.0 / (pow(10, EbN0 / 10.0)));
+  CCSK_Simulator<_GF_, _N_> simulator(sigma, sigma, num_threads);
+
+  std::atomic<uint64_t> frame_errors(0);
+  std::atomic<uint64_t> frames_simulated(0);
+
+  auto start = std::chrono::high_resolution_clock::now();
+
 #pragma omp parallel
   {
-        #pragma omp single
-    printf("Used threads = %d\n", omp_get_num_threads());
-    PoAwN::structures::decoder_parameters dec_param_local = dec_param;
     int thread_id = omp_get_thread_num();
-    std::mt19937 gen(thread_id + base_seed);
-    vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
-
-    for (int i = 0; i <= n; i++)
-      for (int j = 0; j < N; j++) {
-        L[i][j].intrinsic_LLR.resize(q, 0);
-        L[i][j].is_freq = false;
-      }
-
-    vector<uint16_t> info_sec_rec(K, dec_param_local.MxUS);
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
+    uint16_t K_symb[K];
+    uint16_t u_symb[N];
+    std::vector<symbols_s<_GF_>> llrs_n(N);
     std::vector<uint16_t> decoded_n(N);
 
-    decoder *dec;
-    if (dec_type == "dec1") {
+    // Initialize decoder
+    decoder *dec = nullptr;
+    if (dec_type == "dec1")
+    {
       dec = new decoder_naive<_GF_>(N, frozen_symbols);
-      // } else if (dec_type == "dec1_int32") {
-      //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec1_fixed") {
+    }
+    else if (dec_type == "dec1_fixed")
+    {
       dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec1_cfloat") {
+    }
+    else if (dec_type == "dec1_cfloat")
+    {
       dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec3") {
+    }
+    else if (dec_type == "dec3")
+    {
       dec = new decoder_specialized<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec4") {
+    }
+    else if (dec_type == "dec4")
+    {
       dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec0") {
+    }
+    else if (dec_type == "dec0")
+    {
       dec = new decoder_basic<_GF_>(N, frozen_symbols);
-    } else {
+    }
+    else
+    {
+#pragma omp critical
+      {
+        std::cerr << "Error: Unknown decoder type: " << dec_type << std::endl;
+      }
       exit(1);
     }
 
-    std::vector<symbols_s<_GF_>> llrs_n(N);
+    while (true)
+    {
+      // Check stopping conditions (like your old code)
+      uint64_t cur_frames = frames_simulated.load(std::memory_order_relaxed);
+      uint64_t cur_errors = frame_errors.load(std::memory_order_relaxed);
 
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      if (cur_frames >= NbMonteCarlo || cur_errors >= MAX_FRAME_ERRORS)
+        break;
 
-    while (true) {
+      // Reserve a frame (like your old code: global_counter.fetch_add(1))
+      uint64_t my_frame_number = frames_simulated.fetch_add(1, std::memory_order_relaxed) + 1;
 
-      bool succ_dec = true;
-      vector<uint16_t> KSYMB(K);
+      // Generate symbols for THIS frame
+      simulator.generate_random_symbols(K_symb, thread_id);
+      for (int u = 0; u < K; u++)
+        u_symb[code_param.reliab_sequence[u]] = K_symb[u];
+      for (int u = K; u < N; u++)
+        u_symb[code_param.reliab_sequence[u]] = 0;
+      polar_encode<_N_>(u_symb); // KEPT as in your code
 
-      EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0,
-                             CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
+      // Simulate CCSK transmission
+      double *llr_values = simulator.simulate_frame(u_symb, thread_id);
+      simulator.llr_to_probability<_GF_>(llr_values, N);
 
-      for (int i = 0; i < N; i++) {
+      // Convert to decoder format
+      for (int i = 0; i < N; i++)
+      {
         for (int j = 0; j < _GF_; j++)
-          llrs_n[i].value[j] = L[0][i].intrinsic_LLR[j];
+          llrs_n[i].value[j] = llr_values[i * _GF_ + j];
       }
 
-      const auto m_start = std::chrono::system_clock::now();
+      // Decode
       dec->execute(llrs_n.data(), decoded_n.data());
-      const auto m_stop = std::chrono::system_clock::now();
-      time_base[thread_id] +=
-          std::chrono::duration_cast<std::chrono::microseconds>(m_stop -
-                                                                m_start)
-              .count();
 
-      for (int i = 0; i < K; i++)
-        info_sec_rec[i] = decoded_n[dec_param.reliab_sequence[i]];
-
-      for (uint16_t i = 0; i < dec_param_local.K; i++) {
-        if (KSYMB[i] != info_sec_rec[i]) {
-          succ_dec = false;
-          break;
+      // Check for errors
+      bool frame_error = false;
+      for (uint16_t i = 0; i < code_param.K && !frame_error; i++)
+      {
+        if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
+        {
+          frame_error = true;
         }
       }
 
-      global_counter.fetch_add(1);
-      int succ_now = global_counter.load() - FER.load();
-      if (!succ_dec) {
-        FER.fetch_add(1);
+      if (frame_error)
+      {
+        frame_errors.fetch_add(1, std::memory_order_relaxed);
       }
-      succ_now = global_counter.load() - FER.load();
-      if ((global_counter % 1000) == 0) {
 
+      // Clean up
+      delete[] llr_values;
+
+      // Progress report every 1000 frames (EXACTLY like your old code)
+      if (my_frame_number % 1000 == 0)
+      {
 #pragma omp critical
         {
-          int local_success = global_counter.load() - FER.load();
-          if ((global_counter.load() >= NbMonteCarlo) ||
-              (FER.load() >= FER_STOP))
-            stop.store(true); // Set the flag
-          FER_out = FER.load();
-          gen_frames_out = global_counter.load();
-          cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/"
-               << global_counter << " = " << (float)FER_out / gen_frames_out
-               << std::flush;
+          uint64_t total_frames = frames_simulated.load();
+          uint64_t total_errors = frame_errors.load();
+          if (total_frames > 0)
+          {
+            std::cout << "\rSNR: " << EbN0 << " dB, FER = " << total_errors << "/"
+                      << total_frames << " = " << (double)total_errors / total_frames
+                      << std::flush;
+          }
         }
       }
-      if (stop.load())
-        break;
     }
+
+    // Clean up decoder
+    delete dec;
   }
-  const auto s_stop = std::chrono::system_clock::now();
-  const int tSimuSec =
-      std::chrono::duration_cast<std::chrono::seconds>(s_stop - s_start)
-          .count();
 
-  double total_us = 0.0;
-  for (int i = 0; i < 64; i += 1)
-    total_us = (total_us >= time_base[i]) ? total_us : time_base[i];
-  const float time_run = (total_us / (double)gen_frames_out);
-  const float debit = ((double)N * (double)_logGF_) / time_run;
+  auto end = std::chrono::high_resolution_clock::now();
+  double sec = std::chrono::duration<double>(end - start).count();
 
-  cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
-       << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
-  cout << " :: débit = " << debit << " Mbps";
-  cout << endl;
+  uint64_t actual_frames = frames_simulated.load();
+  uint64_t actual_errors = frame_errors.load();
 
-  append_results_to_file1(dec_type, dec_param.q, dec_param.N, dec_param.K, EbN0,
-                          FER_out, gen_frames_out);
+  // Final results
+  std::cout << "\n\n=== CCSK + Polar Code FER Simulation ===" << std::endl;
+  std::cout << "Polar Code: N=" << N << ", K=" << K << ", GF=" << _GF_ << std::endl;
+  std::cout << "Decoder: " << dec_type << std::endl;
+  std::cout << "Eb/N0: " << EbN0 << " dB, Sigma: " << sigma << std::endl;
+  std::cout << "Target frames: " << NbMonteCarlo << std::endl;
+  std::cout << "Target errors: " << MAX_FRAME_ERRORS << std::endl;
+  std::cout << "Actual frames: " << actual_frames << std::endl;
+  std::cout << "Frame errors: " << actual_errors << std::endl;
+  if (actual_frames > 0)
+  {
+    std::cout << "FER: " << (double)actual_errors / actual_frames << std::endl;
+  }
+  else
+  {
+    std::cout << "FER: N/A (no frames simulated)" << std::endl;
+  }
+  std::cout << "Time: " << sec << " seconds" << std::endl;
+  std::cout << "Throughput: " << actual_frames / sec << " fps" << std::endl;
+  std::cout << "Throughput: " << (actual_frames * N * 10) / sec / 1e6 << " Mbps (10 bits/symbol)" << std::endl;
+
+  return 0;
 }

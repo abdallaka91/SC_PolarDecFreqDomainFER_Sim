@@ -186,9 +186,9 @@ int main(int argc, char *argv[])
   int num_threads = omp_get_max_threads();
   std::cout << "Using " << num_threads << " threads" << std::endl;
 
-  int MAX_FRAME_ERRORS = 100;
+  int FER_STOP = 25;
   if (argc == 8)
-    MAX_FRAME_ERRORS = stoi(argv[7]);
+    FER_STOP = stoi(argv[7]);
   // N = 1024;
   // K = 513;
   n = log2(N);
@@ -260,6 +260,11 @@ int main(int argc, char *argv[])
   std::atomic<uint64_t> frame_errors(0);
   std::atomic<uint64_t> frames_simulated(0);
 
+  uint64_t FER_out = 0, gen_frames_out = 0;
+  std::atomic<int> global_counter(0);
+  std::atomic<int> FER(0);
+  std::atomic<bool> stop(false);
+
   auto start = std::chrono::high_resolution_clock::now();
 
 #pragma omp parallel
@@ -307,15 +312,7 @@ int main(int argc, char *argv[])
 
     while (true)
     {
-      // Check stopping conditions (like your old code)
-      uint64_t cur_frames = frames_simulated.load(std::memory_order_relaxed);
-      uint64_t cur_errors = frame_errors.load(std::memory_order_relaxed);
-
-      if (cur_frames >= NbMonteCarlo || cur_errors >= MAX_FRAME_ERRORS)
-        break;
-
-      // Reserve a frame (like your old code: global_counter.fetch_add(1))
-      uint64_t my_frame_number = frames_simulated.fetch_add(1, std::memory_order_relaxed) + 1;
+      bool succ_dec = true;
 
       // Generate symbols for THIS frame
       simulator.generate_random_symbols(K_symb, thread_id);
@@ -340,38 +337,39 @@ int main(int argc, char *argv[])
       dec->execute(llrs_n.data(), decoded_n.data());
 
       // Check for errors
-      bool frame_error = false;
-      for (uint16_t i = 0; i < code_param.K && !frame_error; i++)
+      for (uint16_t i = 0; i < code_param.K; i++)
       {
         if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
         {
-          frame_error = true;
+          succ_dec = false;
+          break;
         }
       }
-
-      if (frame_error)
+      global_counter.fetch_add(1);
+      int succ_now = global_counter.load() - FER.load();
+      if (!succ_dec)
       {
-        frame_errors.fetch_add(1, std::memory_order_relaxed);
+        FER.fetch_add(1);
       }
-
-      // Clean up
-      delete[] llr_values;
-
-      // Progress report every 1000 frames (EXACTLY like your old code)
-      if (my_frame_number % 1000 == 0)
+      succ_now = global_counter.load() - FER.load();
+      if ((global_counter % 1000) == 0)
       {
+
 #pragma omp critical
         {
-          uint64_t total_frames = frames_simulated.load();
-          uint64_t total_errors = frame_errors.load();
-          if (total_frames > 0)
-          {
-            std::cout << "\rSNR: " << EbN0 << " dB, FER = " << total_errors << "/"
-                      << total_frames << " = " << (double)total_errors / total_frames
-                      << std::flush;
-          }
+          int local_success = global_counter.load() - FER.load();
+          if ((global_counter.load() >= NbMonteCarlo) ||
+              (FER.load() >= FER_STOP))
+            stop.store(true); // Set the flag
+          FER_out = FER.load();
+          gen_frames_out = global_counter.load();
+          cout << "\rSNR: " << EbN0 << " dB, FER = " << FER << "/"
+               << global_counter << " = " << (float)FER_out / gen_frames_out
+               << std::flush;
         }
       }
+      if (stop.load())
+        break;
     }
 
     // Clean up decoder
@@ -381,29 +379,19 @@ int main(int argc, char *argv[])
   auto end = std::chrono::high_resolution_clock::now();
   double sec = std::chrono::duration<double>(end - start).count();
 
-  uint64_t actual_frames = frames_simulated.load();
-  uint64_t actual_errors = frame_errors.load();
+  cout << "\rSNR: " << EbN0 << " dB, FER = " << FER_out << "/" << gen_frames_out
+       << " = " << (float)FER_out / (float)gen_frames_out << std::flush;
+
+  append_results_to_file1(dec_type, _GF_, _N_, K, EbN0,
+                          FER_out, gen_frames_out);
 
   // Final results
   std::cout << "\n\n=== CCSK + Polar Code FER Simulation ===" << std::endl;
   std::cout << "Polar Code: N=" << N << ", K=" << K << ", GF=" << _GF_ << std::endl;
   std::cout << "Decoder: " << dec_type << std::endl;
   std::cout << "Eb/N0: " << EbN0 << " dB, Sigma: " << sigma << std::endl;
-  std::cout << "Target frames: " << NbMonteCarlo << std::endl;
-  std::cout << "Target errors: " << MAX_FRAME_ERRORS << std::endl;
-  std::cout << "Actual frames: " << actual_frames << std::endl;
-  std::cout << "Frame errors: " << actual_errors << std::endl;
-  if (actual_frames > 0)
-  {
-    std::cout << "FER: " << (double)actual_errors / actual_frames << std::endl;
-  }
-  else
-  {
-    std::cout << "FER: N/A (no frames simulated)" << std::endl;
-  }
+  std::cout << "Actual frames: " << gen_frames_out << std::endl;
   std::cout << "Time: " << sec << " seconds" << std::endl;
-  std::cout << "Throughput: " << actual_frames / sec << " fps" << std::endl;
-  std::cout << "Throughput: " << (actual_frames * N * 10) / sec / 1e6 << " Mbps (10 bits/symbol)" << std::endl;
-
-  return 0;
+  std::cout << "Throughput: " << gen_frames_out / sec << " fps" << std::endl;
+  std::cout << "Throughput coded: " << (gen_frames_out * K * _logGF_) / sec / 1e6 << " Mbps ( bits/symbol)" << std::endl;
 }

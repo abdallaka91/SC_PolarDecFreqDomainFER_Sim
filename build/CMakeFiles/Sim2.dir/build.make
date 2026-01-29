@@ -195,52 +195,10 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/decoders_simulator.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp -o CMakeFiles/Sim2.dir/decoders_simulator.cpp.s
 
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o: CMakeFiles/Sim2.dir/flags.make
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/Decoder_functions.cpp
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o -MF CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o.d -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/Decoder_functions.cpp
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/Decoder_functions.cpp > CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.i
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/Decoder_functions.cpp -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.s
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o: CMakeFiles/Sim2.dir/flags.make
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/GF_tools.cpp
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o -MF CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o.d -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/GF_tools.cpp
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/GF_tools.cpp > CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.i
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/GF_tools.cpp -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.s
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o: CMakeFiles/Sim2.dir/flags.make
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/channel.cpp
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o -MF CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o.d -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/channel.cpp
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/channel.cpp > CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.i
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/channel.cpp -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.s
-
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o -MF CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o.d -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp
 
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.i: cmake_force
@@ -250,20 +208,6 @@ CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.i: cmake_force
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.s
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: CMakeFiles/Sim2.dir/flags.make
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/tools.cpp
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o -MF CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o.d -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/tools.cpp
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/tools.cpp > CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.i
-
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/tools.cpp -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.s
 
 # Object files for target Sim2
 Sim2_OBJECTS = \
@@ -276,11 +220,7 @@ Sim2_OBJECTS = \
 "CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o" \
 "CMakeFiles/Sim2.dir/decoders_simulator.cpp.o" \
-"CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o" \
-"CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o" \
-"CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o" \
-"CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o" \
-"CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o"
+"CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o"
 
 # External object files for target Sim2
 Sim2_EXTERNAL_OBJECTS =
@@ -294,17 +234,13 @@ Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specializ
 Sim2: CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o
 Sim2: CMakeFiles/Sim2.dir/decoders_simulator.cpp.o
-Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o
-Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o
-Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o
-Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o
 Sim2: CMakeFiles/Sim2.dir/build.make
 Sim2: /usr/lib/x86_64-linux-gnu/libfftw3.so
 Sim2: /usr/lib/gcc/x86_64-linux-gnu/12/libgomp.so
 Sim2: /usr/lib/x86_64-linux-gnu/libpthread.a
 Sim2: CMakeFiles/Sim2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable Sim2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable Sim2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Sim2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

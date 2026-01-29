@@ -1,7 +1,4 @@
-#include "Decoder_functions.h"
 #include "GF_tools.h"
-#include "HelperFunc.h"
-#include "channel.h"
 #include "definitions/code.hpp"
 #include "init.h"
 #include "struct.h"
@@ -43,8 +40,6 @@
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
 using namespace PoAwN::init;
-using namespace PoAwN::decoding;
-using namespace PoAwN::channel;
 using std::array;
 using std::cout;
 using std::endl;

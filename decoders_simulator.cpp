@@ -251,6 +251,13 @@ int main(int argc, char *argv[])
   std::atomic<double> global_llr_min{std::numeric_limits<double>::max()};
   std::atomic<double> global_llr_max{std::numeric_limits<double>::lowest()};
 
+  enum class LLRMethod
+  {
+    EXP = 0,
+    FAST_LUT = 1,
+  };
+  constexpr LLRMethod method = LLRMethod::FAST_LUT;
+
   auto start = std::chrono::high_resolution_clock::now();
 
 #ifndef NDEBUG
@@ -315,47 +322,29 @@ int main(int argc, char *argv[])
 
       // Simulate CCSK transmission
       double *llr_values = simulator.simulate_frame(u_symb, thread_id);
-#if 0
-      for (int i = 0; i < N; i++)
+
+      if constexpr (method == LLRMethod::EXP)
       {
-        for (int j = 0; j < _GF_; j++)
+        // Original method: exp() calls
+        simulator.llr_to_probability<_GF_>(llr_values, N);
+        for (int i = 0; i < N; i++)
         {
-          double val = llr_values[i * _GF_ + j];
-          llrs_n[i].value[j] = val;
-
-          // Update min
-          double current_min = global_llr_min.load();
-          while (val < current_min &&
-                 !global_llr_min.compare_exchange_weak(current_min, val))
+          for (int j = 0; j < _GF_; j++)
           {
-          }
-
-          // Update max
-          double current_max = global_llr_max.load();
-          while (val > current_max &&
-                 !global_llr_max.compare_exchange_weak(current_max, val))
-          {
+            llrs_n[i].value[j] = static_cast<float>(llr_values[i * _GF_ + j]);
           }
         }
       }
-#endif
-
-      // simulator.llr_to_probability<_GF_>(llr_values, N);
-      // for (int i = 0; i < N; i++)
-      // {
-      //   for (int j = 0; j < _GF_; j++)
-      //     llrs_n[i].value[j] = llr_values[i * _GF_ + j];
-      // }
-
-      // float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
-      float *probabilities = simulator.llr_to_probability_ultrafast<_GF_>(llr_values, N, thread_id);
-
-      // Convert to your decoder format (if decoder uses float)
-      for (int i = 0; i < N; i++)
+      else if constexpr (method == LLRMethod::FAST_LUT)
       {
-        for (int j = 0; j < _GF_; j++)
+        // Fast method: lookup table
+        float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
+        for (int i = 0; i < N; i++)
         {
-          llrs_n[i].value[j] = probabilities[i * _GF_ + j];
+          for (int j = 0; j < _GF_; j++)
+          {
+            llrs_n[i].value[j] = probabilities[i * _GF_ + j];
+          }
         }
       }
 

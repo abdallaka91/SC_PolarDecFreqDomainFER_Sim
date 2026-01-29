@@ -16,7 +16,7 @@ template <int __GF__, int N = 1024,
           int LLR_QUANT_BITS = SimulationParams::LLR_QUANT_BITS>
 class CCSK_Simulator
 {
-    // Compile-time validation with integers only
+    // Compile-time validation
     static_assert(N > 0, "N must be positive");
     static_assert((__GF__ & (__GF__ - 1)) == 0, "__GF__ must be power of 2");
     static_assert(MAX_LLR_NUM > 0, "MAX_LLR_NUM must be positive");
@@ -24,14 +24,14 @@ class CCSK_Simulator
     static_assert(LLR_QUANT_BITS > 0 && LLR_QUANT_BITS <= 16,
                   "LLR_QUANT_BITS must be 1-16");
 
-    // Then compute floating value
     static constexpr double MAX_LLR_VALUE =
         static_cast<double>(MAX_LLR_NUM) / static_cast<double>(MAX_LLR_DENOM);
 
     static constexpr int CHIPS_PER_SYMBOL = __GF__;
     static constexpr int LUT_SIZE = 1 << LLR_QUANT_BITS; // 4096 for 12 bits
+    static constexpr double LUT_fcat = (LUT_SIZE - 1) / MAX_LLR_VALUE;
 
-    // COMPILE-TIME LOOKUP TABLE (constructed at compile time)
+    // COMPILE-TIME LOOKUP TABLE
     static constexpr std::array<float, LUT_SIZE> create_exp_lut()
     {
         std::array<float, LUT_SIZE> lut{};
@@ -81,7 +81,6 @@ public:
         : base_seq(get_base_seq_float<__GF__>()),
           llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(fake_sigma))
     {
-        // NO runtime LUT initialization needed!
         thread_resources.reserve(max_threads);
         for (int i = 0; i < max_threads; i++)
         {
@@ -100,7 +99,7 @@ private:
             return LUT_SIZE - 1;
 
         // Compile-time computable if llr is constexpr
-        double scaled = llr * (LUT_SIZE - 1) / MAX_LLR_VALUE;
+        double scaled = llr * LUT_fcat;
         return static_cast<int>(scaled + 0.5);
     }
 
@@ -180,62 +179,6 @@ public:
 
             // Normalize to sum = 1
             float inv_sum = 1.0f / sum_exp;
-            for (int j = 0; j < GF; j++)
-            {
-                symbol_prob[j] *= inv_sum;
-            }
-        }
-
-        return prob_output; // Pointer to thread-local probability buffer
-    }
-
-    // ULTRA-FAST version with SIMD-like optimization (processes 4 values at once)
-    template <int GF>
-    float *llr_to_probability_ultrafast(double *llr_values, int num_symbols, int thread_id = 0)
-    {
-        auto &thread_res = get_thread_res(thread_id);
-        float *prob_output = thread_res.prob_buffer.data();
-        const int total_values = num_symbols * GF;
-
-        // Process in chunks of 4 for better cache utilization
-        for (int i = 0; i < total_values; i += 4)
-        {
-            // Load 4 LLR values
-            double llr0 = llr_values[i];
-            double llr1 = (i + 1 < total_values) ? llr_values[i + 1] : 0.0;
-            double llr2 = (i + 2 < total_values) ? llr_values[i + 2] : 0.0;
-            double llr3 = (i + 3 < total_values) ? llr_values[i + 3] : 0.0;
-
-            // Convert to probability using LUT
-            float prob0 = fast_exp_neg(llr0);
-            float prob1 = fast_exp_neg(llr1);
-            float prob2 = fast_exp_neg(llr2);
-            float prob3 = fast_exp_neg(llr3);
-
-            // Store
-            prob_output[i] = prob0;
-            if (i + 1 < total_values)
-                prob_output[i + 1] = prob1;
-            if (i + 2 < total_values)
-                prob_output[i + 2] = prob2;
-            if (i + 3 < total_values)
-                prob_output[i + 3] = prob3;
-        }
-
-        // Normalize each symbol (GF values at a time)
-        for (int sym_idx = 0; sym_idx < num_symbols; sym_idx++)
-        {
-            float *symbol_prob = &prob_output[sym_idx * GF];
-            float sum = 0.0f;
-
-            // Sum probabilities for this symbol
-            for (int j = 0; j < GF; j++)
-            {
-                sum += symbol_prob[j];
-            }
-
-            // Normalize
-            float inv_sum = 1.0f / sum;
             for (int j = 0; j < GF; j++)
             {
                 symbol_prob[j] *= inv_sum;

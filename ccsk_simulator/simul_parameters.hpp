@@ -17,10 +17,10 @@ namespace CCSKSequences
 namespace SimulationParams
 {
     // LLR quantization parameters
-    constexpr int MAX_LLR_NUM = 50;  // Numerator
+    constexpr int MAX_LLR_NUM = 21;  // Numerator
     constexpr int MAX_LLR_DENOM = 1; // Denominator (MAX_LLR = 50/1 = 50.0)
     constexpr double MAX_LLR_VALUE = static_cast<double>(MAX_LLR_NUM) / MAX_LLR_DENOM;
-    constexpr int LLR_QUANT_BITS = 12; // 12 bits = 4096 LUT entries
+    constexpr int LLR_QUANT_BITS = 6; // 12 bits = 4096 LUT entries
     constexpr int LUT_SIZE = 1 << LLR_QUANT_BITS;
 
     // CCSK simulation defaults

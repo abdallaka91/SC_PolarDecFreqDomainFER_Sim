@@ -13,32 +13,38 @@ class CCSK_Simulator
 
     static constexpr int CHIPS_PER_SYMBOL = __GF__;
 
-    // Precomputed base sequence (BPSK ±1)
     const std::array<double, 2 * __GF__> base_seq;
 
-    // Thread-local resources
     struct ThreadResources
     {
         std::mt19937 rng;
         FastGaussianNoise<float> noise_gen;
         std::uniform_int_distribution<int> sym_dist;
 
+        // Reusable buffers
+        std::vector<double> llr_buffer;
+        std::vector<float> noise_buffer;
+        std::vector<double> y_buffer;
+
         ThreadResources(double real_sigma, int seed)
-            : rng(seed), noise_gen(real_sigma, seed), sym_dist(0, __GF__ - 1) {}
+            : rng(seed),
+              noise_gen(real_sigma, seed),
+              sym_dist(0, __GF__ - 1),
+              llr_buffer(N * __GF__),
+              noise_buffer(N * CHIPS_PER_SYMBOL),
+              y_buffer(CHIPS_PER_SYMBOL)
+        {
+        }
     };
 
-    // Store per-thread resources
     std::vector<std::unique_ptr<ThreadResources>> thread_resources;
-
-    // LLR calculator (uses fake_sigma)
     std::unique_ptr<CCSK_LLR<CHIPS_PER_SYMBOL>> llr_calc;
 
 public:
-    // Constructor: precomputes base sequence
     CCSK_Simulator(double real_sigma, double fake_sigma, int max_threads = 1)
-        : base_seq(get_base_seq_float<__GF__>()), llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(fake_sigma))
+        : base_seq(get_base_seq_float<__GF__>()),
+          llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(fake_sigma))
     {
-        // Initialize thread resources
         thread_resources.reserve(max_threads);
         for (int i = 0; i < max_threads; i++)
         {
@@ -47,40 +53,30 @@ public:
         }
     }
 
-    // Main simulation function
     double *simulate_frame(const uint16_t tx_symbol[N], int thread_id = 0)
     {
         auto &thread_res = get_thread_res(thread_id);
 
-        // Allocate output: LLRs for all symbols [N × __GF__]
-        double *llr_output = new double[N * __GF__];
+        double *llr_output = thread_res.llr_buffer.data();
+        float *noise_buf = thread_res.noise_buffer.data();
+        double *y = thread_res.y_buffer.data();
 
-        // Temporary buffers
-        double y[CHIPS_PER_SYMBOL];
-        float *noise_buf = new float[N * CHIPS_PER_SYMBOL];
-
-        // Batch generate all noise for this frame
         thread_res.noise_gen.generate(noise_buf, N * CHIPS_PER_SYMBOL);
 
-        // Process each symbol
         for (int sym_idx = 0; sym_idx < N; sym_idx++)
         {
-            // Get rotated sequence for this symbol
             const double *rotated_seq = &base_seq[__GF__ - tx_symbol[sym_idx]];
-
-            // Add signal to noise
             const float *symbol_noise = &noise_buf[sym_idx * CHIPS_PER_SYMBOL];
+
             for (int i = 0; i < CHIPS_PER_SYMBOL; i++)
             {
-                y[i] = rotated_seq[i] + (double)symbol_noise[i];
+                y[i] = rotated_seq[i] + static_cast<double>(symbol_noise[i]);
             }
 
-            // Calculate LLRs for this symbol
             llr_calc->calculate(y, &llr_output[sym_idx * __GF__]);
         }
 
-        delete[] noise_buf;
-        return llr_output; // Caller must delete[]
+        return llr_output;
     }
 
     template <int GF>
@@ -104,28 +100,25 @@ public:
         }
     }
 
-    // Generate random symbols
-    void generate_random_symbols(uint16_t tx_symbol[N], int thread_id = 0)
+    void generate_random_symbols(uint16_t *tx_symbol, int K, int thread_id = 0)
     {
         auto &thread_res = get_thread_res(thread_id);
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < K; i++)
         {
-            tx_symbol[i] = thread_res.sym_dist(thread_res.rng);
+            tx_symbol[i] = static_cast<uint16_t>(thread_res.sym_dist(thread_res.rng));
         }
     }
 
 private:
-    // Helper to get thread resources (with bounds checking)
     ThreadResources &get_thread_res(int thread_id)
     {
-        if (thread_id >= (int)thread_resources.size())
+        if (thread_id >= static_cast<int>(thread_resources.size()))
         {
             throw std::runtime_error("Thread ID exceeds allocated resources");
         }
         return *thread_resources[thread_id];
     }
 
-    // Function to precompute base sequence (same as before)
     template <int GF>
     static constexpr auto get_base_seq_float()
     {

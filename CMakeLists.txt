@@ -5,6 +5,14 @@ cmake_minimum_required(VERSION 3.16)
 # ===========================
 project(TEST1 LANGUAGES CXX)
 
+
+# option(ENABLE_SANITIZERS "Enable Address/Undefined sanitizers" OFF)
+
+
+
+
+
+
 add_compile_options(-Wno-unused-parameter -Wno-deprecated-copy -Wno-int-in-bool-context -Wno-type-limits -Wno-strict-aliasing -Wno-extra)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -28,6 +36,23 @@ else()
     set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
+
+
+# if(ENABLE_SANITIZERS)
+#     message(STATUS "Sanitizers ENABLED")
+
+#     add_compile_options(
+#         -fsanitize=address,undefined
+#         -fno-omit-frame-pointer
+#         -O0
+#         -g
+#     )
+
+#     add_link_options(
+#         -fsanitize=address,undefined
+#     )
+# endif()
+
 
 # ===========================
 #  Dependencies

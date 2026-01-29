@@ -8,7 +8,7 @@ class FastGaussianNoise
     std::mt19937 rng;
     std::uniform_real_distribution<R> uniform;
     R sigma;
-    R buffer[mipp::nElReg<R>()]; // Small buffer for generate_one()
+    R buffer[mipp::nElReg<R>()];
 
 public:
     FastGaussianNoise(R sigma = 1.0, int seed = 42)
@@ -46,8 +46,7 @@ public:
             awgn2.store(&noise[i + simd_size]);
         }
 
-        // Sequential for remainder
-        for (int i = vec_loop_size; i < (int)length; i += 2)
+           for (int i = vec_loop_size; i < (int)length; i += 2)
         {
             if (i + 1 < (int)length)
             {
@@ -67,7 +66,6 @@ public:
         }
     }
 
-    // Generate single sample
     R generate_one(R mu = 0.0)
     {
         generate(buffer, 1, mu);

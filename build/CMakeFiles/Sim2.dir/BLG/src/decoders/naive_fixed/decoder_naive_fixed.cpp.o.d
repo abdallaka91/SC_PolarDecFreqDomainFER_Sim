@@ -4,11 +4,8 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_fixed/decoder_naive_fixed.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/decoder.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
- /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
- /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
- /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
- /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
- /usr/include/c++/12/cassert \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/../ap_fixed_tools.hpp \
+ /usr/include/c++/12/climits \
  /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -19,31 +16,37 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
  /usr/include/x86_64-linux-gnu/c++/12/bits/cpu_defines.h \
- /usr/include/c++/12/pstl/pstl_config.h /usr/include/assert.h \
- /usr/include/c++/12/cstdint \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
+ /usr/include/c++/12/pstl/pstl_config.h \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/syslimits.h \
+ /usr/include/limits.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/uio_lim.h /usr/include/c++/12/cmath \
+ /usr/include/c++/12/bits/cpp_type_traits.h \
+ /usr/include/c++/12/ext/type_traits.h /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/types.h \
  /usr/include/x86_64-linux-gnu/bits/typesizes.h \
  /usr/include/x86_64-linux-gnu/bits/time64.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/c++/12/cstdio /usr/include/stdio.h \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
- /usr/include/x86_64-linux-gnu/bits/stdio.h /usr/include/c++/12/cstdlib \
- /usr/include/stdlib.h /usr/include/x86_64-linux-gnu/bits/waitflags.h \
+ /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
+ /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
+ /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
+ /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
+ /usr/include/c++/12/bits/std_abs.h /usr/include/stdlib.h \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
+ /usr/include/x86_64-linux-gnu/bits/waitflags.h \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
@@ -51,7 +54,8 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/clock_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/time_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/timer_t.h /usr/include/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/types/timer_t.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h /usr/include/endian.h \
  /usr/include/x86_64-linux-gnu/bits/endian.h \
  /usr/include/x86_64-linux-gnu/bits/endianness.h \
  /usr/include/x86_64-linux-gnu/bits/byteswap.h \
@@ -70,7 +74,51 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h /usr/include/alloca.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
- /usr/include/c++/12/bits/std_abs.h \
+ /usr/include/c++/12/bits/specfun.h \
+ /usr/include/c++/12/bits/stl_algobase.h \
+ /usr/include/c++/12/bits/functexcept.h \
+ /usr/include/c++/12/bits/exception_defines.h \
+ /usr/include/c++/12/ext/numeric_traits.h \
+ /usr/include/c++/12/bits/stl_pair.h /usr/include/c++/12/type_traits \
+ /usr/include/c++/12/bits/move.h /usr/include/c++/12/bits/utility.h \
+ /usr/include/c++/12/bits/stl_iterator_base_types.h \
+ /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
+ /usr/include/c++/12/bits/concept_check.h \
+ /usr/include/c++/12/debug/assertions.h \
+ /usr/include/c++/12/bits/stl_iterator.h \
+ /usr/include/c++/12/bits/ptr_traits.h /usr/include/c++/12/debug/debug.h \
+ /usr/include/c++/12/bits/predefined_ops.h /usr/include/c++/12/limits \
+ /usr/include/c++/12/tr1/gamma.tcc \
+ /usr/include/c++/12/tr1/special_function_util.h \
+ /usr/include/c++/12/tr1/bessel_function.tcc \
+ /usr/include/c++/12/tr1/beta_function.tcc \
+ /usr/include/c++/12/tr1/ell_integral.tcc \
+ /usr/include/c++/12/tr1/exp_integral.tcc \
+ /usr/include/c++/12/tr1/hypergeometric.tcc \
+ /usr/include/c++/12/tr1/legendre_function.tcc \
+ /usr/include/c++/12/tr1/modified_bessel_func.tcc \
+ /usr/include/c++/12/tr1/poly_hermite.tcc \
+ /usr/include/c++/12/tr1/poly_laguerre.tcc \
+ /usr/include/c++/12/tr1/riemann_zeta.tcc /usr/include/c++/12/cstdint \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
+ /usr/include/c++/12/cassert /usr/include/assert.h \
+ /usr/include/c++/12/cstdio /usr/include/stdio.h \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio.h /usr/include/c++/12/cstdlib \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/immintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/x86gprintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/ia32intrin.h \
@@ -158,46 +206,11 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/amxbf16intrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/prfchwintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/keylockerintrin.h \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i32_fwht_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i64_fwht_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax_avx2.hpp \
- /usr/include/c++/12/cmath /usr/include/c++/12/bits/cpp_type_traits.h \
- /usr/include/c++/12/ext/type_traits.h /usr/include/math.h \
- /usr/include/x86_64-linux-gnu/bits/math-vector.h \
- /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
- /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
- /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
- /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
- /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /usr/include/c++/12/bits/specfun.h \
- /usr/include/c++/12/bits/stl_algobase.h \
- /usr/include/c++/12/bits/functexcept.h \
- /usr/include/c++/12/bits/exception_defines.h \
- /usr/include/c++/12/ext/numeric_traits.h \
- /usr/include/c++/12/bits/stl_pair.h /usr/include/c++/12/type_traits \
- /usr/include/c++/12/bits/move.h /usr/include/c++/12/bits/utility.h \
- /usr/include/c++/12/bits/stl_iterator_base_types.h \
- /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
- /usr/include/c++/12/bits/concept_check.h \
- /usr/include/c++/12/debug/assertions.h \
- /usr/include/c++/12/bits/stl_iterator.h \
- /usr/include/c++/12/bits/ptr_traits.h /usr/include/c++/12/debug/debug.h \
- /usr/include/c++/12/bits/predefined_ops.h /usr/include/c++/12/limits \
- /usr/include/c++/12/tr1/gamma.tcc \
- /usr/include/c++/12/tr1/special_function_util.h \
- /usr/include/c++/12/tr1/bessel_function.tcc \
- /usr/include/c++/12/tr1/beta_function.tcc \
- /usr/include/c++/12/tr1/ell_integral.tcc \
- /usr/include/c++/12/tr1/exp_integral.tcc \
- /usr/include/c++/12/tr1/hypergeometric.tcc \
- /usr/include/c++/12/tr1/legendre_function.tcc \
- /usr/include/c++/12/tr1/modified_bessel_func.tcc \
- /usr/include/c++/12/tr1/poly_hermite.tcc \
- /usr/include/c++/12/tr1/poly_laguerre.tcc \
- /usr/include/c++/12/tr1/riemann_zeta.tcc \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/f_argmax.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/scale_by_inverse_avx2.hpp \
@@ -237,7 +250,6 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
  /usr/include/x86_64-linux-gnu/bits/setjmp.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
- /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
  /usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h \
  /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
  /usr/include/c++/12/bits/locale_classes.h /usr/include/c++/12/string \

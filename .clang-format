@@ -1,0 +1,50 @@
+# Basic indentation
+UseTab: Always
+TabWidth: 4
+IndentWidth: 4
+
+# Brace formatting
+BreakBeforeBraces: Allman
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeWhile: true
+  BeforeLambdaBody: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+
+# Other formatting
+BinPackArguments: false
+BinPackParameters: false
+ColumnLimit: 0  # No column limit
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: false
+AllowShortIfStatStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: Yes
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInAngles: false
+SpaceAfterCStyleCast: false
+SpacesInContainerLiterals: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeRangeBasedForLoopColon: true

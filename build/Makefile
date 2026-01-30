@@ -225,6 +225,30 @@ BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s
 .PHONY : BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s
 
+BLG/src/decoders/naive_integer/decoder_naive_integer.o: BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.o
+
+# target to build an object file
+BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o
+
+BLG/src/decoders/naive_integer/decoder_naive_integer.i: BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.i
+
+# target to preprocess a source file
+BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i
+
+BLG/src/decoders/naive_integer/decoder_naive_integer.s: BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.s
+
+# target to generate assembly for a file
+BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s
+
 BLG/src/decoders/specialized/decoder_specialized.o: BLG/src/decoders/specialized/decoder_specialized.cpp.o
 .PHONY : BLG/src/decoders/specialized/decoder_specialized.o
 
@@ -273,6 +297,30 @@ BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s
 .PHONY : BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s
 
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.o: BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.o
+
+# target to build an object file
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o
+
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.i: BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.i
+
+# target to preprocess a source file
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i
+
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.s: BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.s
+
+# target to generate assembly for a file
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s
+
 BLG/src/hadamard/Hadamard.o: BLG/src/hadamard/Hadamard.cpp.o
 .PHONY : BLG/src/hadamard/Hadamard.o
 
@@ -296,6 +344,30 @@ BLG/src/hadamard/Hadamard.s: BLG/src/hadamard/Hadamard.cpp.s
 BLG/src/hadamard/Hadamard.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.s
 .PHONY : BLG/src/hadamard/Hadamard.cpp.s
+
+BLG/src/hadamard_i32/Hadamard.o: BLG/src/hadamard_i32/Hadamard.cpp.o
+.PHONY : BLG/src/hadamard_i32/Hadamard.o
+
+# target to build an object file
+BLG/src/hadamard_i32/Hadamard.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o
+.PHONY : BLG/src/hadamard_i32/Hadamard.cpp.o
+
+BLG/src/hadamard_i32/Hadamard.i: BLG/src/hadamard_i32/Hadamard.cpp.i
+.PHONY : BLG/src/hadamard_i32/Hadamard.i
+
+# target to preprocess a source file
+BLG/src/hadamard_i32/Hadamard.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.i
+.PHONY : BLG/src/hadamard_i32/Hadamard.cpp.i
+
+BLG/src/hadamard_i32/Hadamard.s: BLG/src/hadamard_i32/Hadamard.cpp.s
+.PHONY : BLG/src/hadamard_i32/Hadamard.s
+
+# target to generate assembly for a file
+BLG/src/hadamard_i32/Hadamard.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.s
+.PHONY : BLG/src/hadamard_i32/Hadamard.cpp.s
 
 BLG/src/utilities/utility_functions.o: BLG/src/utilities/utility_functions.cpp.o
 .PHONY : BLG/src/utilities/utility_functions.o
@@ -390,15 +462,24 @@ help:
 	@echo "... BLG/src/decoders/naive_fixed/decoder_naive_fixed.o"
 	@echo "... BLG/src/decoders/naive_fixed/decoder_naive_fixed.i"
 	@echo "... BLG/src/decoders/naive_fixed/decoder_naive_fixed.s"
+	@echo "... BLG/src/decoders/naive_integer/decoder_naive_integer.o"
+	@echo "... BLG/src/decoders/naive_integer/decoder_naive_integer.i"
+	@echo "... BLG/src/decoders/naive_integer/decoder_naive_integer.s"
 	@echo "... BLG/src/decoders/specialized/decoder_specialized.o"
 	@echo "... BLG/src/decoders/specialized/decoder_specialized.i"
 	@echo "... BLG/src/decoders/specialized/decoder_specialized.s"
 	@echo "... BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.o"
 	@echo "... BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.i"
 	@echo "... BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.s"
+	@echo "... BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.o"
+	@echo "... BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.i"
+	@echo "... BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.s"
 	@echo "... BLG/src/hadamard/Hadamard.o"
 	@echo "... BLG/src/hadamard/Hadamard.i"
 	@echo "... BLG/src/hadamard/Hadamard.s"
+	@echo "... BLG/src/hadamard_i32/Hadamard.o"
+	@echo "... BLG/src/hadamard_i32/Hadamard.i"
+	@echo "... BLG/src/hadamard_i32/Hadamard.s"
 	@echo "... BLG/src/utilities/utility_functions.o"
 	@echo "... BLG/src/utilities/utility_functions.i"
 	@echo "... BLG/src/utilities/utility_functions.s"

@@ -5,10 +5,6 @@
       "label": "cmake-configure-release",
       "type": "shell",
       "command": "rm -f CMakeCache.txt && rm -rf build CMakeFiles && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DUSE_ALL_GFs=OFF ..",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
     },
     {
       "label": "cmake-build-release",
@@ -20,12 +16,16 @@
     {
       "label": "cmake-configure-debug",
       "type": "shell",
-      "command": "rm -f CMakeCache.txt && rm -rf build_debug CMakeFiles && mkdir -p build_debug && cd build_debug && cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_ALL_GFs=OFF .."
+      // "command": "rm -f CMakeCache.txt && rm -rf build_debug CMakeFiles && mkdir -p build_debug && cd build_debug && cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_ALL_GFs=OFF ..",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     },
     {
       "label": "cmake-build-debug",
       "type": "shell",
-      "command": "cd build_debug && make -j$(nproc)",
+      // "command": "cd build_debug && make -j$(nproc)",
       "dependsOn": "cmake-configure-debug"
     },
     {

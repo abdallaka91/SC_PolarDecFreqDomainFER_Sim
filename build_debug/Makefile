@@ -225,6 +225,30 @@ BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s
 .PHONY : BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s
 
+BLG/src/decoders/naive_integer/decoder_naive_integer.o: BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.o
+
+# target to build an object file
+BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o
+
+BLG/src/decoders/naive_integer/decoder_naive_integer.i: BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.i
+
+# target to preprocess a source file
+BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i
+
+BLG/src/decoders/naive_integer/decoder_naive_integer.s: BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.s
+
+# target to generate assembly for a file
+BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s
+.PHONY : BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s
+
 BLG/src/decoders/specialized/decoder_specialized.o: BLG/src/decoders/specialized/decoder_specialized.cpp.o
 .PHONY : BLG/src/decoders/specialized/decoder_specialized.o
 
@@ -273,6 +297,30 @@ BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s
 .PHONY : BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s
 
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.o: BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.o
+
+# target to build an object file
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o
+
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.i: BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.i
+
+# target to preprocess a source file
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i
+
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.s: BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.s
+
+# target to generate assembly for a file
+BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s
+.PHONY : BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s
+
 BLG/src/hadamard/Hadamard.o: BLG/src/hadamard/Hadamard.cpp.o
 .PHONY : BLG/src/hadamard/Hadamard.o
 
@@ -296,6 +344,30 @@ BLG/src/hadamard/Hadamard.s: BLG/src/hadamard/Hadamard.cpp.s
 BLG/src/hadamard/Hadamard.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.s
 .PHONY : BLG/src/hadamard/Hadamard.cpp.s
+
+BLG/src/hadamard_i32/Hadamard.o: BLG/src/hadamard_i32/Hadamard.cpp.o
+.PHONY : BLG/src/hadamard_i32/Hadamard.o
+
+# target to build an object file
+BLG/src/hadamard_i32/Hadamard.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o
+.PHONY : BLG/src/hadamard_i32/Hadamard.cpp.o
+
+BLG/src/hadamard_i32/Hadamard.i: BLG/src/hadamard_i32/Hadamard.cpp.i
+.PHONY : BLG/src/hadamard_i32/Hadamard.i
+
+# target to preprocess a source file
+BLG/src/hadamard_i32/Hadamard.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.i
+.PHONY : BLG/src/hadamard_i32/Hadamard.cpp.i
+
+BLG/src/hadamard_i32/Hadamard.s: BLG/src/hadamard_i32/Hadamard.cpp.s
+.PHONY : BLG/src/hadamard_i32/Hadamard.s
+
+# target to generate assembly for a file
+BLG/src/hadamard_i32/Hadamard.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.s
+.PHONY : BLG/src/hadamard_i32/Hadamard.cpp.s
 
 BLG/src/utilities/utility_functions.o: BLG/src/utilities/utility_functions.cpp.o
 .PHONY : BLG/src/utilities/utility_functions.o
@@ -345,78 +417,6 @@ decoders_simulator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/decoders_simulator.cpp.s
 .PHONY : decoders_simulator.cpp.s
 
-source/sim_cpp_sources/Decoder_functions.o: source/sim_cpp_sources/Decoder_functions.cpp.o
-.PHONY : source/sim_cpp_sources/Decoder_functions.o
-
-# target to build an object file
-source/sim_cpp_sources/Decoder_functions.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.o
-.PHONY : source/sim_cpp_sources/Decoder_functions.cpp.o
-
-source/sim_cpp_sources/Decoder_functions.i: source/sim_cpp_sources/Decoder_functions.cpp.i
-.PHONY : source/sim_cpp_sources/Decoder_functions.i
-
-# target to preprocess a source file
-source/sim_cpp_sources/Decoder_functions.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.i
-.PHONY : source/sim_cpp_sources/Decoder_functions.cpp.i
-
-source/sim_cpp_sources/Decoder_functions.s: source/sim_cpp_sources/Decoder_functions.cpp.s
-.PHONY : source/sim_cpp_sources/Decoder_functions.s
-
-# target to generate assembly for a file
-source/sim_cpp_sources/Decoder_functions.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/Decoder_functions.cpp.s
-.PHONY : source/sim_cpp_sources/Decoder_functions.cpp.s
-
-source/sim_cpp_sources/GF_tools.o: source/sim_cpp_sources/GF_tools.cpp.o
-.PHONY : source/sim_cpp_sources/GF_tools.o
-
-# target to build an object file
-source/sim_cpp_sources/GF_tools.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.o
-.PHONY : source/sim_cpp_sources/GF_tools.cpp.o
-
-source/sim_cpp_sources/GF_tools.i: source/sim_cpp_sources/GF_tools.cpp.i
-.PHONY : source/sim_cpp_sources/GF_tools.i
-
-# target to preprocess a source file
-source/sim_cpp_sources/GF_tools.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.i
-.PHONY : source/sim_cpp_sources/GF_tools.cpp.i
-
-source/sim_cpp_sources/GF_tools.s: source/sim_cpp_sources/GF_tools.cpp.s
-.PHONY : source/sim_cpp_sources/GF_tools.s
-
-# target to generate assembly for a file
-source/sim_cpp_sources/GF_tools.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/GF_tools.cpp.s
-.PHONY : source/sim_cpp_sources/GF_tools.cpp.s
-
-source/sim_cpp_sources/channel.o: source/sim_cpp_sources/channel.cpp.o
-.PHONY : source/sim_cpp_sources/channel.o
-
-# target to build an object file
-source/sim_cpp_sources/channel.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.o
-.PHONY : source/sim_cpp_sources/channel.cpp.o
-
-source/sim_cpp_sources/channel.i: source/sim_cpp_sources/channel.cpp.i
-.PHONY : source/sim_cpp_sources/channel.i
-
-# target to preprocess a source file
-source/sim_cpp_sources/channel.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.i
-.PHONY : source/sim_cpp_sources/channel.cpp.i
-
-source/sim_cpp_sources/channel.s: source/sim_cpp_sources/channel.cpp.s
-.PHONY : source/sim_cpp_sources/channel.s
-
-# target to generate assembly for a file
-source/sim_cpp_sources/channel.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/channel.cpp.s
-.PHONY : source/sim_cpp_sources/channel.cpp.s
-
 source/sim_cpp_sources/init.o: source/sim_cpp_sources/init.cpp.o
 .PHONY : source/sim_cpp_sources/init.o
 
@@ -441,30 +441,6 @@ source/sim_cpp_sources/init.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.s
 .PHONY : source/sim_cpp_sources/init.cpp.s
 
-source/sim_cpp_sources/tools.o: source/sim_cpp_sources/tools.cpp.o
-.PHONY : source/sim_cpp_sources/tools.o
-
-# target to build an object file
-source/sim_cpp_sources/tools.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.o
-.PHONY : source/sim_cpp_sources/tools.cpp.o
-
-source/sim_cpp_sources/tools.i: source/sim_cpp_sources/tools.cpp.i
-.PHONY : source/sim_cpp_sources/tools.i
-
-# target to preprocess a source file
-source/sim_cpp_sources/tools.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.i
-.PHONY : source/sim_cpp_sources/tools.cpp.i
-
-source/sim_cpp_sources/tools.s: source/sim_cpp_sources/tools.cpp.s
-.PHONY : source/sim_cpp_sources/tools.s
-
-# target to generate assembly for a file
-source/sim_cpp_sources/tools.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Sim2.dir/build.make CMakeFiles/Sim2.dir/source/sim_cpp_sources/tools.cpp.s
-.PHONY : source/sim_cpp_sources/tools.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -486,36 +462,33 @@ help:
 	@echo "... BLG/src/decoders/naive_fixed/decoder_naive_fixed.o"
 	@echo "... BLG/src/decoders/naive_fixed/decoder_naive_fixed.i"
 	@echo "... BLG/src/decoders/naive_fixed/decoder_naive_fixed.s"
+	@echo "... BLG/src/decoders/naive_integer/decoder_naive_integer.o"
+	@echo "... BLG/src/decoders/naive_integer/decoder_naive_integer.i"
+	@echo "... BLG/src/decoders/naive_integer/decoder_naive_integer.s"
 	@echo "... BLG/src/decoders/specialized/decoder_specialized.o"
 	@echo "... BLG/src/decoders/specialized/decoder_specialized.i"
 	@echo "... BLG/src/decoders/specialized/decoder_specialized.s"
 	@echo "... BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.o"
 	@echo "... BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.i"
 	@echo "... BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.s"
+	@echo "... BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.o"
+	@echo "... BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.i"
+	@echo "... BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.s"
 	@echo "... BLG/src/hadamard/Hadamard.o"
 	@echo "... BLG/src/hadamard/Hadamard.i"
 	@echo "... BLG/src/hadamard/Hadamard.s"
+	@echo "... BLG/src/hadamard_i32/Hadamard.o"
+	@echo "... BLG/src/hadamard_i32/Hadamard.i"
+	@echo "... BLG/src/hadamard_i32/Hadamard.s"
 	@echo "... BLG/src/utilities/utility_functions.o"
 	@echo "... BLG/src/utilities/utility_functions.i"
 	@echo "... BLG/src/utilities/utility_functions.s"
 	@echo "... decoders_simulator.o"
 	@echo "... decoders_simulator.i"
 	@echo "... decoders_simulator.s"
-	@echo "... source/sim_cpp_sources/Decoder_functions.o"
-	@echo "... source/sim_cpp_sources/Decoder_functions.i"
-	@echo "... source/sim_cpp_sources/Decoder_functions.s"
-	@echo "... source/sim_cpp_sources/GF_tools.o"
-	@echo "... source/sim_cpp_sources/GF_tools.i"
-	@echo "... source/sim_cpp_sources/GF_tools.s"
-	@echo "... source/sim_cpp_sources/channel.o"
-	@echo "... source/sim_cpp_sources/channel.i"
-	@echo "... source/sim_cpp_sources/channel.s"
 	@echo "... source/sim_cpp_sources/init.o"
 	@echo "... source/sim_cpp_sources/init.i"
 	@echo "... source/sim_cpp_sources/init.s"
-	@echo "... source/sim_cpp_sources/tools.o"
-	@echo "... source/sim_cpp_sources/tools.i"
-	@echo "... source/sim_cpp_sources/tools.s"
 .PHONY : help
 
 

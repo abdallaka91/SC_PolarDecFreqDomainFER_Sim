@@ -8,11 +8,11 @@
       "program": "${workspaceFolder}/build_debug/Sim2",
       "args": [
         "100",
-        "-15.25",
+        "-7.5",
         "64",
-        "1024",
-        "512",
-        "dec1",
+        "64",
+        "42",
+        "dec4_integer",
         "20"
       ],
       "stopAtEntry": false,

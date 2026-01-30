@@ -83,12 +83,18 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
- /usr/include/c++/12/cstdint \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/c++/12/cmath /usr/include/math.h \
- /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/../ap_fixed_tools.hpp \
+ /usr/include/c++/12/climits \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/syslimits.h \
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/uio_lim.h /usr/include/c++/12/cmath \
+ /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
@@ -109,9 +115,12 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: \
  /usr/include/c++/12/tr1/modified_bessel_func.tcc \
  /usr/include/c++/12/tr1/poly_hermite.tcc \
  /usr/include/c++/12/tr1/poly_laguerre.tcc \
- /usr/include/c++/12/tr1/riemann_zeta.tcc \
+ /usr/include/c++/12/tr1/riemann_zeta.tcc /usr/include/c++/12/cstdint \
+ /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
- /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N1024_GF64.hpp \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp \
  /usr/include/c++/12/cassert /usr/include/assert.h \
@@ -202,8 +211,11 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/amxbf16intrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/prfchwintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/keylockerintrin.h \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i32_fwht_avx2.hpp \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i64_fwht_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/argmax_avx2.hpp \
+ /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/f_argmax.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize_avx2.hpp \
  /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/scale_by_inverse_avx2.hpp

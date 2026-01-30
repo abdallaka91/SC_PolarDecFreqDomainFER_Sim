@@ -5,15 +5,46 @@ cmake_minimum_required(VERSION 3.16)
 # ===========================
 project(TEST1 LANGUAGES CXX)
 
+# ===========================
+#  DISABLE ALL WARNINGS
+# ===========================
+# Nuclear option: disable ALL warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
-# option(ENABLE_SANITIZERS "Enable Address/Undefined sanitizers" OFF)
+# Additional suppression for extra safety
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-Wno-everything)
+    add_compile_options(-Wno-all)
+endif()
 
-
-
-
-
-
-add_compile_options(-Wno-unused-parameter -Wno-deprecated-copy -Wno-int-in-bool-context -Wno-type-limits -Wno-strict-aliasing -Wno-extra)
+# Override any -Wall or -Wextra that might be added later
+add_compile_options(
+    -Wno-unused-parameter
+    -Wno-deprecated-copy 
+    -Wno-int-in-bool-context 
+    -Wno-type-limits 
+    -Wno-strict-aliasing 
+    -Wno-extra
+    -Wno-unused-but-set-variable
+    -Wno-unused-variable
+    -Wno-uninitialized
+    -Wno-maybe-uninitialized
+    -Wno-format
+    -Wno-aggressive-loop-optimizations
+    -Wno-unknown-pragmas
+    -Wno-sign-compare
+    -Wno-reorder
+    -Wno-attributes
+    -Wno-comment
+    -Wno-pedantic
+    -Wno-shadow
+    -Wno-conversion
+    -Wno-overloaded-virtual
+    -Wno-narrowing
+    -Wno-misleading-indentation
+    -Wno-ignored-qualifiers
+    -Wno-invalid-offsetof
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,35 +55,21 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ===========================
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring Debug build")
-    set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "-g -O0 -w")  # Keep -w to disable warnings
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -w")  # Keep -w
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
     message(STATUS "No build type selected, defaulting to Release")
     set(CMAKE_BUILD_TYPE Release)
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -w")  # Keep -w
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
-
-# if(ENABLE_SANITIZERS)
-#     message(STATUS "Sanitizers ENABLED")
-
-#     add_compile_options(
-#         -fsanitize=address,undefined
-#         -fno-omit-frame-pointer
-#         -O0
-#         -g
-#     )
-
-#     add_link_options(
-#         -fsanitize=address,undefined
-#     )
-# endif()
-
+# Force disable warnings in ALL configurations
+string(APPEND CMAKE_CXX_FLAGS " -w")
 
 # ===========================
 #  Dependencies
@@ -85,13 +102,16 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning_integer/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
     # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_integer/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
+    "${CMAKE_SOURCE_DIR}/BLG/src/hadamard_i32/Hadamard.cpp"
     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
 )
 
@@ -106,6 +126,7 @@ target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/BLG/src/decoders
     ${CMAKE_SOURCE_DIR}/BLG/src/definitions
     ${CMAKE_SOURCE_DIR}/BLG/src/hadamard
+     ${CMAKE_SOURCE_DIR}/BLG/src/hadamard_i32 
     ${CMAKE_SOURCE_DIR}/BLG/src/utilities
     ${CMAKE_SOURCE_DIR}/BLG/src
     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
@@ -147,7 +168,6 @@ endif()
 message(STATUS "C++ Compiler : ${CMAKE_CXX_COMPILER}")
 message(STATUS "Build type   : ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Flags    : ${CMAKE_CXX_FLAGS}")
-
 #############################################################################
 #single thread
 

@@ -40,7 +40,14 @@ class CCSK_Simulator
         for (int i = 0; i < LUT_SIZE; i++)
         {
             double llr = i * step;
-            lut[i] = static_cast<float>(std::exp(-llr));
+            if (llr > 150.0)
+            {
+                lut[i] = 0.0f;
+            }
+            else
+            {
+                lut[i] = static_cast<float>(std::exp(-llr));
+            }
         }
         return lut;
     }

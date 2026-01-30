@@ -125,10 +125,24 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s: cmak
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp -o CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.s
 
+CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o: CMakeFiles/Sim2.dir/flags.make
+CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp
+CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o -MF CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o.d -o CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp
+
+CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp > CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.i
+
+CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp -o CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.s
+
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/decoder_specialized.cpp
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o -MF CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o.d -o CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/decoder_specialized.cpp
 
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.i: cmake_force
@@ -142,7 +156,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.s: cmak
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o -MF CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o.d -o CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp
 
 CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.i: cmake_force
@@ -153,10 +167,24 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp -o CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.s
 
+CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o: CMakeFiles/Sim2.dir/flags.make
+CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp
+CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o -MF CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o.d -o CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp
+
+CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp > CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.i
+
+CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp -o CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.s
+
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o -MF CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o.d -o CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp
 
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.i: cmake_force
@@ -167,10 +195,24 @@ CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp -o CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.s
 
+CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o: CMakeFiles/Sim2.dir/flags.make
+CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard.cpp
+CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o -MF CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o.d -o CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard.cpp
+
+CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard.cpp > CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.i
+
+CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard.cpp -o CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.s
+
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.cpp
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o -MF CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o.d -o CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.cpp
 
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.i: cmake_force
@@ -184,7 +226,7 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.s: cmake_force
 CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp
 CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/Sim2.dir/decoders_simulator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/Sim2.dir/decoders_simulator.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/decoders_simulator.cpp.o -MF CMakeFiles/Sim2.dir/decoders_simulator.cpp.o.d -o CMakeFiles/Sim2.dir/decoders_simulator.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp
 
 CMakeFiles/Sim2.dir/decoders_simulator.cpp.i: cmake_force
@@ -198,7 +240,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.s: cmake_force
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o: CMakeFiles/Sim2.dir/flags.make
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o: /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o: CMakeFiles/Sim2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o -MF CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o.d -o CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o -c /home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp
 
 CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.i: cmake_force
@@ -215,9 +257,12 @@ Sim2_OBJECTS = \
 "CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o" \
+"CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o" \
+"CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o" \
+"CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o" \
 "CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o" \
 "CMakeFiles/Sim2.dir/decoders_simulator.cpp.o" \
 "CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o"
@@ -229,9 +274,12 @@ Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o
+Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o
+Sim2: CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o
+Sim2: CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o
 Sim2: CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o
 Sim2: CMakeFiles/Sim2.dir/decoders_simulator.cpp.o
 Sim2: CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o
@@ -240,7 +288,7 @@ Sim2: /usr/lib/x86_64-linux-gnu/libfftw3.so
 Sim2: /usr/lib/gcc/x86_64-linux-gnu/12/libgomp.so
 Sim2: /usr/lib/x86_64-linux-gnu/libpthread.a
 Sim2: CMakeFiles/Sim2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable Sim2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable Sim2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Sim2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

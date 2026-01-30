@@ -1,5 +1,4 @@
 #include "Decoder_functions.h"
-#include "GF_tools.h"
 #include "HelperFunc.h"
 #include "channel.h"
 #include "definitions/code.hpp"
@@ -58,14 +57,17 @@ namespace fs = std::filesystem;
 
 void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
                              double SNR, unsigned long nb_err,
-                             unsigned long nb_gen_frame) {
+                             unsigned long nb_gen_frame)
+{
   // Directory path
   fs::path dir = "results";
 
   // Create directory if not exists
   std::error_code ec;
-  if (!fs::exists(dir)) {
-    if (!fs::create_directories(dir, ec)) {
+  if (!fs::exists(dir))
+  {
+    if (!fs::create_directories(dir, ec))
+    {
       std::cerr << "Error creating directory " << dir << ": " << ec.message()
                 << "\n";
       return;
@@ -80,7 +82,8 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
   // Open file in append mode
   FILE *fou = fopen(filename.c_str(), "a");
 
-  if (fou == nullptr) {
+  if (fou == nullptr)
+  {
     std::cerr << "Error opening file " << filename << " for appending.\n";
     return;
   }
@@ -95,14 +98,17 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx,
 
 void append_results_to_file(const std::string &modulation, int GFx, int Nx,
                             int Kx, double SNR, unsigned long nb_err,
-                            unsigned long nb_gen_frame) {
+                            unsigned long nb_gen_frame)
+{
   // Directory path
   fs::path dir = "results";
 
   // Create directory if not exists
   std::error_code ec;
-  if (!fs::exists(dir)) {
-    if (!fs::create_directories(dir, ec)) {
+  if (!fs::exists(dir))
+  {
+    if (!fs::create_directories(dir, ec))
+    {
       std::cerr << "Error creating directory " << dir << ": " << ec.message()
                 << "\n";
       return;
@@ -116,7 +122,8 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx,
 
   // Open file in append mode
   std::ofstream file(filename, std::ios::app);
-  if (!file.is_open()) {
+  if (!file.is_open())
+  {
     std::cerr << "Error opening file " << filename << " for appending.\n";
     return;
   }
@@ -132,7 +139,8 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx,
 
 #define EVAL(x) STR(x)
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 #ifdef __AVX512BW__
   printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
          "program (AVX512 version)\n");
@@ -152,7 +160,8 @@ int main(int argc, char *argv[]) {
 
   string dec_type;
 
-  if (argc < 7) {
+  if (argc < 7)
+  {
     cout << "validate: NbMonteCarlo, SNR, q, N, K, dec1...dec5 and optionnally "
             "nb of FER"
          << std::endl;
@@ -222,7 +231,8 @@ int main(int argc, char *argv[]) {
   q = code_param.q;
   p = code_param.p;
   vector<vector<softdata_t>> bin_mod_dict;
-  if (code_param.sig_mod == "CCSK_BIN") {
+  if (code_param.sig_mod == "CCSK_BIN")
+  {
     bin_mod_dict.resize(q, vector<softdata_t>(q, 0));
 
     for (int i = 0; i < q; i++)
@@ -256,27 +266,40 @@ int main(int argc, char *argv[]) {
 
   const auto s_start = std::chrono::system_clock::now();
 
-  if (dec_type == "dec1") {
+  if (dec_type == "dec1")
+  {
     printf("Simulate decoder 1...\n");
     // } else if (dec_type == "dec1_int32") {
     //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
-  } else if (dec_type == "dec1_fixed") {
+  }
+  else if (dec_type == "dec1_fixed")
+  {
     printf("Simulate decoder 1 fixed...\n");
-  } else if (dec_type == "dec1_cfloat") {
-  } else if (dec_type == "dec3") {
+  }
+  else if (dec_type == "dec1_cfloat")
+  {
+  }
+  else if (dec_type == "dec3")
+  {
     printf("Simulate decoder 3...\n");
-  } else if (dec_type == "dec4") {
+  }
+  else if (dec_type == "dec4")
+  {
     printf("Simulate decoder 4...\n");
-  } else if (dec_type == "dec0") {
+  }
+  else if (dec_type == "dec0")
+  {
     printf("Simulate decoder 0...\n");
-  } else {
+  }
+  else
+  {
     printf("#(II) Error : unknown decoder type\n");
     exit(1);
   }
 
 #pragma omp parallel
   {
-        #pragma omp single
+#pragma omp single
     printf("Used threads = %d\n", omp_get_num_threads());
     PoAwN::structures::decoder_parameters dec_param_local = dec_param;
     int thread_id = omp_get_thread_num();
@@ -284,7 +307,8 @@ int main(int argc, char *argv[]) {
     vector<vector<decoder_t>> L(n + 1, vector<decoder_t>(N));
 
     for (int i = 0; i <= n; i++)
-      for (int j = 0; j < N; j++) {
+      for (int j = 0; j < N; j++)
+      {
         L[i][j].intrinsic_LLR.resize(q, 0);
         L[i][j].is_freq = false;
       }
@@ -296,21 +320,34 @@ int main(int argc, char *argv[]) {
     std::vector<uint16_t> decoded_n(N);
 
     decoder *dec;
-    if (dec_type == "dec1") {
+    if (dec_type == "dec1")
+    {
       dec = new decoder_naive<_GF_>(N, frozen_symbols);
       // } else if (dec_type == "dec1_int32") {
       //   dec = new decoder_naive_int32_t<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec1_fixed") {
+    }
+    else if (dec_type == "dec1_fixed")
+    {
       dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec1_cfloat") {
+    }
+    else if (dec_type == "dec1_cfloat")
+    {
       dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec3") {
+    }
+    else if (dec_type == "dec3")
+    {
       dec = new decoder_specialized<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec4") {
+    }
+    else if (dec_type == "dec4")
+    {
       dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
-    } else if (dec_type == "dec0") {
+    }
+    else if (dec_type == "dec0")
+    {
       dec = new decoder_basic<_GF_>(N, frozen_symbols);
-    } else {
+    }
+    else
+    {
       exit(1);
     }
 
@@ -319,7 +356,8 @@ int main(int argc, char *argv[]) {
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    while (true) {
+    while (true)
+    {
 
       bool succ_dec = true;
       vector<uint16_t> KSYMB(K);
@@ -327,7 +365,8 @@ int main(int argc, char *argv[]) {
       EncodeChanBPSK_BinCCSK(gen, dec_param_local, table, EbN0,
                              CCSK_rotated_codes, L[0], KSYMB, bin_mod_dict);
 
-      for (int i = 0; i < N; i++) {
+      for (int i = 0; i < N; i++)
+      {
         for (int j = 0; j < _GF_; j++)
           llrs_n[i].value[j] = L[0][i].intrinsic_LLR[j];
       }
@@ -343,8 +382,10 @@ int main(int argc, char *argv[]) {
       for (int i = 0; i < K; i++)
         info_sec_rec[i] = decoded_n[dec_param.reliab_sequence[i]];
 
-      for (uint16_t i = 0; i < dec_param_local.K; i++) {
-        if (KSYMB[i] != info_sec_rec[i]) {
+      for (uint16_t i = 0; i < dec_param_local.K; i++)
+      {
+        if (KSYMB[i] != info_sec_rec[i])
+        {
           succ_dec = false;
           break;
         }
@@ -352,11 +393,13 @@ int main(int argc, char *argv[]) {
 
       global_counter.fetch_add(1);
       int succ_now = global_counter.load() - FER.load();
-      if (!succ_dec) {
+      if (!succ_dec)
+      {
         FER.fetch_add(1);
       }
       succ_now = global_counter.load() - FER.load();
-      if ((global_counter % 1000) == 0) {
+      if ((global_counter % 1000) == 0)
+      {
 
 #pragma omp critical
         {

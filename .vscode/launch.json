@@ -13,7 +13,8 @@
         "64",
         "42",
         "dec4_integer",
-        "20"
+        "20",
+        "3"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

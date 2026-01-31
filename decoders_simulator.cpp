@@ -133,12 +133,7 @@ void append_results_to_file(const std::string &modulation, int GFx, int Nx, int 
 
 int main(int argc, char *argv[])
 {
-	enum class LLRMethod
-	{
-		EXP = 0,
-		FAST_LUT = 1,
-	};
-	constexpr LLRMethod method = LLRMethod::EXP;
+
 #ifdef __AVX512BW__
 	printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
 		   "program (AVX512 version)\n");
@@ -340,32 +335,7 @@ int main(int argc, char *argv[])
 			// Simulate CCSK transmission
 			double *llr_values = simulator.simulate_frame(u_symb, thread_id);
 
-#ifdef find_llr_rang
-			for (int i = 0; i < N; i++)
-			{
-				for (int j = 0; j < _GF_; j++)
-				{
-					double val = llr_values[i * _GF_ + j];
-					llrs_n[i].value[j] = val;
-
-					// Update min
-					double current_min = global_llr_min.load();
-					while (val < current_min &&
-						   !global_llr_min.compare_exchange_weak(current_min, val))
-					{
-					}
-
-					// Update max
-					double current_max = global_llr_max.load();
-					while (val > current_max &&
-						   !global_llr_max.compare_exchange_weak(current_max, val))
-					{
-					}
-				}
-			}
-#endif
-
-			if constexpr (method == LLRMethod::EXP)
+			if constexpr (SimulationParams::method == SimulationParams::LLRMethod::EXP)
 			{
 				// Original method: exp() calls
 				simulator.llr_to_probability<_GF_>(llr_values, N);
@@ -377,7 +347,7 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
-			else if constexpr (method == LLRMethod::FAST_LUT)
+			else if constexpr (SimulationParams::method == SimulationParams::LLRMethod::FAST_LUT)
 			{
 				// Fast method: lookup table
 				float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
@@ -389,6 +359,31 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
+
+			// #ifdef find_llr_rang
+			// 			for (int i = 0; i < N; i++)
+			// 			{
+			// 				for (int j = 0; j < _GF_; j++)
+			// 				{
+			// 					double val = llrs_n[i].value[j];
+			// 					// llrs_n[i].value[j] = val;
+
+			// 					// Update min
+			// 					double current_min = global_llr_min.load();
+			// 					while (val < current_min &&
+			// 						   !global_llr_min.compare_exchange_weak(current_min, val))
+			// 					{
+			// 					}
+
+			// 					// Update max
+			// 					double current_max = global_llr_max.load();
+			// 					while (val > current_max &&
+			// 						   !global_llr_max.compare_exchange_weak(current_max, val))
+			// 					{
+			// 					}
+			// 				}
+			// 			}
+			// #endif
 
 			// Decode
 			dec->execute(llrs_n.data(), decoded_n.data());
@@ -457,7 +452,7 @@ int main(int argc, char *argv[])
 	std::cout << "Actual frames: " << gen_frames_out << std::endl;
 	std::cout << "Time: " << sec << " seconds" << std::endl;
 	std::cout << "Throughput: " << gen_frames_out / sec << " fps" << std::endl;
-	std::cout << "Throughput info: " << (gen_frames_out * K * _logGF_) / sec / 1e6 << " Mbps ( bits/symbol)" << std::endl;
+	std::cout << "Throughput info: " << (gen_frames_out * K * _logGF_) / sec / 1e6 << " Mbps" << std::endl;
 #ifdef find_llr_rang
 	std::cout << "global_llr_max: " << global_llr_max << std::endl;
 	std::cout << "global_llr_min: " << global_llr_min << std::endl;

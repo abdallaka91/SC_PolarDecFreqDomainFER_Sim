@@ -28,7 +28,7 @@ enum class LLRMethod
 	EXP = 0,	  // Exponential
 	FAST_LUT = 1, // look-up table
 };
-constexpr LLRMethod method = LLRMethod::FAST_LUT;
+constexpr LLRMethod method = LLRMethod::EXP;
 
 // Validation
 static_assert(LLR_QUANT_BITS > 0 && LLR_QUANT_BITS <= 16,

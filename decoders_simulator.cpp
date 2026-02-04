@@ -96,7 +96,7 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 		(nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 
 	fprintf(fou, "%+7.3f %1.8f %6d %8d", SNR, FER_value, nb_err, nb_gen_frame);
-	if (dec == "dec1_integer")
+	if ((dec == "dec1_integer") || (dec == "dec4_integer"))
 	{
 		fprintf(fou, " %5d", I_type::NBITS);
 		fprintf(fou, "  %5.3f", fake_sigma);

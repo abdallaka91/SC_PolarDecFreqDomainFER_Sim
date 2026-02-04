@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
 	float fake_sigma = sigma;
 
 	if (argc >= 9)
-		fake_sigma = stoi(argv[8]);
+		fake_sigma = stod(argv[8]);
 
 	CCSK_Simulator<_GF_, _N_> simulator(sigma, fake_sigma, num_threads);
 

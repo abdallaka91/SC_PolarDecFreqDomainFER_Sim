@@ -41,6 +41,8 @@
 
 #include "utilities/utility_functions.hpp"
 
+#include "BLG/src/definitions/custom_types.hpp"
+
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
 using namespace PoAwN::init;
@@ -59,10 +61,12 @@ using std::vector;
 
 namespace fs = std::filesystem;
 
-void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, unsigned long nb_gen_frame)
+void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, unsigned long nb_gen_frame, float fake_sigma)
 {
+	// Directory path
 	fs::path dir = "results";
 
+	// Create directory if not exists
 	std::error_code ec;
 	if (!fs::exists(dir))
 	{
@@ -74,10 +78,12 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 		}
 	}
 
+	// Compose filename
 	fs::path filename =
 		dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
 			   std::to_string(Kx) + "_" + dec.c_str() + ".txt");
 
+	// Open file in append mode
 	FILE *fou = fopen(filename.c_str(), "a");
 
 	if (fou == nullptr)
@@ -90,43 +96,15 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 		(nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 
 	fprintf(fou, "%+7.3f %1.8f %6d %8d", SNR, FER_value, nb_err, nb_gen_frame);
+	if (dec == "dec1_integer")
+	{
+		fprintf(fou, " %5d", I_type::NBITS);
+		fprintf(fou, "  %5.3f", fake_sigma);
+	}
+
 	fprintf(fou, "\n");
 	fclose(fou);
 }
-
-void append_results_to_file(const std::string &modulation, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, unsigned long nb_gen_frame)
-{
-	fs::path dir = "results";
-
-	std::error_code ec;
-	if (!fs::exists(dir))
-	{
-		if (!fs::create_directories(dir, ec))
-		{
-			std::cerr << "Error creating directory " << dir << ": " << ec.message()
-					  << "\n";
-			return;
-		}
-	}
-
-	fs::path filename =
-		dir / (modulation + "_GF" + std::to_string(GFx) + "_N" +
-			   std::to_string(Nx) + "_K" + std::to_string(Kx) + ".txt");
-
-	std::ofstream file(filename, std::ios::app);
-	if (!file.is_open())
-	{
-		std::cerr << "Error opening file " << filename << " for appending.\n";
-		return;
-	}
-
-	double FER_value =
-		(nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
-
-	file << "SNR=" << SNR << " db,    FER = " << nb_err << "/" << nb_gen_frame
-		 << " = " << FER_value << "\n";
-}
-
 #define STR(S) #S
 
 #define EVAL(x) STR(x)
@@ -335,6 +313,33 @@ int main(int argc, char *argv[])
 			// Simulate CCSK transmission
 			double *llr_values = simulator.simulate_frame(u_symb, thread_id);
 
+#ifdef find_llr_rang
+			double local_min = llr_values[0];
+			double local_max = llr_values[0];
+
+			for (int i = 1; i < N * _GF_; i++)
+			{
+				if (llr_values[i] < local_min)
+					local_min = llr_values[i];
+				if (llr_values[i] > local_max)
+					local_max = llr_values[i];
+			}
+
+			// update global min
+			double current_min = global_llr_min.load();
+			while (local_min < current_min &&
+				   !global_llr_min.compare_exchange_weak(current_min, local_min))
+			{
+			}
+
+			// update global max
+			double current_max = global_llr_max.load();
+			while (local_max > current_max &&
+				   !global_llr_max.compare_exchange_weak(current_max, local_max))
+			{
+			}
+#endif
+
 			if constexpr (SimulationParams::method == SimulationParams::LLRMethod::EXP)
 			{
 				// Original method: exp() calls
@@ -442,8 +447,7 @@ int main(int argc, char *argv[])
 			  << (double)FER_out / gen_frames_out
 			  << std::flush;
 
-	// append_results_to_file1(dec_type, _GF_, _N_, K, EbN0,
-	//                         FER_out, gen_frames_out);
+	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, fake_sigma);
 
 	// Final results
 	std::cout << "\nPolar Code: N=" << N << ", K=" << K << ", GF=" << _GF_ << std::endl;

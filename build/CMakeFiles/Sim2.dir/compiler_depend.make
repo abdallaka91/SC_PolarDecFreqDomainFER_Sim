@@ -5,7 +5,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o: /lab/home/labsti
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/decoder.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -23,8 +23,11 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o: /lab/home/labsti
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/scale_by_inverse_avx2.hpp \
   /usr/include/alloca.h \
   /usr/include/assert.h \
+  /usr/include/c++/12/algorithm \
+  /usr/include/c++/12/bits/algorithmfwd.h \
   /usr/include/c++/12/bits/concept_check.h \
   /usr/include/c++/12/bits/cpp_type_traits.h \
+  /usr/include/c++/12/bits/exception.h \
   /usr/include/c++/12/bits/exception_defines.h \
   /usr/include/c++/12/bits/functexcept.h \
   /usr/include/c++/12/bits/move.h \
@@ -32,11 +35,16 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o: /lab/home/labsti
   /usr/include/c++/12/bits/ptr_traits.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/std_abs.h \
+  /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
+  /usr/include/c++/12/bits/stl_construct.h \
+  /usr/include/c++/12/bits/stl_heap.h \
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
   /usr/include/c++/12/bits/stl_pair.h \
+  /usr/include/c++/12/bits/stl_tempbuf.h \
+  /usr/include/c++/12/bits/uniform_int_dist.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/cassert \
   /usr/include/c++/12/climits \
@@ -49,7 +57,11 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o: /lab/home/labsti
   /usr/include/c++/12/debug/debug.h \
   /usr/include/c++/12/ext/numeric_traits.h \
   /usr/include/c++/12/ext/type_traits.h \
+  /usr/include/c++/12/initializer_list \
   /usr/include/c++/12/limits \
+  /usr/include/c++/12/new \
+  /usr/include/c++/12/pstl/execution_defs.h \
+  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
   /usr/include/c++/12/stdlib.h \
   /usr/include/c++/12/tr1/bessel_function.tcc \
@@ -246,7 +258,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o: /lab/home/labsti
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/f_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/g_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -507,7 +519,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o: /l
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/impl/f_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/impl/g_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -531,7 +543,9 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o: /l
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
   /usr/include/assert.h \
+  /usr/include/c++/12/algorithm \
   /usr/include/c++/12/backward/binders.h \
+  /usr/include/c++/12/bits/algorithmfwd.h \
   /usr/include/c++/12/bits/alloc_traits.h \
   /usr/include/c++/12/bits/allocator.h \
   /usr/include/c++/12/bits/basic_ios.h \
@@ -571,17 +585,21 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o: /l
   /usr/include/c++/12/bits/refwrap.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/std_abs.h \
+  /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_construct.h \
   /usr/include/c++/12/bits/stl_function.h \
+  /usr/include/c++/12/bits/stl_heap.h \
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
   /usr/include/c++/12/bits/stl_pair.h \
+  /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/streambuf.tcc \
   /usr/include/c++/12/bits/streambuf_iterator.h \
   /usr/include/c++/12/bits/string_view.tcc \
   /usr/include/c++/12/bits/stringfwd.h \
+  /usr/include/c++/12/bits/uniform_int_dist.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/bitset \
   /usr/include/c++/12/cassert \
@@ -611,6 +629,8 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o: /l
   /usr/include/c++/12/limits \
   /usr/include/c++/12/new \
   /usr/include/c++/12/ostream \
+  /usr/include/c++/12/pstl/execution_defs.h \
+  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
   /usr/include/c++/12/stdexcept \
   /usr/include/c++/12/stdlib.h \
@@ -860,7 +880,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: /lab
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_fixed/impl/f_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_fixed/impl/g_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -894,7 +914,9 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: /lab
   /usr/include/asm-generic/posix_types.h \
   /usr/include/asm-generic/types.h \
   /usr/include/assert.h \
+  /usr/include/c++/12/algorithm \
   /usr/include/c++/12/backward/binders.h \
+  /usr/include/c++/12/bits/algorithmfwd.h \
   /usr/include/c++/12/bits/alloc_traits.h \
   /usr/include/c++/12/bits/allocator.h \
   /usr/include/c++/12/bits/basic_ios.h \
@@ -940,17 +962,21 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: /lab
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/sstream.tcc \
   /usr/include/c++/12/bits/std_abs.h \
+  /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_construct.h \
   /usr/include/c++/12/bits/stl_function.h \
+  /usr/include/c++/12/bits/stl_heap.h \
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
   /usr/include/c++/12/bits/stl_pair.h \
+  /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/streambuf.tcc \
   /usr/include/c++/12/bits/streambuf_iterator.h \
   /usr/include/c++/12/bits/string_view.tcc \
   /usr/include/c++/12/bits/stringfwd.h \
+  /usr/include/c++/12/bits/uniform_int_dist.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/cassert \
   /usr/include/c++/12/cctype \
@@ -986,6 +1012,8 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_fixed/decoder_naive_fixed.cpp.o: /lab
   /usr/include/c++/12/math.h \
   /usr/include/c++/12/new \
   /usr/include/c++/12/ostream \
+  /usr/include/c++/12/pstl/execution_defs.h \
+  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
   /usr/include/c++/12/sstream \
   /usr/include/c++/12/stdexcept \
@@ -1236,7 +1264,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o: 
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/f_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/g_function.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -1253,8 +1281,11 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o: 
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/scale_by_inverse_avx2.hpp \
   /usr/include/alloca.h \
   /usr/include/assert.h \
+  /usr/include/c++/12/algorithm \
+  /usr/include/c++/12/bits/algorithmfwd.h \
   /usr/include/c++/12/bits/concept_check.h \
   /usr/include/c++/12/bits/cpp_type_traits.h \
+  /usr/include/c++/12/bits/exception.h \
   /usr/include/c++/12/bits/exception_defines.h \
   /usr/include/c++/12/bits/functexcept.h \
   /usr/include/c++/12/bits/move.h \
@@ -1262,11 +1293,16 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o: 
   /usr/include/c++/12/bits/ptr_traits.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/std_abs.h \
+  /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
+  /usr/include/c++/12/bits/stl_construct.h \
+  /usr/include/c++/12/bits/stl_heap.h \
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
   /usr/include/c++/12/bits/stl_pair.h \
+  /usr/include/c++/12/bits/stl_tempbuf.h \
+  /usr/include/c++/12/bits/uniform_int_dist.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/cassert \
   /usr/include/c++/12/climits \
@@ -1279,7 +1315,11 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o: 
   /usr/include/c++/12/debug/debug.h \
   /usr/include/c++/12/ext/numeric_traits.h \
   /usr/include/c++/12/ext/type_traits.h \
+  /usr/include/c++/12/initializer_list \
   /usr/include/c++/12/limits \
+  /usr/include/c++/12/new \
+  /usr/include/c++/12/pstl/execution_defs.h \
+  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
   /usr/include/c++/12/stdlib.h \
   /usr/include/c++/12/tr1/bessel_function.tcc \
@@ -1479,7 +1519,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: /lab
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/middle_node_after_f.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized/middle_node_after_g.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -1498,7 +1538,9 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: /lab
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp \
   /usr/include/alloca.h \
   /usr/include/assert.h \
+  /usr/include/c++/12/algorithm \
   /usr/include/c++/12/backward/binders.h \
+  /usr/include/c++/12/bits/algorithmfwd.h \
   /usr/include/c++/12/bits/alloc_traits.h \
   /usr/include/c++/12/bits/allocator.h \
   /usr/include/c++/12/bits/concept_check.h \
@@ -1518,16 +1560,20 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: /lab
   /usr/include/c++/12/bits/refwrap.h \
   /usr/include/c++/12/bits/specfun.h \
   /usr/include/c++/12/bits/std_abs.h \
+  /usr/include/c++/12/bits/stl_algo.h \
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_bvector.h \
   /usr/include/c++/12/bits/stl_construct.h \
   /usr/include/c++/12/bits/stl_function.h \
+  /usr/include/c++/12/bits/stl_heap.h \
   /usr/include/c++/12/bits/stl_iterator.h \
   /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/12/bits/stl_iterator_base_types.h \
   /usr/include/c++/12/bits/stl_pair.h \
+  /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
   /usr/include/c++/12/bits/stl_vector.h \
+  /usr/include/c++/12/bits/uniform_int_dist.h \
   /usr/include/c++/12/bits/utility.h \
   /usr/include/c++/12/bits/vector.tcc \
   /usr/include/c++/12/cassert \
@@ -1545,6 +1591,8 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o: /lab
   /usr/include/c++/12/initializer_list \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/new \
+  /usr/include/c++/12/pstl/execution_defs.h \
+  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
   /usr/include/c++/12/pstl/pstl_config.h \
   /usr/include/c++/12/stdlib.h \
   /usr/include/c++/12/tr1/bessel_function.tcc \
@@ -1749,7 +1797,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_rep.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/impl/node_spc.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -2061,7 +2109,7 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_special
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/impl/node_rep.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/impl/node_spc.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -2363,16 +2411,16 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_special
 
 CMakeFiles/Sim2.dir/BLG/src/hadamard/Hadamard.cpp.o: /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_256.hpp \
   /usr/include/stdc-predef.h
 
 CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o: /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard.cpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard_64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard_256.hpp \
   /usr/include/c++/12/cstdint \
   /usr/include/c++/12/pstl/pstl_config.h \
   /usr/include/features-time64.h \
@@ -2400,7 +2448,7 @@ CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o: /lab/home/labsticc/abda
 
 CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o: /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/utilities/utility_functions.cpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp \
@@ -2670,7 +2718,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: /lab/home/labsticc/abdallah/Docume
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp \
-  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp \
+  /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/custom_types.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/demodulator/demodulator.hpp \
   /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/encoder/encoder_1.hpp \
@@ -3418,6 +3466,8 @@ Sim2: /lib/x86_64-linux-gnu/libc.so.6 \
   CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o
 
 
+CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o:
+
 CMakeFiles/Sim2.dir/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp.o:
 
 CMakeFiles/Sim2.dir/BLG/src/decoders/naive/decoder_naive.cpp.o:
@@ -3434,28 +3484,6 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/basic/decoder_basic.cpp.o:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/crtfastmath.o:
 
-/usr/include/c++/12/bits/localefwd.h:
-
-/usr/include/c++/12/pstl/execution_defs.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/waitpkgintrin.h:
-
-/usr/include/features.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vlintrin.h:
-
-CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/keylockerintrin.h:
-
-/usr/include/c++/12/bits/stl_heap.h:
-
-/usr/include/asm-generic/posix_types.h:
-
-/usr/include/c++/12/bits/stl_algo.h:
-
-/usr/include/c++/12/bits/algorithmfwd.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/12/include/xsaveintrin.h:
 
 /usr/include/x86_64-linux-gnu/bits/posix_opt.h:
@@ -3468,17 +3496,15 @@ CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o:
 
 /usr/include/c++/12/istream:
 
+/usr/lib/gcc/x86_64-linux-gnu/12/include/waitpkgintrin.h:
+
+/usr/include/c++/12/pstl/execution_defs.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/12/include/vpclmulqdqintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/xsaveoptintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/fmaintrin.h:
-
-/usr/include/c++/12/bits/stl_construct.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/tbmintrin.h:
-
-/usr/include/c++/12/bits/unordered_map.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h:
 
@@ -3538,6 +3564,12 @@ CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vnniintrin.h:
 
+/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vlintrin.h:
+
+CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/keylockerintrin.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vlbwintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vbmivlintrin.h:
@@ -3584,23 +3616,13 @@ CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o:
 
 /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h:
 
-/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+
+/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
 /usr/include/x86_64-linux-gnu/c++/12/bits/error_constants.h:
 
 /usr/include/execinfo.h:
-
-/usr/include/c++/12/initializer_list:
-
-/usr/include/c++/12/pstl/glue_algorithm_defs.h:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp:
-
-/usr/include/c++/12/cwctype:
-
-/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
 /usr/include/c++/12/chrono:
 
@@ -3620,49 +3642,39 @@ CMakeFiles/Sim2.dir/BLG/src/hadamard_i32/Hadamard.cpp.o:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_object.hxx:
 
-/usr/include/c++/12/tr1/legendre_function.tcc:
+/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
 
-/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+/usr/include/c++/12/ext/type_traits.h:
 
-/usr/include/c++/12/streambuf:
+/usr/include/asm-generic/bitsperlong.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp:
+/usr/include/asm-generic/types.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/decoder_naive.cpp:
+/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
 
-/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
+/usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/clwbintrin.h:
+/usr/include/c++/12/type_traits:
 
-/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
+/usr/include/c++/12/memory:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vnnivlintrin.h:
+/usr/lib/gcc/x86_64-linux-gnu/12/include/tmmintrin.h:
 
-/usr/include/c++/12/tr1/ell_integral.tcc:
+/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_fixed.h:
+/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_counter.hpp:
-
-/usr/include/c++/12/algorithm:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512pfintrin.h:
-
-/usr/include/c++/12/bits/random.tcc:
+/usr/include/c++/12/cmath:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/rtmintrin.h:
+
+/usr/include/features.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/amxint8intrin.h:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/normalize/normalize.hpp:
 
-/usr/include/c++/12/ext/type_traits.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
-
-/usr/include/asm-generic/bitsperlong.h:
-
-/usr/include/asm-generic/types.h:
+/usr/include/c++/12/bits/stl_algo.h:
 
 CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o:
 
@@ -3678,6 +3690,12 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
+/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512pfintrin.h:
+
+/usr/include/c++/12/algorithm:
+
+/usr/include/c++/12/bits/random.tcc:
+
 /usr/include/c++/12/bits/utility.h:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/archi.hpp:
@@ -3690,9 +3708,25 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/popcntintrin.h:
 
+/usr/include/c++/12/vector:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/pmmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/shaintrin.h:
+
 /usr/include/c++/12/bits/stl_iterator_base_funcs.h:
 
 /usr/include/pthread.h:
+
+/usr/include/c++/12/bits/stl_heap.h:
+
+/usr/include/asm-generic/posix_types.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/tbmintrin.h:
+
+/usr/include/c++/12/bits/unordered_map.h:
+
+/usr/include/c++/12/bits/stl_construct.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/adxintrin.h:
 
@@ -3702,43 +3736,47 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/fp-logb.h:
 
-/usr/include/c++/12/bits/erase_if.h:
-
-/usr/include/c++/12/tr1/modified_bessel_func.tcc:
-
-/usr/include/c++/12/ext/aligned_buffer.h:
-
-/usr/include/stdlib.h:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/cf_type.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
-
-/lib/x86_64-linux-gnu/libmvec.so.1:
-
-CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/f_argmax.hpp:
-
-/lib64/ld-linux-x86-64.so.2:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/bmi2intrin.h:
-
 /usr/include/c++/12/bits/sstream.tcc:
 
 /usr/include/c++/12/bits/specfun.h:
 
-/usr/include/c++/12/bits/stl_tempbuf.h:
+/usr/include/c++/12/bits/ptr_traits.h:
 
-/usr/include/c++/12/bits/postypes.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_fixed_ref.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h:
+/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
 
-/usr/include/c++/12/ratio:
-
-/usr/include/x86_64-linux-gnu/bits/time64.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/impl/node_rep.hpp:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_avx2.hpp:
+
+/usr/include/c++/12/cwctype:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/c++/12/initializer_list:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/bmi2intrin.h:
+
+/lib64/ld-linux-x86-64.so.2:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/pkuintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/enqcmdintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h:
+
+/usr/include/c++/12/cstdint:
+
+/usr/include/x86_64-linux-gnu/bits/endian.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/arch/cf_argmax.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/ia32intrin.h:
+
+/usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
 
 /usr/include/c++/12/bits/shared_ptr_atomic.h:
 
@@ -3756,37 +3794,65 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/omp.h:
 
-/usr/include/c++/12/cmath:
-
-/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
-
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
-/usr/include/c++/12/bits/ptr_traits.h:
+/usr/lib/gcc/x86_64-linux-gnu/12/include/serializeintrin.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_fixed_ref.h:
+/usr/include/c++/12/cstdlib:
 
-/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/impl/node_rep.hpp:
+/usr/include/c++/12/bits/predefined_ops.h:
+
+/usr/include/stdint.h:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i64_fwht_avx2.hpp:
 
 /usr/include/c++/12/bits/exception.h:
 
 /usr/include/c++/12/bits/locale_facets_nonio.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/i64_fwht_avx2.hpp:
+/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/pkuintrin.h:
+/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/enqcmdintrin.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/include/struct.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/limits.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/timex.h:
+
+/usr/include/c++/12/iostream:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+/usr/include/c++/12/streambuf:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/code.hpp:
+
+/usr/include/string.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/decoder_naive.cpp:
+
+/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/clwbintrin.h:
+
+/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/decoder_naive_cfloat.cpp:
 
-/usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
-
 /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
+
+/usr/include/c++/12/bits/algorithmfwd.h:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_int.h:
 
@@ -3796,9 +3862,39 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht.hpp:
+
+/usr/include/math.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
+
+/usr/include/c++/12/ext/aligned_buffer.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/c++/12/tr1/modified_bessel_func.tcc:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/cf_type.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
+
+/lib/x86_64-linux-gnu/libmvec.so.1:
+
 /usr/include/c++/12/limits:
 
 /usr/include/c++/12/cassert:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_fixed.h:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht_counter.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vnnivlintrin.h:
+
+/usr/include/c++/12/tr1/ell_integral.tcc:
+
+CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.cpp.o:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/argmax/f_argmax.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
 
@@ -3806,31 +3902,11 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning/decoder_specialized_pru
 
 /usr/include/c++/12/tr1/gamma.tcc:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vbmiintrin.h:
+/usr/include/endian.h:
 
-/usr/include/c++/12/string:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.hpp:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/fwht/fwht.hpp:
-
-/usr/include/c++/12/cstdint:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/arch/cf_argmax.hpp:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/ia32intrin.h:
-
-/usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.cpp:
 
 /usr/include/c++/12/bits/ios_base.h:
-
-CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.cpp.o:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N64_GF64.hpp:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_decl.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
 
 /usr/include/c++/12/bits/uniform_int_dist.h:
 
@@ -3850,7 +3926,9 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_special
 
 /usr/include/assert.h:
 
-/usr/include/c++/12/tr1/beta_function.tcc:
+/usr/include/alloca.h:
+
+/usr/include/c++/12/bits/exception_defines.h:
 
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
@@ -3862,29 +3940,39 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_special
 
 /usr/include/c++/12/bits/codecvt.h:
 
-/usr/include/alloca.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_integer/decoder_naive_integer.cpp:
 
-/usr/include/c++/12/bits/exception_defines.h:
+/usr/include/c++/12/pstl/glue_algorithm_defs.h:
+
+/usr/include/c++/12/bits/localefwd.h:
 
 /usr/include/c++/12/cwchar:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/serializeintrin.h:
+/usr/include/c++/12/tr1/beta_function.tcc:
 
-/usr/include/c++/12/cstdlib:
+/usr/include/c++/12/bits/stl_tempbuf.h:
 
-/usr/include/x86_64-linux-gnu/bits/wchar.h:
+/usr/include/c++/12/bits/postypes.h:
 
-/usr/include/c++/12/bits/predefined_ops.h:
+/usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h:
 
-/usr/include/stdint.h:
+/usr/include/c++/12/ratio:
 
-/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
+/usr/include/x86_64-linux-gnu/bits/time64.h:
 
-/usr/include/math.h:
+/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512vbmiintrin.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/tmmintrin.h:
+/usr/include/c++/12/string:
 
-/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning/decoder_specialized_pruning.hpp:
+
+/usr/include/c++/12/tr1/legendre_function.tcc:
+
+/usr/include/c++/12/bits/erase_if.h:
+
+/usr/include/c++/12/ext/numeric_traits.h:
+
+/usr/include/c++/12/tr1/poly_hermite.tcc:
 
 /usr/include/c++/12/stdlib.h:
 
@@ -3898,45 +3986,19 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized_pruning_integer/decoder_special
 
 /usr/include/c++/12/bits/basic_ios.tcc:
 
-/usr/include/c++/12/ext/numeric_traits.h:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/definitions/codes/N256_GF256.hpp:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/rdseedintrin.h:
 
 /usr/include/c++/12/bits/move.h:
 
-/usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
-
-/usr/include/c++/12/type_traits:
-
-/usr/include/c++/12/memory:
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard_256.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
 /usr/include/stdio.h:
 
 /usr/lib/linux/uapi/x86/asm/errno.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/shaintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/pmmintrin.h:
-
-/usr/include/c++/12/tr1/poly_hermite.tcc:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
-
-/usr/include/string.h:
-
-/usr/include/c++/12/vector:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
-
-/usr/include/x86_64-linux-gnu/bits/endian.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/12/include/hresetintrin.h:
 
@@ -3978,11 +4040,15 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o:
 
 /usr/include/c++/12/bits/locale_conv.h:
 
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_64.hpp:
-
 /usr/include/x86_64-linux-gnu/c++/12/bits/c++allocator.h:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
 /usr/include/linux/limits.h:
 
@@ -3998,21 +4064,9 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.hpp:
 
+/usr/include/x86_64-linux-gnu/bits/stdint-least.h:
+
 /usr/include/x86_64-linux-gnu/sys/select.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/include/struct.h:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/timex.h:
-
-/usr/include/c++/12/iostream:
 
 /usr/include/c++/12/cstdio:
 
@@ -4027,10 +4081,6 @@ CMakeFiles/Sim2.dir/BLG/src/decoders/specialized/decoder_specialized.cpp.o:
 /usr/include/libintl.h:
 
 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
-
-/usr/include/endian.h:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/basic/decoder_basic.cpp:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive_cfloat/arch/cf_normalize.hpp:
 
@@ -4244,12 +4294,6 @@ CMakeFiles/Sim2.dir/BLG/src/utilities/utility_functions.cpp.o:
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
 
-CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o:
-
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
@@ -4308,6 +4352,8 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/etc/ap_private.h:
 
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_decl.h:
+
 /usr/include/c++/12/bits/string_view.tcc:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/include/ap_fixed_base.h:
@@ -4324,9 +4370,9 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o:
 
 /usr/include/c++/12/bits/locale_facets_nonio.tcc:
 
-/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512ifmaintrin.h:
-
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/features/ap_fixed_tools.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/avx512ifmaintrin.h:
 
 /usr/include/c++/12/bits/quoted_string.h:
 
@@ -4402,11 +4448,13 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard.cpp:
 
+/usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
+
+/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard/Hadamard_256.hpp:
+
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/decoders/naive/g_function.hpp:
 
 /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard.cpp:
-
-/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/BLG/src/hadamard_i32/Hadamard_64.hpp:
 
 /usr/include/c++/12/bits/basic_string.tcc:
 

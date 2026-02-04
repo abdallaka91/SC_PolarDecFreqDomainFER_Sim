@@ -17,9 +17,9 @@ constexpr std::array<uint8_t, 1024> BASE_SEQ_1024 = {1, 0, 0, 0, 0, 1, 0, 0, 1, 
 namespace SimulationParams
 {
 // LLR quantization parameters
-constexpr int MAX_LLR_1000 = 40000;
+constexpr int MAX_LLR_1000 = 25000;
 constexpr double MAX_LLR_VALUE = static_cast<double>(MAX_LLR_1000) / 1000; // MAX_LLR = MAX_LLR_1000/1000 => MAX_LLR_1000 must be an integer
-constexpr int LLR_QUANT_BITS = 10;										   // 12 bits = 4096 LUT entries
+constexpr int LLR_QUANT_BITS = 6;										   // 12 bits = 4096 LUT entries
 constexpr int LUT_SIZE = 1 << LLR_QUANT_BITS;
 
 // LLR computation method, Exponential or look-up table

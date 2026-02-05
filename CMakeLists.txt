@@ -59,7 +59,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -w")  # Keep -w
+    # set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -w")  # Keep -w
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=haswell -mavx2 -flto -ffast-math -funroll-loops -fno-math-errno -w")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
     message(STATUS "No build type selected, defaulting to Release")

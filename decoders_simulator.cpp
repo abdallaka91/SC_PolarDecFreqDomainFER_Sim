@@ -18,6 +18,7 @@
 #include <memory>
 #include <omp.h>
 #include <random>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -61,12 +62,27 @@ using std::vector;
 
 namespace fs = std::filesystem;
 
+std::string format_FER(double FER_value, int width = 10)
+{
+	std::ostringstream oss;
+	if (FER_value < 0.0001)
+		oss << std::scientific << std::setprecision(3) << FER_value;
+	else
+		oss << std::fixed << std::setprecision(10) << FER_value;
+	std::string s = oss.str();
+	if ((int)s.length() < width)
+		s = std::string(width - s.length(), ' ') + s;
+
+	if ((int)s.length() > width)
+		s = s.substr(0, width);
+
+	return s;
+}
+
 void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, unsigned long nb_gen_frame, float fake_sigma)
 {
-	// Directory path
 	fs::path dir = "results";
 
-	// Create directory if not exists
 	std::error_code ec;
 	if (!fs::exists(dir))
 	{
@@ -78,12 +94,10 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 		}
 	}
 
-	// Compose filename
 	fs::path filename =
 		dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
 			   std::to_string(Kx) + "_" + dec.c_str() + ".txt");
 
-	// Open file in append mode
 	FILE *fou = fopen(filename.c_str(), "a");
 
 	if (fou == nullptr)
@@ -92,17 +106,17 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 		return;
 	}
 
-	double FER_value =
-		(nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
+	double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
+	std::string FER_str = format_FER(FER_value, 11); // 11 chars wide
 
-	fprintf(fou, "%+7.3f %1.8f %6d %8d", SNR, FER_value, nb_err, nb_gen_frame);
+	fprintf(fou, "%+7.3f   %s   %6d   %10d", SNR, FER_str.c_str(), nb_err, nb_gen_frame);
 	if ((dec == "dec1_integer") || (dec == "dec4_integer"))
 	{
-		fprintf(fou, " %5d", I_type::NBITS);
-		fprintf(fou, "  %5.3f", fake_sigma);
+		fprintf(fou, "    %5d", I_type::NBITS);
+		fprintf(fou, "    %5.3f", fake_sigma);
 	}
-
 	fprintf(fou, "\n");
+
 	fclose(fou);
 }
 #define STR(S) #S
@@ -422,11 +436,15 @@ int main(int argc, char *argv[])
 					FER_out = FER.load();
 					gen_frames_out = global_counter.load();
 
+					double FER_ratio = (double)FER_out / gen_frames_out;
+					std::ostringstream oss;
+					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+					std::string FER_str = oss.str();
+
 					std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0
 							  << " dB, FER = " << std::setw(8) << FER_out
 							  << "/" << std::setw(8) << gen_frames_out
-							  << " = " << std::setprecision(6)
-							  << (double)FER_out / gen_frames_out
+							  << " = " << FER_str
 							  << std::flush;
 				}
 			}
@@ -440,11 +458,15 @@ int main(int argc, char *argv[])
 	auto end = std::chrono::high_resolution_clock::now();
 	double sec = std::chrono::duration<double>(end - start).count();
 
+	double FER_ratio = (double)FER_out / gen_frames_out;
+	std::ostringstream oss;
+	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+	std::string FER_str = oss.str();
+
 	std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0
 			  << " dB, FER = " << std::setw(8) << FER_out
 			  << "/" << std::setw(8) << gen_frames_out
-			  << " = " << std::setprecision(6)
-			  << (double)FER_out / gen_frames_out
+			  << " = " << FER_str
 			  << std::flush;
 
 	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, fake_sigma);

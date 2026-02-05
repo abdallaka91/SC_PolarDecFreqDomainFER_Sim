@@ -4,19 +4,19 @@ import numpy as np
 import os
 
 build_dir = "dav6"
-dec = "dec1_integer"
+dec = "dec4_integer"
 NUM_THREADS = 64
 Mont_carlo = 10e6
 q = 256
-N = 256
-K = 41
-err_cnt = 60
-sigma = 11
+N = 64
+K = 48
+err_cnt = 100
+sigma = 5.4
 
 
-bits = np.arange(15, 16, 1)
-snr_values = np.arange(-22, -18.5, 0.5)
-# np.append(snr_values, -11.75)
+bits = np.arange(14, 15, 1)
+snr_values = np.arange(-15, -10.5, 0.5)
+np.append(snr_values, -10.75)
 custom_types_path = "BLG/src/definitions/custom_types.hpp"
 code_path = "BLG/src/definitions/code.hpp"
 

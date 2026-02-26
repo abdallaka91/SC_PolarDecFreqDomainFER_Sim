@@ -12,6 +12,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <inttypes.h>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -79,7 +80,7 @@ std::string format_FER(double FER_value, int width = 10)
 	return s;
 }
 
-void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, unsigned long nb_gen_frame, float fake_sigma)
+void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, float fake_sigma)
 {
 	fs::path dir = "results";
 
@@ -109,16 +110,28 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 	double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 	std::string FER_str = format_FER(FER_value, 11); // 11 chars wide
 
-	fprintf(fou, "%+7.3f   %s   %6d   %10d", SNR, FER_str.c_str(), nb_err, nb_gen_frame);
+	fprintf(fou, "%+7.3f   %s   %6d   %12" PRIu64, SNR, FER_str.c_str(), nb_err, nb_gen_frame);
 	if ((dec == "dec1_integer") || (dec == "dec4_integer"))
 	{
 		fprintf(fou, "    %5d", I_type::NBITS);
 		fprintf(fou, "    %5.3f", fake_sigma);
 	}
-	fprintf(fou, "\n");
+	
+	    if (dec.rfind("dec4", 0) == 0) // prefix check
+    {
+    #ifdef REP_DISABLED
+        fprintf(fou, "   REP_DISABLED");
+    #endif
+    #ifdef SPC_DISABLED
+        fprintf(fou, "   SPC_DISABLED");
+    #endif
+    }
+    // ----------------------------------
 
-	fclose(fou);
+    fprintf(fou, "\n");
+    fclose(fou);
 }
+
 #define STR(S) #S
 
 #define EVAL(x) STR(x)
@@ -154,7 +167,7 @@ int main(int argc, char *argv[])
 	}
 	uint16_t q, N, K, n, p, frozen_val = 0;
 	softdata_t offset;
-	uint64_t NbMonteCarlo = stoi(argv[1]);
+	uint64_t NbMonteCarlo = std::stoull(argv[1]);
 	float EbN0 = stod(argv[2]);
 	q = stoi(argv[3]);
 	p = log2(q);
@@ -247,8 +260,8 @@ int main(int argc, char *argv[])
 	std::atomic<uint64_t> frames_simulated(0);
 
 	uint64_t FER_out = 0, gen_frames_out = 0;
-	std::atomic<int> global_counter(0);
-	std::atomic<int> FER(0);
+	std::atomic<uint64_t> global_counter(0);
+	std::atomic<uint64_t> FER(0);
 	std::atomic<bool> stop(false);
 	std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
 	std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
@@ -418,7 +431,7 @@ int main(int argc, char *argv[])
 			}
 
 			global_counter.fetch_add(1);
-			int succ_now = global_counter.load() - FER.load();
+			uint64_t succ_now = global_counter.load() - FER.load();
 			if (!succ_dec)
 			{
 				FER.fetch_add(1);
@@ -429,7 +442,7 @@ int main(int argc, char *argv[])
 
 #pragma omp critical
 				{
-					int local_success = global_counter.load() - FER.load();
+					uint64_t local_success = global_counter.load() - FER.load();
 					if ((global_counter.load() >= NbMonteCarlo) ||
 						(FER.load() >= FER_STOP))
 						stop.store(true);

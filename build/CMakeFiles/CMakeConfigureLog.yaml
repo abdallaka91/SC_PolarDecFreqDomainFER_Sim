@@ -457,3 +457,41 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake:58 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/FindThreads.cmake:99 (CHECK_CXX_SOURCE_COMPILES)"
+      - "/usr/share/cmake-3.31/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "CMakeLists.txt:78 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/CMakeScratch/TryCompile-LS8Z6O"
+      binary: "/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/CMakeScratch/TryCompile-LS8Z6O"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "-g -O0 -w -w"
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: '/lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/CMakeScratch/TryCompile-LS8Z6O'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_744f6/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_744f6.dir/build.make CMakeFiles/cmTC_744f6.dir/build
+        gmake[1] : on entre dans le répertoire « /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/CMakeScratch/TryCompile-LS8Z6O »
+        Building CXX object CMakeFiles/cmTC_744f6.dir/src.cxx.o
+        /usr/bin/g++ -DCMAKE_HAVE_LIBC_PTHREAD  -g -O0 -w -w  -std=gnu++17 -o CMakeFiles/cmTC_744f6.dir/src.cxx.o -c /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/CMakeScratch/TryCompile-LS8Z6O/src.cxx
+        Linking CXX executable cmTC_744f6
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_744f6.dir/link.txt --verbose=1
+        /usr/bin/g++ -g -O0 -w -w  CMakeFiles/cmTC_744f6.dir/src.cxx.o -o cmTC_744f6
+        gmake[1] : on quitte le répertoire « /lab/home/labsticc/abdallah/Documents/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/CMakeScratch/TryCompile-LS8Z6O »
+        
+      exitCode: 0
+...

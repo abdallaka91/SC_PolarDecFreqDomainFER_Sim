@@ -75,7 +75,9 @@ string(APPEND CMAKE_CXX_FLAGS " -w")
 # ===========================
 #  Dependencies
 # ===========================
+find_package(Threads REQUIRED) 
 find_package(OpenMP REQUIRED)
+
 
 # Simple FFTW3 detection (works on Ubuntu)
 find_path(FFTW3_INCLUDE_DIR fftw3.h
@@ -153,6 +155,7 @@ endif()
 # ===========================
 #  Link Libraries
 # ===========================
+target_link_libraries(Sim2 PRIVATE Threads::Threads)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
 endif()

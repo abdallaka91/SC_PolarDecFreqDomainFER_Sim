@@ -6,17 +6,17 @@ import os
 build_dir = "dav6"
 dec = "dec4_integer"
 NUM_THREADS = 64
-Mont_carlo = 10e6
-q = 256
+Mont_carlo = 1e7
+q = 64
 N = 64
 K = 48
-err_cnt = 100
-sigma = 5.4
+err_cnt = 80
+sigma = 3.2
 
 
-bits = np.arange(14, 15, 1)
-snr_values = np.arange(-15, -10.5, 0.5)
-np.append(snr_values, -10.75)
+bits = np.arange(8, 9, 1)
+snr_values = np.arange(-10, -4, 0.5)
+# np.append(snr_values, -10.75)
 custom_types_path = "BLG/src/definitions/custom_types.hpp"
 code_path = "BLG/src/definitions/code.hpp"
 

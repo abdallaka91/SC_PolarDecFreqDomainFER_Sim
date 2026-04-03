@@ -335,11 +335,7 @@ int main(int argc, char *argv[])
 		decoder *dec = nullptr;
 
 
-#pragma omp critical
-        {
-//          std::cout << "loader_so::allocate_dec(" << dec_type << ")" << std::endl;
-            dec = loader_so::allocate_dec(dec_type, N, _GF_, frozen_symbols);
-        }
+        dec = loader_so::allocate_dec(dec_type, N, _GF_, frozen_symbols);
 #if 0
         if (dec_type == "dec1")
         {
@@ -427,6 +423,7 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 #endif
+        
 		// #pragma omp single
 		while (true)
 		{
@@ -545,7 +542,10 @@ int main(int argc, char *argv[])
 				FER.fetch_add(1);
 			}
 			succ_now = global_counter.load() - FER.load();
-            //            if ((global_counter % 10000) == 0)
+
+            //
+            // Plus d'openmp critical car on filtre sur thread 1
+            //
             if ( thread_id == 0 )
 			{
                 auto curr = std::chrono::high_resolution_clock::now();
@@ -588,10 +588,7 @@ int main(int argc, char *argv[])
 			if (stop.load())
 				break;
 		}
-#pragma omp critical
-        {
-            delete dec;
-        }
+        delete dec;
 	}
 
 	auto end = std::chrono::high_resolution_clock::now();

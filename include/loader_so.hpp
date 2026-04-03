@@ -29,7 +29,10 @@ public:
     {
         handle = dlopen(libname, RTLD_LAZY);
         if (!handle) {
-            std::cerr << "dlopen failed: " << dlerror() << std::endl;
+            printf("(EE) Error during dlopen operation\n");
+            printf("(EE) library = [%s] could not be opened\n", libname);
+            printf("(EE) location [%s:%d]\n", __FILE__, __LINE__);
+            exit( EXIT_FAILURE );
             return false;
         }
 
@@ -37,17 +40,22 @@ public:
 
         allocate_dec_ptr = (allocate_dec_func)dlsym(handle, "allocate_dec");
         if (const char* err = dlerror()) {
-            std::cerr << "dlsym allocate_dec failed: " << err << std::endl;
             dlclose(handle);
             handle = nullptr;
+            printf("(EE) Error dlsym allocate_dec failed\n");
+            printf("(EE) library = [%s] could not be opened\n", libname);
+            printf("(EE) location [%s:%d]\n", __FILE__, __LINE__);
+            exit( EXIT_FAILURE );
             return false;
         }
 
         allocate_enc_ptr = (allocate_enc_func)dlsym(handle, "allocate_enc");
         if (const char* err = dlerror()) {
-            std::cerr << "dlsym allocate_enc failed: " << err << std::endl;
             dlclose(handle);
             handle = nullptr;
+            printf("(EE) Error dlsym allocate_enc failed\n");
+            printf("(EE) library = [%s] could not be opened\n", libname);
+            printf("(EE) location [%s:%d]\n", __FILE__, __LINE__);
             return false;
         }
 

@@ -605,6 +605,9 @@ int main(int argc, char *argv[])
 			}
 			if (stop.load())
 				break;
+
+			if( force_quit == true )
+				break;
 		}
         delete dec;
 	}

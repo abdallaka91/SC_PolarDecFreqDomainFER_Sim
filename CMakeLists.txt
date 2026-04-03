@@ -59,13 +59,13 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
-    # set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -w")  # Keep -w
+    # set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto -ffast-math -funroll-loops -fno-math-errno -w -fopenmp")  # Keep -w
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native -flto -ffast-math -funroll-loops -fno-math-errno -w")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
     message(STATUS "No build type selected, defaulting to Release")
     set(CMAKE_BUILD_TYPE Release)
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -flto -ffast-math -funroll-loops -fno-math-errno -w")  # Keep -w
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto -ffast-math -funroll-loops -fno-math-errno -w -fopenmp")  # Keep -w
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
@@ -76,8 +76,6 @@ string(APPEND CMAKE_CXX_FLAGS " -w")
 #  Dependencies
 # ===========================
 find_package(Threads REQUIRED) 
-find_package(OpenMP REQUIRED)
-
 
 # Simple FFTW3 detection (works on Ubuntu)
 find_path(FFTW3_INCLUDE_DIR fftw3.h
@@ -143,6 +141,7 @@ if(FFTW3_FOUND)
     target_link_libraries(Sim2 PRIVATE ${FFTW3_LIBRARY})
     # Link math library for exp(), cos(), etc.
     target_link_libraries(Sim2 PRIVATE m)
+    target_link_libraries(Sim2 PRIVATE dl)
 endif()
 
 # ===========================
@@ -187,16 +186,16 @@ message(STATUS "C++ Flags    : ${CMAKE_CXX_FLAGS}")
 # # ===========================
 # if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 #     message(STATUS "Configuring Debug build")
-#     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra")
+#     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra  -fopenmp")
 #     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 # elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 #     message(STATUS "Configuring Release build")
-#     set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+#     set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra -fopenmp")
 #     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 # else()
 #     message(STATUS "No build type selected, defaulting to Release")
 #     set(CMAKE_BUILD_TYPE Release)
-#     set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra")
+#     set(CMAKE_CXX_FLAGS "-O3 -march=native -ffast-math -funroll-loops -fno-math-errno -Wall -Wextra  -fopenmp")
 #     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 # endif()
 

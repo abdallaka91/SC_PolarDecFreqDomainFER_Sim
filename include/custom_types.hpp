@@ -209,7 +209,7 @@ struct symbols_i32
 	int32_t value[gf_size];
 	bool is_freq;
 };
-
+#if 0
 template <int gf_size>
 inline symbols_i32<gf_size> convert_to_symbols_i32(const symbols_s<gf_size> symb)
 {
@@ -227,3 +227,4 @@ inline symbols_i32<gf_size> convert_to_symbols_i32(const symbols_s<gf_size> symb
 	result.is_freq = false;
 	return result;
 }
+#endif

@@ -572,7 +572,7 @@ int main(int argc, char *argv[])
 							  << "/" << std::setw(8) << gen_frames_out
                     << " = " << FER_str;
 
-                    printf("%6d sec. | ", (int)tps_rest);
+                    printf(" | %6d sec. | ", (int)sec);
 
                     if( FER_out == 0 )
                         printf("------");

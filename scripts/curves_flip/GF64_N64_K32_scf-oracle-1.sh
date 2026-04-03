@@ -1,12 +1,12 @@
 rm results/GF64_N64_K32_scf-oracle{1}.txt
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -10.0 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -9.75 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -9.50 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -9.25 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -9.00 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -8.75 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -8.50 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -8.25 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -8.00 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -7.75 64 64 32 scf-oracle{1} 100
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 100000000 -7.50 64 64 32 scf-oracle{1} 100
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -10.0 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -9.70 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -9.50 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -9.25 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -9.00 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -8.75 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -8.50 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -8.25 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -8.00 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -7.75 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 ./build/Sim2 -cw 100000000 -snr -7.50 -q 64 -N 64 -K 32 -dec scf-oracle{1} -errors 100 -cores 40

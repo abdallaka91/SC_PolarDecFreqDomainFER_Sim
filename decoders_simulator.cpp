@@ -571,8 +571,10 @@ int main(int argc, char *argv[])
 			if (stop.load())
 				break;
 		}
-
-		delete dec;
+#pragma omp critical
+        {
+            delete dec;
+        }
 	}
 
 	auto end = std::chrono::high_resolution_clock::now();

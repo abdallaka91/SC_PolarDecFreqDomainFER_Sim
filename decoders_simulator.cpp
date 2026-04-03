@@ -68,7 +68,7 @@ std::string format_FER(double FER_value, int width = 10)
 	return s;
 }
 
-void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, float fake_sigma)
+void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, float fake_sigma, int seconds)
 {
 	fs::path dir = "results";
 
@@ -97,8 +97,9 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 
 	double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 	std::string FER_str = format_FER(FER_value, 11); // 11 chars wide
-
+	
 	fprintf(fou, "%+7.3f   %s   %6d   %12" PRIu64, SNR, FER_str.c_str(), nb_err, nb_gen_frame);
+	fprintf(fou, " %6d ", seconds);
 	if ((dec == "dec1_integer") || (dec == "dec4_integer"))
 	{
 		fprintf(fou, "    %5d", I_type::NBITS);
@@ -626,7 +627,7 @@ int main(int argc, char *argv[])
 			  << " = " << FER_str
 			  << std::flush;
 
-	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, fake_sigma);
+	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, fake_sigma, (int)sec);
 
 	// Final results
 	std::cout << "\nPolar Code: N=" << N << ", K=" << K << ", GF=" << _GF_ << std::endl;

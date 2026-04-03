@@ -577,7 +577,7 @@ int main(int argc, char *argv[])
                     if( FER_out == 0 )
                         printf("------");
                     else{
-                        double tps_p_err = (double)FER_out / sec;
+                        double tps_p_err = (double)sec/(double)FER_out;
                         double tps_rest  = (double)(FER_STOP - FER_out) * tps_p_err;
                         printf("%6d sec. | ", (int)tps_rest);
                     }

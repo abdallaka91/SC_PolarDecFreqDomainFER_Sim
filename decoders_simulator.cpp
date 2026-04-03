@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 #include <omp.h>
+#include <signal.h>
 
 #include "./ccsk_simulator/ccsk_simulator.hpp"
 #include "./ccsk_simulator/simul_parameters.hpp"
@@ -122,7 +123,20 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 #define STR(S) #S
 
 #define EVAL(x) STR(x)
-
+//
+//
+//
+//
+static bool force_quit = false;
+void intHandler(int dummy)
+{
+	printf("\n#(DD) CTRL+C was detected\n");
+    force_quit = true;
+}
+//
+//
+//
+//
 int main(int argc, char *argv[])
 {
 
@@ -137,13 +151,14 @@ int main(int argc, char *argv[])
 		   "program (ARM NEON version)\n");
 #endif
 
-
 	printf("#(II) + developped by Abdallah ABDALLAH in 2025...\n");
 	printf("#(II) +        and by Camille MONIERE   in 2025...\n");
 	printf("#(II) +        and by Bertrand LE GAL   in 2025...\n");
 	printf("#(II)\n");
 	printf("#(II) Binary generated : %s - %s\n", __DATE__, __TIME__);
     
+	signal(SIGINT, intHandler);
+
 #ifdef __APPLE__
     bool ok = loader_so::open("libNbScFFTdec.dylib");
 #else

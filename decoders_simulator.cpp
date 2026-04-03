@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
     ////////////////////////////
 
     std::string dec_type  = "";
-    uint64_t NbMonteCarlo = 1000000000;
+    uint64_t NbMonteCarlo = 10000000000;
     float EbN0            = -1000.f;
     uint16_t q            = 0;
     uint16_t p            = 0;
@@ -314,7 +314,8 @@ int main(int argc, char *argv[])
 	std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
 	std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
 
-	auto start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
+    auto watchdod = std::chrono::high_resolution_clock::now();
 
 #ifndef NDEBUG
     #pragma omp parallel num_threads(1)
@@ -544,10 +545,12 @@ int main(int argc, char *argv[])
 				FER.fetch_add(1);
 			}
 			succ_now = global_counter.load() - FER.load();
-			if ((global_counter % 10000) == 0)
+            //            if ((global_counter % 10000) == 0)
+            if ( thread_id == 0 )
 			{
-
-#pragma omp critical
+                auto curr = std::chrono::high_resolution_clock::now();
+                auto sec  = std::chrono::duration<double>(curr - watchdod).count();
+                if( sec >= 1 )
 				{
 					uint64_t local_success = global_counter.load() - FER.load();
 					if ((global_counter.load() >= NbMonteCarlo) ||
@@ -561,11 +564,25 @@ int main(int argc, char *argv[])
 					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
 					std::string FER_str = oss.str();
 
+                    auto   end = std::chrono::high_resolution_clock::now();
+                    double sec = std::chrono::duration<double>(end - start).count();
+
 					std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0
 							  << " dB, FER = " << std::setw(8) << FER_out
 							  << "/" << std::setw(8) << gen_frames_out
-							  << " = " << FER_str
-							  << std::flush;
+                    << " = " << FER_str;
+
+                    printf("%6d sec. | ", (int)tps_rest);
+
+                    if( FER_out == 0 )
+                        printf("------");
+                    else{
+                        double tps_p_err = (double)FER_out / sec;
+                        double tps_rest  = (double)(FER_STOP - FER_out) * tps_p_err;
+                        printf("%6d sec. | ", (int)tps_rest);
+                    }
+                    std::cout << std::flush << "\r";
+                    watchdod = std::chrono::high_resolution_clock::now();
 				}
 			}
 			if (stop.load())

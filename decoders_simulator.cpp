@@ -579,9 +579,9 @@ int main(int argc, char *argv[])
                     else{
                         double tps_p_err = (double)sec/(double)FER_out;
                         double tps_rest  = (double)(FER_STOP - FER_out) * tps_p_err;
-						
-						printf("[%6d, %6d, %f]  ", FER_STOP, FER_out, tps_p_err);
-
+//						
+//						printf("[%6d, %6d, %f]  ", FER_STOP, FER_out, tps_p_err);
+//
                         printf("%6d sec. | ", (int)tps_rest);
                     }
                     std::cout << std::flush << "\r";

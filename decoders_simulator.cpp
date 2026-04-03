@@ -1,6 +1,6 @@
 // #define find_llr_rang // disable it
 
-#include "definitions/code.hpp"
+#include "./include/code.hpp"
 #include "init.h"
 #include "struct.h"
 #include "tools.h"
@@ -17,33 +17,20 @@
 #include <iostream>
 #include <limits>
 #include <memory>
-#include <omp.h>
 #include <random>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <omp.h>
 
 #include "./ccsk_simulator/ccsk_simulator.hpp"
 #include "./ccsk_simulator/simul_parameters.hpp"
 #include <chrono>
 #include <iostream>
 
-#include "decoders/basic/decoder_basic.hpp"
-// #include "decoders/dedicated/decoder_dedicated.hpp"
-#include "decoders/naive/decoder_naive.hpp"
-#include "decoders/naive_cfloat/decoder_naive_cfloat.hpp"
-#include "decoders/naive_fixed/decoder_naive_fixed.hpp"
-#include "decoders/naive_integer/decoder_naive_integer.hpp"
-#include "decoders/specialized/decoder_specialized.hpp"
-#include "decoders/specialized_pruning/decoder_specialized_pruning.hpp"
-#include "decoders/specialized_pruning_integer/decoder_specialized_pruning_integer.hpp"
-#include "demodulator/demodulator.hpp"
-#include "encoder/encoder_1.hpp"
-#include "features/fwht/fwht_counter.hpp"
-
-#include "utilities/utility_functions.hpp"
-
-#include "BLG/src/definitions/custom_types.hpp"
+#include "./include/loader_so.hpp"
+#include "./include/encoder_1.hpp"
+#include "./include/custom_types.hpp"
 
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
@@ -150,47 +137,148 @@ int main(int argc, char *argv[])
 		   "program (ARM NEON version)\n");
 #endif
 
+
 	printf("#(II) + developped by Abdallah ABDALLAH in 2025...\n");
 	printf("#(II) +        and by Camille MONIERE   in 2025...\n");
 	printf("#(II) +        and by Bertrand LE GAL   in 2025...\n");
 	printf("#(II)\n");
 	printf("#(II) Binary generated : %s - %s\n", __DATE__, __TIME__);
+    
+#ifdef __APPLE__
+    bool ok = loader_so::open("libNbScFFTdec.dylib");
+#else
+    bool ok = loader_so::open("libNbScFFTdec.so");
+#endif
+    
+    if( ok )
+        printf("#(II) + Decoder library was loaded successfully...\n");
+    else
+        printf("#(EE) + Error during the library loading...\n");
 
-	string dec_type;
+    int num_threads = omp_get_max_threads();
 
-	if (argc < 7)
-	{
-		cout << "validate: NbMonteCarlo, SNR, q, N, K, dec1...dec5 and optionnally "
-				"nb of FER"
-			 << std::endl;
-		return 1;
-	}
-	uint16_t q, N, K, n, p, frozen_val = 0;
-	softdata_t offset;
-	uint64_t NbMonteCarlo = std::stoull(argv[1]);
-	float EbN0 = stod(argv[2]);
-	q = stoi(argv[3]);
-	p = log2(q);
-	N = stoi(argv[4]);
-	K = stoi(argv[5]);
-	dec_type = std::string(argv[6]);
-	std::transform(dec_type.begin(), dec_type.end(), dec_type.begin(), ::tolower);
+    ////////////////////////////
 
-	int num_threads = omp_get_max_threads();
-	std::cout << "Using " << num_threads << " threads" << std::endl;
+    softdata_t offset;
 
-	int FER_STOP = 25;
-	if (argc >= 8)
-		FER_STOP = stoi(argv[7]);
+    ////////////////////////////
 
-	n = log2(N);
+    std::string dec_type  = "";
+    uint64_t NbMonteCarlo = 1000000000;
+    float EbN0            = -1000.f;
+    uint16_t q            = 0;
+    uint16_t p            = 0;
+    uint16_t N            = 0;
+    uint16_t n            = 0;
+    uint16_t K            = 0;
+    int FER_STOP          = 100;
+    uint16_t frozen_val   = 0;
 
+    /////////////////////////////////////////////////////////////////
+
+    for (int i = 1; i < argc; i++) {
+        if (std::string(argv[i]) == "-snr") {
+            EbN0 = stod( std::string(argv[i+1]));
+            i += 1;
+        } else if (std::string(argv[i]) == "-q") {
+            q = stoi(std::string(argv[i+1]));
+            p = log2(q);
+            i += 1;
+        } else if (std::string(argv[i]) == "-N") {
+            N = stoi(std::string(argv[i+1]));
+            n = log2(N);
+            i += 1;
+        } else if (std::string(argv[i]) == "-K") {
+            K = stoi(std::string(argv[i+1]));
+            i += 1;
+        } else if (std::string(argv[i]) == "-dec") {
+            dec_type = std::string(argv[i+1]);
+            i += 1;
+        } else if (std::string(argv[i]) == "-cw") {
+            NbMonteCarlo = std::stoull(argv[i+1]);
+            i += 1;
+        } else if (std::string(argv[i]) == "-thread") {
+            num_threads = std::atoi(argv[i + 1]);
+            omp_set_num_threads( num_threads );
+            i += 1;
+        } else if (std::string(argv[i]) == "-threads") {
+            num_threads = std::atoi(argv[i + 1]);
+            omp_set_num_threads( num_threads );
+            i += 1;
+        } else if (std::string(argv[i]) == "-cores") {
+            num_threads = std::atoi(argv[i + 1]);
+            omp_set_num_threads( num_threads );
+            i += 1;
+        } else if (std::string(argv[i]) == "-errors") {
+            FER_STOP = std::atoi(argv[i + 1]);
+            i += 1;
+        }else{
+            printf("(EE) Error during CLI parsing\n");
+            printf("(EE) argument = [%s]\n", argv[i]);
+            exit( EXIT_FAILURE );
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////
+
+    if( EbN0 == -1000.f){
+        printf("(EE) Error during CLI parsing\n");
+        printf("(EE) missing [-snr] option\n");
+        exit( EXIT_FAILURE );
+    }
+    if( q == 0){
+        printf("(EE) Error during CLI parsing\n");
+        printf("(EE) missing [-q] option\n");
+        exit( EXIT_FAILURE );
+    }
+    if( N == 0){
+        printf("(EE) Error during CLI parsing\n");
+        printf("(EE) missing [-q] option\n");
+        exit( EXIT_FAILURE );
+    }
+    if( K == 0){
+        printf("(EE) Error during CLI parsing\n");
+        printf("(EE) missing [-q] option\n");
+        exit( EXIT_FAILURE );
+    }
+    if( dec_type == ""){
+        printf("(EE) Error during CLI parsing\n");
+        printf("(EE) missing [-dec] option\n");
+        exit( EXIT_FAILURE );
+    }
+    if( N != _N_){
+        printf("(EE) Error during CLI parsing\n");
+        printf("(EE) N and _N_ values missmatched\n");
+        exit( EXIT_FAILURE );
+    }
+    if( _GF_ != q){
+        printf("(EE) Error during CLI parsing\n");
+        printf("(EE) q and _GF_ values missmatched\n");
+        exit( EXIT_FAILURE );
+    }
+
+    /////////////////////////////////////////////////////////////////
+
+    std::cout << "(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
+    std::cout << "(DD) EbN0         : " << EbN0         << std::endl;
+    std::cout << "(DD) q            : " << q            << std::endl;
+    std::cout << "(DD) p            : " << p            << std::endl;
+    std::cout << "(DD) N            : " << N            << std::endl;
+    std::cout << "(DD) K            : " << K            << std::endl;
+    std::cout << "(DD) dec_type     : " << dec_type     << std::endl;
+    std::cout << "(DD) FER_STOP     : " << FER_STOP     << std::endl;
+    std::cout << "(DD) num_threads  : " << num_threads  << std::endl;
+
+    /////////////////////////////////////////////////////////////////
+
+    std::transform(dec_type.begin(), dec_type.end(), dec_type.begin(), ::tolower);
+    
 	base_code_t code_param(N, K, n, q, p, frozen_val);
 	code_param.sig_mod = "CCSK_BIN";
 
-	int gf_rand_SEED = 0;
+	int   gf_rand_SEED = 0;
 	float nse_rand_SEED = 1.2544;
-	bool repeatable_randgen = 0;
+	bool  repeatable_randgen = 0;
 
 	table_GF table;
 
@@ -211,48 +299,8 @@ int main(int argc, char *argv[])
 
 	const auto s_start = std::chrono::system_clock::now();
 
-	if (dec_type == "dec1")
-	{
-		printf("Simulate decoder 1...\n");
-	}
-	else if (dec_type == "dec1_fixed")
-	{
-		printf("Simulate decoder 1 fixed...\n");
-	}
-	else if (dec_type == "dec1_cfloat")
-	{
-	}
-	else if (dec_type == "dec3")
-	{
-		printf("Simulate decoder 3...\n");
-	}
-	else if (dec_type == "dec4")
-	{
-		printf("Simulate decoder 4...\n");
-	}
-	else if (dec_type == "dec0")
-	{
-		printf("Simulate decoder 0...\n");
-	}
-	else if (dec_type == "dec1_integer")
-	{
-		printf("Simulate dec1_integer...\n");
-	}
-	else if (dec_type == "dec4_integer")
-	{
-		printf("Simulate dec4_integer...\n");
-	}
-	else
-	{
-		printf("#(II) Error : unknown decoder type\n");
-		exit(1);
-	}
-
 	float sigma = sqrt(1.0 / (pow(10, EbN0 / 10.0)));
 	float fake_sigma = sigma;
-
-	if (argc >= 9)
-		fake_sigma = stod(argv[8]);
 
 	CCSK_Simulator<_GF_, _N_> simulator(sigma, fake_sigma, num_threads);
 
@@ -269,53 +317,106 @@ int main(int argc, char *argv[])
 	auto start = std::chrono::high_resolution_clock::now();
 
 #ifndef NDEBUG
-#pragma omp parallel num_threads(1)
+    #pragma omp parallel num_threads(1)
 	printf("Debug build - single thread mode\n");
 #else
-#pragma omp parallel
+    #pragma omp parallel
 #endif
 	{
-		int thread_id = omp_get_thread_num();
+        int thread_id = omp_get_thread_num();
 		uint16_t K_symb[K];
-		uint16_t u_symb[N];
+        uint16_t u_symb[N];
+        uint16_t r_symb[N];
 		std::vector<symbols_s<_GF_>> llrs_n(N);
 		std::vector<uint16_t> decoded_n(N);
 
 		// Initialize decoder
 		decoder *dec = nullptr;
 
+
 #pragma omp critical
-		if (dec_type == "dec1")
-		{
-			dec = new decoder_naive<_GF_>(N, frozen_symbols);
-		}
+        {
+//          std::cout << "loader_so::allocate_dec(" << dec_type << ")" << std::endl;
+            dec = loader_so::allocate_dec(dec_type, N, _GF_, frozen_symbols);
+        }
+#if 0
+        if (dec_type == "dec1")
+        {
+            //dec = new decoder_naive<_GF_>(N, frozen_symbols);
+            std::cout << "loader_so::allocate_dec(dec1)" << std::endl;
+            dec = loader_so::allocate_dec("dec1", N, _GF_, frozen_symbols);
+        }
 		else if (dec_type == "dec1_fixed")
 		{
 			dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
+            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
+            exit( EXIT_FAILURE );
 		}
 		else if (dec_type == "dec1_cfloat")
 		{
 			dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
+            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
+            exit( EXIT_FAILURE );
 		}
+        else if (dec_type == "dec0")
+        {
+            //dec = new decoder_basic<_GF_>(N, frozen_symbols);
+            std::cout << "loader_so::allocate_dec(dec0)" << std::endl;
+            dec = loader_so::allocate_dec("dec0", N, _GF_, frozen_symbols);
+        }
 		else if (dec_type == "dec3")
 		{
-			dec = new decoder_specialized<_GF_>(N, frozen_symbols);
+			//dec = new decoder_specialized<_GF_>(N, frozen_symbols);
+            std::cout << "loader_so::allocate_dec(dec3)" << std::endl;
+            dec = loader_so::allocate_dec("dec3", N, _GF_, frozen_symbols);
 		}
-		else if (dec_type == "dec4")
-		{
-			dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
-		}
-		else if (dec_type == "dec0")
-		{
-			dec = new decoder_basic<_GF_>(N, frozen_symbols);
-		}
+        else if (dec_type == "dec4")
+        {
+            //dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
+            std::cout << "loader_so::allocate_dec(dec4)" << std::endl;
+            dec = loader_so::allocate_dec("dec4", N, _GF_, frozen_symbols);
+        }
+        else if (dec_type == "scl2-genius")
+        {
+            std::cout << "loader_so::allocate_dec(scl2-genius)" << std::endl;
+            dec = loader_so::allocate_dec("scl2-genius", N, _GF_, frozen_symbols);
+        }
+        else if (dec_type == "scl4-genius")
+        {
+            std::cout << "loader_so::allocate_dec(scl4-genius)" << std::endl;
+            dec = loader_so::allocate_dec("scl4-genius", N, _GF_, frozen_symbols);
+        }
+        else if (dec_type == "scf1-genius")
+        {
+            std::cout << "loader_so::allocate_dec(scf1-genius)" << std::endl;
+            dec = loader_so::allocate_dec("scf1-genius", N, _GF_, frozen_symbols);
+        }
+        else if (dec_type == "scf2-genius")
+        {
+            std::cout << "loader_so::allocate_dec(scf2-genius)" << std::endl;
+            dec = loader_so::allocate_dec("scf2-genius", N, _GF_, frozen_symbols);
+        }
+        else if (dec_type == "scf3-genius")
+        {
+            std::cout << "loader_so::allocate_dec(scf3-genius)" << std::endl;
+            dec = loader_so::allocate_dec("scf3-genius", N, _GF_, frozen_symbols);
+        }
+        else if (dec_type == "scf4-genius")
+        {
+            std::cout << "loader_so::allocate_dec(scf4-genius)" << std::endl;
+            dec = loader_so::allocate_dec("scf4-genius", N, _GF_, frozen_symbols);
+        }
 		else if (dec_type == "dec1_integer")
 		{
 			dec = new decoder_naive_integer<_GF_>(N, frozen_symbols);
+            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
+            exit( EXIT_FAILURE );
 		}
 		else if (dec_type == "dec4_integer")
 		{
 			dec = new decoder_specialized_pruning_integer<_GF_>(N, frozen_symbols);
+            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
+            exit( EXIT_FAILURE );
 		}
 		else
 		{
@@ -324,6 +425,7 @@ int main(int argc, char *argv[])
 			}
 			exit(1);
 		}
+#endif
 		// #pragma omp single
 		while (true)
 		{
@@ -335,6 +437,10 @@ int main(int argc, char *argv[])
 				u_symb[code_param.reliab_sequence[u]] = K_symb[u];
 			for (int u = K; u < N; u++)
 				u_symb[code_param.reliab_sequence[u]] = 0;
+            
+            for (int u = 0; u < N; u++) // on conserve une copie des données afin d'utiliser
+                r_symb[u] = u_symb[u]; // le mode génie dans la simulation
+
 			polar_encode<_N_>(u_symb);
 
 			// Simulate CCSK transmission
@@ -418,6 +524,7 @@ int main(int argc, char *argv[])
 			// #endif
 
 			// Decode
+            dec->setResult(r_symb);
 			dec->execute(llrs_n.data(), decoded_n.data());
 
 			// Check for errors
@@ -437,7 +544,7 @@ int main(int argc, char *argv[])
 				FER.fetch_add(1);
 			}
 			succ_now = global_counter.load() - FER.load();
-			if ((global_counter % 1000) == 0)
+			if ((global_counter % 10000) == 0)
 			{
 
 #pragma omp critical

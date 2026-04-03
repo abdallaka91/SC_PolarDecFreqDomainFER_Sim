@@ -99,22 +99,9 @@ endif()
 # ===========================
 #  Source setup
 # ===========================
-add_compile_options(-mavx2)
 
 file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized_pruning_integer/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/specialized/*.cpp"
-    # "${CMAKE_SOURCE_DIR}/BLG/src/decoders/dedicated/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/basic/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_fixed/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_integer/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
-    "${CMAKE_SOURCE_DIR}/BLG/src/hadamard_i32/Hadamard.cpp"
     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
 )
 
@@ -125,14 +112,6 @@ add_executable(Sim2 ${SRC_FILES})
 # ===========================
 target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/BLG/src/include
-    ${CMAKE_SOURCE_DIR}/BLG/src/decoders
-    ${CMAKE_SOURCE_DIR}/BLG/src/definitions
-    ${CMAKE_SOURCE_DIR}/BLG/src/hadamard
-     ${CMAKE_SOURCE_DIR}/BLG/src/hadamard_i32 
-    ${CMAKE_SOURCE_DIR}/BLG/src/utilities
-    ${CMAKE_SOURCE_DIR}/BLG/src
-    ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
     ${CMAKE_SOURCE_DIR}/ccsk_simulator
     ${CMAKE_SOURCE_DIR}/ccsk_simulator/aff3ct_randn_gen
 )

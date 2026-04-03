@@ -44,4 +44,5 @@ compile_commands.json
 .idea
 .vscode
 log/testing/
-.DS_Store
+.DS_Storebuild
+compile_commands.json

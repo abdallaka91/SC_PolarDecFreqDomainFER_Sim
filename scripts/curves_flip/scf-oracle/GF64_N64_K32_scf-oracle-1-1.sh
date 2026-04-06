@@ -18,4 +18,4 @@ LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.25  -q 64 -N 64 -K 32 -dec sc
 LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.00  -q 64 -N 64 -K 32 -dec scf-oracle{1-1} -errors 100 -cores 40
 LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.75  -q 64 -N 64 -K 32 -dec scf-oracle{1-1} -errors 100 -cores 40
 LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.50  -q 64 -N 64 -K 32 -dec scf-oracle{1-1} -errors 100 -cores 40
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.25  -q 64 -N 64 -K 32 -dec scf-oracle{1-1} -errors 100 -cores 40
+#LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.25  -q 64 -N 64 -K 32 -dec scf-oracle{1-1} -errors 100 -cores 40

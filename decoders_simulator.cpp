@@ -577,13 +577,14 @@ int main(int argc, char *argv[])
 
 					double FER_ratio = (double)FER_out / gen_frames_out;
 					std::ostringstream oss;
-					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+//					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+					oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
 					std::string FER_str = oss.str();
 
                     auto   end = std::chrono::high_resolution_clock::now();
                     double sec = std::chrono::duration<double>(end - start).count();
 
-					std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0
+					std::cout << "\r" << std::fixed << std::setprecision(1) << EbN0
 							  << " dB, FER = " << std::setw(8) << FER_out
 							  << "/" << std::setw(8) << gen_frames_out
                     << " = " << FER_str;
@@ -594,7 +595,8 @@ int main(int argc, char *argv[])
                         printf("------");
                     else{
                         double tps_p_err = (double)sec/(double)FER_out;
-                        double tps_rest  = (double)(FER_STOP - FER_out) * tps_p_err;
+						double restant   = (FER_STOP - FER_out) >= 0 ? (FER_STOP - FER_out) : 0;
+                        double tps_rest  = (double)(restant) * tps_p_err;
 //						
 //						printf("[%6d, %6d, %f]  ", FER_STOP, FER_out, tps_p_err);
 //
@@ -618,7 +620,9 @@ int main(int argc, char *argv[])
 
 	double FER_ratio = (double)FER_out / gen_frames_out;
 	std::ostringstream oss;
-	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+//	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+	oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
+
 	std::string FER_str = oss.str();
 
 	std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0

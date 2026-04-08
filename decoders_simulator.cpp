@@ -309,9 +309,17 @@ int main(int argc, char *argv[])
 
 	int frozen_symbols[N];
 	for (int i = 0; i < N; i += 1)
-		frozen_symbols[i] = true;
+		frozen_symbols[i] = true;		
 	for (int i = 0; i < K; i += 1)
 		frozen_symbols[code_param.reliab_sequence[i]] = false;
+
+	printf("(II) Reliability sequence:\n");
+	printf("(II) ");
+	for(int i = 0; i < K; i += 1){
+		printf("%2d ", code_param.reliab_sequence[i]);
+	}
+	printf("\n");
+
 
 	const auto s_start = std::chrono::system_clock::now();
 

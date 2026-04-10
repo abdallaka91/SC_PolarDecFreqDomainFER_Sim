@@ -49,14 +49,16 @@ add_compile_options(
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_BUILD_TYPE Release)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
 
 # ===========================
 #  Build type configuration
 # ===========================
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring Debug build")
-    set(CMAKE_CXX_FLAGS "-g -O0 -w")  # Keep -w to disable warnings
+    set(CMAKE_CXX_FLAGS "-g -O0 -w -fopenmp")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
@@ -105,6 +107,10 @@ file(GLOB_RECURSE SRC_FILES
 )
 
 add_executable(Sim2 ${SRC_FILES})
+
+set_target_properties(Sim2 PROPERTIES
+    BUILD_RPATH "${CMAKE_SOURCE_DIR}"
+)
 
 # ===========================
 #  Include Directories

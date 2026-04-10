@@ -5,16 +5,9 @@
       "name": "Debug CMake Build (F5)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build_debug/Sim2",
+      "program": "${workspaceFolder}/build/Sim2",
       "args": [
-        "100",
-        "-7.5",
-        "64",
-        "64",
-        "42",
-        "dec4_integer",
-        "20",
-        "3"
+        "-snr", "-12", "-q", "256", "-N", "64", "-K", "48", "-dec", "dec1", "-errors", "100", "-cores", "8"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

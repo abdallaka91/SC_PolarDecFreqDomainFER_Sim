@@ -2,50 +2,28 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "cmake-configure-debug",
+      "type": "shell",
+      // "command": "rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_ALL_GFs=OFF ..",
+      "group": "build"
+    },
+    {
+      "label": "cmake-build-debug",
+      "type": "shell",
+      // "command": "cd build && make -j",
+      "dependsOn": "cmake-configure-debug",
+      "group": "build"
+    },
+    {
       "label": "cmake-configure-release",
       "type": "shell",
-      "command": "rm -f CMakeCache.txt && rm -rf build CMakeFiles && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DUSE_ALL_GFs=OFF ..",
+      "command": "rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DUSE_ALL_GFs=OFF .."
     },
     {
       "label": "cmake-build-release",
       "type": "shell",
       "command": "cd build && make -j$(nproc)",
       "dependsOn": "cmake-configure-release",
-      "group": "build"
-    },
-    {
-      "label": "cmake-configure-debug",
-      "type": "shell",
-      // "command": "rm -f CMakeCache.txt && rm -rf build_debug CMakeFiles && mkdir -p build_debug && cd build_debug && cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_ALL_GFs=OFF ..",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-    {
-      "label": "cmake-build-debug",
-      "type": "shell",
-      // "command": "cd build_debug && make -j$(nproc)",
-      "dependsOn": "cmake-configure-debug"
-    },
-    {
-      "label": "run-release",
-      "type": "shell",
-      "command": "cd build && OMP_NUM_THREADS=4 ./Sim2 1000 4.2 64 1024 513 dec1 30",
-      "dependsOn": "cmake-build-release",
-      "group": "test"
-    },
-    {
-      "label": "run-debug",
-      "type": "shell",
-      "command": "cd build_debug && OMP_NUM_THREADS=1 ./Sim2 100 4.2 64 1024 513 dec1 5",
-      "dependsOn": "cmake-build-debug",
-      "group": "test"
-    },
-    {
-      "label": "clean-all",
-      "type": "shell",
-      "command": "rm -f CMakeCache.txt && rm -rf build build_debug CMakeFiles",
       "group": "build"
     }
   ]

@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/legal/GitHub/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp" "CMakeFiles/Sim2.dir/decoders_simulator.cpp.o" "gcc" "CMakeFiles/Sim2.dir/decoders_simulator.cpp.o.d"
-  "/Users/legal/GitHub/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp" "CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o" "gcc" "CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o.d"
+  "/home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp" "CMakeFiles/Sim2.dir/decoders_simulator.cpp.o" "gcc" "CMakeFiles/Sim2.dir/decoders_simulator.cpp.o.d"
+  "/home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/source/sim_cpp_sources/init.cpp" "CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o" "gcc" "CMakeFiles/Sim2.dir/source/sim_cpp_sources/init.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

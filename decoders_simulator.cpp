@@ -189,6 +189,7 @@ int main(int argc, char *argv[])
     uint16_t K            = 0;
     int FER_STOP          = 100;
     uint16_t frozen_val   = 0;
+	bool dump_frames      = false;
 
     /////////////////////////////////////////////////////////////////
 
@@ -227,6 +228,9 @@ int main(int argc, char *argv[])
             i += 1;
         } else if (std::string(argv[i]) == "-errors") {
             FER_STOP = std::atoi(argv[i + 1]);
+            i += 1;
+        } else if (std::string(argv[i]) == "-dump") {
+            dump_frames = true;
             i += 1;
         }else{
             printf("(EE) Error during CLI parsing\n");
@@ -475,6 +479,38 @@ int main(int argc, char *argv[])
 			if (!succ_dec)
 			{
 				FER.fetch_add(1);
+
+			if( dump_frames == true )
+			{
+                #pragma omp critical
+                {
+					char filen[256];
+					const int frame_id = FER.load();
+
+					sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/frame_symb_n%6.6d.raw\0", code_param.N, code_param.K, EbN0, frame_id);					
+					printf("Creating [%s]\n", filen);
+					FILE* fK = fopen(filen, "wb");
+					if( fK == nullptr ){
+						printf("(EE) Error during file creation %s\n", filen);
+						exit( EXIT_FAILURE );
+					}
+					fwrite((void*)r_symb, sizeof(uint16_t), N, fK);
+					fclose( fK );
+
+					sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/frame_noise_n%6.6d.raw\0", code_param.N, code_param.K, EbN0, frame_id);					
+					FILE* fN = fopen(filen, "wb");
+					if( fN == nullptr ){
+						printf("(EE) Error during file creation %s\n", filen);
+						exit( EXIT_FAILURE );
+					}
+					for(int n = 0; n < N; n += 1){
+						fwrite((void*)&llrs_n.at(n), sizeof(float), _GF_, fK);
+					}					
+					//std::vector<symbols_s<_GF_>> llrs_n(N);
+					fclose( fN );
+                }
+			}
+
 			}
 			succ_now = global_counter.load() - FER.load();
 

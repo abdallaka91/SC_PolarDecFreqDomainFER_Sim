@@ -345,6 +345,46 @@ int main(int argc, char *argv[])
     auto start = std::chrono::high_resolution_clock::now();
     auto watchdod = std::chrono::high_resolution_clock::now();
 
+
+	//
+	//
+	//
+	FILE* file_k = nullptr;
+	FILE* file_n = nullptr;
+	FILE* file_r = nullptr;
+	//
+	if( dump_frames == true )
+	{
+		//
+		char filen[256];
+		//
+		sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/frame_symb_k.raw\0", code_param.N, code_param.K, EbN0);					
+		file_k = fopen(filen, "wb");
+		if( file_k == nullptr ){
+		printf("(EE) Error during file creation %s\n", filen);
+			exit( EXIT_FAILURE );
+		}
+		//
+		sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/frame_symb_n.raw\0", code_param.N, code_param.K, EbN0);					
+		file_n = fopen(filen, "wb");
+		if( file_n == nullptr ){
+			printf("(EE) Error during file creation %s\n", filen);
+			exit( EXIT_FAILURE );
+		}
+		//
+		sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/frame_noise.raw\0", code_param.N, code_param.K, EbN0);					
+		file_r = fopen(filen, "wb");
+		if( file_r == nullptr ){
+			printf("(EE) Error during file creation %s\n", filen);
+			exit( EXIT_FAILURE );
+		}
+		//
+	}
+	//
+	//
+	//
+
+
 #ifndef NDEBUG
     #pragma omp parallel num_threads(1)
 	printf("Debug build - single thread mode\n");
@@ -464,7 +504,9 @@ int main(int argc, char *argv[])
             dec->setResult(r_symb);
 			dec->execute(llrs_n.data(), decoded_n.data());
 
+			//
 			// Check for errors
+			//
 			for (uint16_t i = 0; i < code_param.K; i++)
 			{
 				if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
@@ -476,41 +518,22 @@ int main(int argc, char *argv[])
 
 			global_counter.fetch_add(1);
 			uint64_t succ_now = global_counter.load() - FER.load();
-			if (!succ_dec)
+			if ( !succ_dec )
 			{
 				FER.fetch_add(1);
 
-			if( dump_frames == true )
-			{
-                #pragma omp critical
-                {
-					char filen[256];
-					const int frame_id = FER.load();
-
-					sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/frame_symb_n%6.6d.raw\0", code_param.N, code_param.K, EbN0, frame_id);					
-					printf("Creating [%s]\n", filen);
-					FILE* fK = fopen(filen, "wb");
-					if( fK == nullptr ){
-						printf("(EE) Error during file creation %s\n", filen);
-						exit( EXIT_FAILURE );
+				if( dump_frames == true )
+				{
+					#pragma omp critical
+					{
+						//
+						fwrite((void*)K_symb, sizeof(uint16_t), K, file_k);
+						fwrite((void*)r_symb, sizeof(uint16_t), N, file_n);
+						for(int n = 0; n < N; n += 1){
+							fwrite((void*)&llrs_n[n], sizeof(symbols_s<_GF_>), 1, file_r);
+						}
 					}
-					fwrite((void*)r_symb, sizeof(uint16_t), N, fK);
-					fclose( fK );
-
-					sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/frame_noise_n%6.6d.raw\0", code_param.N, code_param.K, EbN0, frame_id);					
-					FILE* fN = fopen(filen, "wb");
-					if( fN == nullptr ){
-						printf("(EE) Error during file creation %s\n", filen);
-						exit( EXIT_FAILURE );
-					}
-					for(int n = 0; n < N; n += 1){
-						fwrite((void*)&llrs_n.at(n), sizeof(float), _GF_, fK);
-					}					
-					//std::vector<symbols_s<_GF_>> llrs_n(N);
-					fclose( fN );
-                }
-			}
-
+				}
 			}
 			succ_now = global_counter.load() - FER.load();
 
@@ -569,6 +592,40 @@ int main(int argc, char *argv[])
 		}
         delete dec;
 	}
+
+
+	//
+	//
+	//
+	if( dump_frames == true )
+	{
+		fclose(file_n);
+		fclose(file_k);
+		fclose(file_r);
+	}
+
+	//
+	//
+	//
+	if( dump_frames == true )
+	{
+		//
+		char filen[256];
+		//
+		sprintf(filen, "./replay/N_%d/K_%d/SNR_%f/corrected_frames.raw\0", code_param.N, code_param.K, EbN0);
+		FILE* ff = fopen(filen, "wb");
+		if( ff == nullptr ){
+			printf("(EE) Error during file creation %s\n", filen);
+			exit( EXIT_FAILURE );
+		}
+		const uint64_t val = global_counter.load();
+		fwrite((void*)&val, sizeof(uint64_t), 1, ff);
+		printf("\n(DD) Monte-carlo decoded frames : %ld\n", val);
+		fclose(ff);
+	}
+	//
+	//
+	//
 
 	auto end = std::chrono::high_resolution_clock::now();
 	double sec = std::chrono::duration<double>(end - start).count();

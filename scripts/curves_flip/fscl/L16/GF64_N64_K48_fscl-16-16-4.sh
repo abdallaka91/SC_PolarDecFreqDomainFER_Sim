@@ -1,0 +1,20 @@
+rm results/GF64_N64_K48_fscl{16-16-4}.txt
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.00 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.75 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.50 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.25 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.00 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.75 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.50 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.25 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.00 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -6.75 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -6.50 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -6.25 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -6.00 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -5.75 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -5.50 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -5.25 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -5.00 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -4.75 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -4.50 -q 64 -N 64 -K 48 -dec fscl{16-16-4} -errors 100 -cores 40

@@ -1,0 +1,23 @@
+rm results/GF64_N64_K32_dec1.txt
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -12.00 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.75 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.50 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.25 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.00 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.75 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.50 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.25 -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.0  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.0  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.70  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.50  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.25  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.00  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.75  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.50  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.25  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.00  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.75  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.50  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.25  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.00  -q 64 -N 64 -K 32 -dec dec1 -errors 10000 -cores 12 -dump

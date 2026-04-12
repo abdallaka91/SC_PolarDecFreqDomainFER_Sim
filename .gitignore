@@ -47,5 +47,5 @@ log/testing/
 .DS_Storebuild
 compile_commands.json
 build
-replay
+*.raw
 

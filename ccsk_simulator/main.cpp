@@ -8,14 +8,14 @@ int main(int argc, char *argv[])
 {
     if (argc < 4)
     {
-        std::cout << "Usage: " << argv[0] << " <NbMonteCarlo> <real_sigma> <fake_sigma>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <NbMonteCarlo> <noise_sigma> <llr_sigma>" << std::endl;
         return 1;
     }
 
     int MAX_FRAME_ERRORS = 100;
     uint64_t NbMonteCarlo = std::stoull(argv[1]);
-    double real_sigma = std::stod(argv[2]);
-    double fake_sigma = std::stod(argv[3]);
+    double noise_sigma = std::stod(argv[2]);
+    double llr_sigma = std::stod(argv[3]);
 
     if (argc >= 5)
         MAX_FRAME_ERRORS = std::stoi(argv[4]);
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     int num_threads = omp_get_max_threads();
     std::cout << "Using " << num_threads << " threads" << std::endl;
 
-    CCSK_Simulator<GF, N> simulator(real_sigma, fake_sigma, num_threads);
+    CCSK_Simulator<GF, N> simulator(noise_sigma, llr_sigma, num_threads);
 
     std::atomic<uint64_t> frame_errors(0);
     std::atomic<uint64_t> frames_simulated(0);

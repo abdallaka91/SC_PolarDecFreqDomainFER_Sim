@@ -126,15 +126,7 @@ if(FFTW3_FOUND)
     target_compile_definitions(Sim2 PUBLIC USE_FFTW3)
 endif()
 
-# Option for ALL_GFs
-option(USE_ALL_GFs "Enable ALL_GFs compilation" OFF)
-message(STATUS "USE_ALL_GFs value: ${USE_ALL_GFs}")
-if(USE_ALL_GFs)
-    target_compile_definitions(Sim2 PUBLIC ALL_GFs)
-    message(STATUS "ALL_GFs compilation enabled")
-else()
-    message(STATUS "ALL_GFs compilation disabled")
-endif()
+
 
 # ===========================
 #  Link Libraries

@@ -11,7 +11,7 @@ class CCSK_LLR
 {
     static_assert((L & (L - 1)) == 0, "L must be power of 2");
 
-    double sigma;
+    double noise_sigma;
     double total_scale;
 
     struct FFTSOA
@@ -25,9 +25,9 @@ class CCSK_LLR
     fftw_plan fwd_plan, rev_plan;
 
 public:
-    CCSK_LLR(double sigma = 1.0) : sigma(sigma)
+    CCSK_LLR(double noise_sigma = 1.0) : noise_sigma(noise_sigma)
     {
-        total_scale = 2.0 / (sigma * sigma);
+        total_scale = 2.0 / (noise_sigma * noise_sigma);
 
         fftw_complex *in = fftw_alloc_complex(L);
         fftw_complex *out = fftw_alloc_complex(L);

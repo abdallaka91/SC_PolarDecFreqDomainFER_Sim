@@ -4,20 +4,20 @@
     {
       "label": "cmake-configure-debug",
       "type": "shell",
-      // "command": "rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_ALL_GFs=OFF ..",
+      "command": "rm -rf build && rm -f libNbScFFTdec.so && ln -s ../software-nb-polar-decoder/debug/libNbScFFTdec.so . && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug  ..",
       "group": "build"
     },
     {
       "label": "cmake-build-debug",
       "type": "shell",
-      // "command": "cd build && make -j",
+      "command": "cd build && make -j",
       "dependsOn": "cmake-configure-debug",
       "group": "build"
     },
     {
       "label": "cmake-configure-release",
       "type": "shell",
-      "command": "rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DUSE_ALL_GFs=OFF .."
+      "command": "rm -rf build && rm -f libNbScFFTdec.so&& ln -s ../software-nb-polar-decoder/release/libNbScFFTdec.so . && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release  ..",
     },
     {
       "label": "cmake-build-release",

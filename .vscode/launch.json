@@ -7,7 +7,8 @@
       "request": "launch",
       "program": "${workspaceFolder}/build/Sim2",
       "args": [
-        "-snr", "-12", "-q", "256", "-N", "64", "-K", "48", "-dec", "dec1", "-errors", "100", "-cores", "8"
+        "-snr", "-6", "-q", "64", "-N", "64", "-K", "48", "-dec", "dec4-int", "-nbits", "12", "-errors", "100", "-cores", "8"
+        // "-snr", "-6", "-q", "64", "-N", "64", "-K", "48", "-dec", "dec3", "-errors", "100", "-cores", "8"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

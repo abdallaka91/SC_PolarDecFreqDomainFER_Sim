@@ -62,9 +62,9 @@ class CCSK_Simulator
 		std::vector<double> y_buffer;
 		std::vector<float> prob_buffer;
 
-		ThreadResources(double real_sigma, int seed)
+		ThreadResources(double noise_sigma, int seed)
 			: rng(seed),
-			  noise_gen(real_sigma, seed),
+			  noise_gen(noise_sigma, seed),
 			  sym_dist(0, __GF__ - 1),
 			  llr_buffer(N * __GF__),
 			  noise_buffer(N * CHIPS_PER_SYMBOL),
@@ -78,15 +78,15 @@ class CCSK_Simulator
 	std::unique_ptr<CCSK_LLR<CHIPS_PER_SYMBOL>> llr_calc;
 
   public:
-	CCSK_Simulator(double real_sigma, double fake_sigma, int max_threads = 1)
+	CCSK_Simulator(double noise_sigma, double llr_sigma, int max_threads = 1)
 		: base_seq(get_base_seq_float<__GF__>()),
-		  llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(fake_sigma))
+		  llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(llr_sigma))
 	{
 		thread_resources.reserve(max_threads);
 		for (int i = 0; i < max_threads; i++)
 		{
 			thread_resources.push_back(
-				std::make_unique<ThreadResources>(real_sigma, 42 + i));
+				std::make_unique<ThreadResources>(noise_sigma, 42 + i));
 		}
 	}
 

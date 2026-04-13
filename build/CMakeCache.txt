@@ -22,7 +22,7 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
-CMAKE_BUILD_TYPE:STRING=Debug
+CMAKE_BUILD_TYPE:STRING=Release
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
@@ -203,9 +203,6 @@ TEST1_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 TEST1_SOURCE_DIR:STATIC=/home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim
-
-//Enable ALL_GFs compilation
-USE_ALL_GFs:BOOL=OFF
 
 
 ########################

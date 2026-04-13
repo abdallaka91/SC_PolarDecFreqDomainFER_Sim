@@ -1,0 +1,23 @@
+rm results/GF256_N128_K64_dec1.txt
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -12.00 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.75 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.50 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.25 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -11.00 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.75 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.50 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.25 -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.0  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -10.0  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.70  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.50  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.25  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -9.00  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.75  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.50  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.25  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.00  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.75  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.50  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.25  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.00  -q 256 -N 128 -K 64 -dec dec1 -errors 100 -cores 12

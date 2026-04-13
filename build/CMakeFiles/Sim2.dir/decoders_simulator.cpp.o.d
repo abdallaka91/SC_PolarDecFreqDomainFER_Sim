@@ -1,7 +1,6 @@
 CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/decoders_simulator.cpp \
  /usr/include/stdc-predef.h \
- /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./include/code.hpp \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/include/init.h \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/include/struct.h \
  /usr/include/c++/13/array /usr/include/c++/13/compare \
@@ -58,6 +57,8 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h \
  /usr/include/c++/13/bits/allocator.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h \
  /usr/include/c++/13/bits/new_allocator.h /usr/include/c++/13/new \
@@ -97,22 +98,28 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h \
+ /usr/include/x86_64-linux-gnu/bits/select2.h \
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
  /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h \
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h /usr/include/alloca.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h \
  /usr/include/c++/13/bits/std_abs.h /usr/include/c++/13/cstdio \
  /usr/include/stdio.h /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/c++/13/cerrno /usr/include/errno.h \
- /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h /usr/include/c++/13/cerrno \
+ /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
+ /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/13/bits/charconv.h \
@@ -159,6 +166,8 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/c++/13/tr1/poly_laguerre.tcc \
  /usr/include/c++/13/tr1/riemann_zeta.tcc /usr/include/c++/13/cstring \
  /usr/include/string.h /usr/include/strings.h \
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
  /usr/include/c++/13/filesystem /usr/include/c++/13/bits/fs_fwd.h \
  /usr/include/c++/13/system_error \
  /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h \
@@ -229,6 +238,13 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/omp.h \
  /usr/include/c++/13/random /usr/include/c++/13/bits/random.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/opt_random.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/pmmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/emmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/xmmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mm_malloc.h \
+ /usr/include/c++/13/stdlib.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mwaitintrin.h \
  /usr/include/c++/13/bits/random.tcc /usr/include/c++/13/numeric \
  /usr/include/c++/13/bits/stl_numeric.h \
  /usr/include/c++/13/pstl/glue_numeric_defs.h /usr/include/signal.h \
@@ -254,6 +270,8 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd-decl.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
  /usr/include/linux/close_range.h \
  /usr/include/x86_64-linux-gnu/bits/ss_flags.h \
@@ -263,14 +281,7 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/ccsk_simulator.hpp \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/fast_noise_simple.hpp \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp.h \
- /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/sse_mathfun.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mm_malloc.h \
- /usr/include/c++/13/stdlib.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/emmintrin.h \
- /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/sse_mathfun.hxx \
- /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/sse_mathfun.h \
+ /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/immintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/x86gprintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/ia32intrin.h \
@@ -288,7 +299,6 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/lzcntintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/lwpintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/movdirintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mwaitintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/mwaitxintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/pconfigintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/popcntintrin.h \
@@ -310,7 +320,6 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/xsavesintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/xtestintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/hresetintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/pmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/tmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/smmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/wmmintrin.h \
@@ -361,6 +370,8 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/prfchwintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/keylockerintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/amxfp16intrin.h \
+ /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.hxx \
+ /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/math/avx_mathfun.h \
  /usr/include/c++/13/unordered_map \
  /usr/include/c++/13/bits/unordered_map.h \
  /usr/include/c++/13/bits/hashtable.h \
@@ -374,11 +385,12 @@ CMakeFiles/Sim2.dir/decoders_simulator.cpp.o: \
  /usr/include/c++/13/bits/stl_multimap.h /usr/include/execinfo.h \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_object.hxx \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp.h \
- /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_impl_SSE.hxx \
+ /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/aff3ct_randn_gen/MIPP/src/mipp_impl_AVX.hxx \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/ccsk_llr.hpp \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./ccsk_simulator/simul_parameters.hpp \
  /usr/include/fftw3.h /usr/include/c++/13/chrono \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./include/custom_types.hpp \
+ /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./include/code.hpp \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./include/encoder_1.hpp \
  /home/abdallah/Documents/VScode/SC_PolarDecFreqDomainFER_Sim/./include/loader_so.hpp \
  /usr/include/dlfcn.h /usr/include/x86_64-linux-gnu/bits/dlfcn.h \

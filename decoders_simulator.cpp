@@ -1,6 +1,5 @@
 // #define find_llr_rang // disable it
 
-#include "./include/code.hpp"
 #include "init.h"
 #include "struct.h"
 #include "tools.h"
@@ -68,7 +67,7 @@ std::string format_FER(double FER_value, int width = 10)
 	return s;
 }
 
-void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, float fake_sigma, int seconds, int nbits = -1)
+void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, float llr_sigma, int seconds, int nbits = -1)
 {
 	fs::path dir = "results";
 
@@ -103,7 +102,7 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 	if ((nbits > 0))
 	{
 		fprintf(fou, "    %5d", nbits);
-		fprintf(fou, "    %5.3f", fake_sigma);
+		fprintf(fou, "    %5.3f", llr_sigma);
 	}
 
 	if (dec.rfind("dec4", 0) == 0) // prefix check
@@ -151,7 +150,6 @@ int main(int argc, char *argv[])
 	printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
 		   "program (ARM NEON version)\n");
 #endif
-	printf("Hello world !\n");	
 	printf("#(II) + developped by Abdallah ABDALLAH in 2025...\n");
 	printf("#(II) +        and by Camille MONIERE   in 2025...\n");
 	printf("#(II) +        and by Bertrand LE GAL   in 2025...\n");
@@ -190,7 +188,7 @@ int main(int argc, char *argv[])
 	int FER_STOP = 100;
 	uint16_t frozen_val = 0;
 	int nbits = -1;
-	float fake_sigma = -1.f;
+	float llr_sigma = -1.f;
 	/////////////////////////////////////////////////////////////////
 
 	for (int i = 1; i < argc; i++)
@@ -255,9 +253,9 @@ int main(int argc, char *argv[])
 			nbits = std::atoi(argv[i + 1]);
 			i += 1;
 		}
-		else if (std::string(argv[i]) == "-fake_sigma")
+		else if (std::string(argv[i]) == "-llr_sigma")
 		{
-			fake_sigma = std::stof(argv[i + 1]);
+			llr_sigma = std::stof(argv[i + 1]);
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-nbits_dec")
@@ -305,18 +303,6 @@ int main(int argc, char *argv[])
 		printf("(EE) missing [-dec] option\n");
 		exit(EXIT_FAILURE);
 	}
-	if (N != _N_)
-	{
-		printf("(EE) Error during CLI parsing\n");
-		printf("(EE) N and _N_ values missmatched\n");
-		exit(EXIT_FAILURE);
-	}
-	if (_GF_ != q)
-	{
-		printf("(EE) Error during CLI parsing\n");
-		printf("(EE) q and _GF_ values missmatched\n");
-		exit(EXIT_FAILURE);
-	}
 
 	/////////////////////////////////////////////////////////////////
 
@@ -334,7 +320,7 @@ int main(int argc, char *argv[])
 
 	std::transform(dec_type.begin(), dec_type.end(), dec_type.begin(), ::tolower);
 
-	if (dec_type == "dec1_integer" || dec_type == "naive_integer")
+	if (dec_type == "dec1-int" || dec_type == "naive-int")
 	{
 		if (nbits < 1)
 		{
@@ -342,6 +328,19 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 		dec_type = "naive-int{" + std::to_string(nbits) + "}";
+	}
+	else if (dec_type == "dec4-int" || dec_type == "pruned-int")
+	{
+		if (nbits < 1)
+		{
+			printf("(EE) missing [-nbits] option for dec4_integer\n");
+			exit(EXIT_FAILURE);
+		}
+		dec_type = "pruned-int{" + std::to_string(nbits) + "}";
+	}
+	else if (dec_type == "dec4" || dec_type == "pruned")
+	{
+		dec_type = "pruned";
 	}
 	// else if ( dec_type == "dec4_integer" || dec_type == "pruned_integer") {
 	//     if (nbits < 1) {
@@ -375,13 +374,21 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < K; i += 1)
 		frozen_symbols[code_param.reliab_sequence[i]] = false;
 
+	printf("(II) Reliability sequence:\n");
+	printf("(II) ");
+	for (int i = 0; i < K; i += 1)
+	{
+		printf("%2d ", code_param.reliab_sequence[i]);
+	}
+	printf("\n");
+
 	const auto s_start = std::chrono::system_clock::now();
 
-	float sigma = sqrt(1.0 / (pow(10, EbN0 / 10.0)));
-	if(fake_sigma < 0.f)
-		fake_sigma = sigma;
+	float noise_sigma = sqrt(1.0 / (pow(10, EbN0 / 10.0)));
+	if (llr_sigma < 0.f)
+		llr_sigma = noise_sigma;
 
-	CCSK_Simulator<_GF_, _N_> simulator(sigma, fake_sigma, num_threads);
+	CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
 
 	std::atomic<uint64_t> frame_errors(0);
 	std::atomic<uint64_t> frames_simulated(0);
@@ -407,101 +414,12 @@ int main(int argc, char *argv[])
 		uint16_t K_symb[K];
 		uint16_t u_symb[N];
 		uint16_t r_symb[N];
-		std::vector<symbols_s<_GF_>> llrs_n(N);
+		std::vector<float> llrs_n(N * q);
 		std::vector<uint16_t> decoded_n(N);
 
 		// Initialize decoder
 		decoder *dec = nullptr;
-
-		dec = loader_so::allocate_dec(dec_type, N, _GF_, frozen_symbols);
-#if 0
-        if (dec_type == "dec1")
-        {
-            //dec = new decoder_naive<_GF_>(N, frozen_symbols);
-            std::cout << "loader_so::allocate_dec(dec1)" << std::endl;
-            dec = loader_so::allocate_dec("dec1", N, _GF_, frozen_symbols);
-        }
-		else if (dec_type == "dec1_fixed")
-		{
-			dec = new decoder_naive_fixed<_GF_>(N, frozen_symbols);
-            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
-            exit( EXIT_FAILURE );
-		}
-		else if (dec_type == "dec1_cfloat")
-		{
-			dec = new decoder_naive_cfloat<_GF_>(N, frozen_symbols);
-            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
-            exit( EXIT_FAILURE );
-		}
-        else if (dec_type == "dec0")
-        {
-            //dec = new decoder_basic<_GF_>(N, frozen_symbols);
-            std::cout << "loader_so::allocate_dec(dec0)" << std::endl;
-            dec = loader_so::allocate_dec("dec0", N, _GF_, frozen_symbols);
-        }
-		else if (dec_type == "dec3")
-		{
-			//dec = new decoder_specialized<_GF_>(N, frozen_symbols);
-            std::cout << "loader_so::allocate_dec(dec3)" << std::endl;
-            dec = loader_so::allocate_dec("dec3", N, _GF_, frozen_symbols);
-		}
-        else if (dec_type == "dec4")
-        {
-            //dec = new decoder_specialized_pruning<_GF_>(N, frozen_symbols);
-            std::cout << "loader_so::allocate_dec(dec4)" << std::endl;
-            dec = loader_so::allocate_dec("dec4", N, _GF_, frozen_symbols);
-        }
-        else if (dec_type == "scl2-genius")
-        {
-            std::cout << "loader_so::allocate_dec(scl2-genius)" << std::endl;
-            dec = loader_so::allocate_dec("scl2-genius", N, _GF_, frozen_symbols);
-        }
-        else if (dec_type == "scl4-genius")
-        {
-            std::cout << "loader_so::allocate_dec(scl4-genius)" << std::endl;
-            dec = loader_so::allocate_dec("scl4-genius", N, _GF_, frozen_symbols);
-        }
-        else if (dec_type == "scf1-genius")
-        {
-            std::cout << "loader_so::allocate_dec(scf1-genius)" << std::endl;
-            dec = loader_so::allocate_dec("scf1-genius", N, _GF_, frozen_symbols);
-        }
-        else if (dec_type == "scf2-genius")
-        {
-            std::cout << "loader_so::allocate_dec(scf2-genius)" << std::endl;
-            dec = loader_so::allocate_dec("scf2-genius", N, _GF_, frozen_symbols);
-        }
-        else if (dec_type == "scf3-genius")
-        {
-            std::cout << "loader_so::allocate_dec(scf3-genius)" << std::endl;
-            dec = loader_so::allocate_dec("scf3-genius", N, _GF_, frozen_symbols);
-        }
-        else if (dec_type == "scf4-genius")
-        {
-            std::cout << "loader_so::allocate_dec(scf4-genius)" << std::endl;
-            dec = loader_so::allocate_dec("scf4-genius", N, _GF_, frozen_symbols);
-        }
-		else if (dec_type == "dec1_integer")
-		{
-			dec = new decoder_naive_integer<_GF_>(N, frozen_symbols);
-            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
-            exit( EXIT_FAILURE );
-		}
-		else if (dec_type == "dec4_integer")
-		{
-			dec = new decoder_specialized_pruning_integer<_GF_>(N, frozen_symbols);
-            printf("(EE) The code here was not updated [%s:%d]\n", __FILE__, __LINE__);
-            exit( EXIT_FAILURE );
-		}
-		else
-		{
-			{
-				std::cerr << "Error: Unknown decoder type: " << dec_type << std::endl;
-			}
-			exit(1);
-		}
-#endif
-
+		dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols);
 		// #pragma omp single
 		while (true)
 		{
@@ -555,21 +473,9 @@ int main(int argc, char *argv[])
 				simulator.llr_to_probability<_GF_>(llr_values, N);
 				for (int i = 0; i < N; i++)
 				{
-					for (int j = 0; j < _GF_; j++)
+					for (int j = 0; j < q; j++)
 					{
-						llrs_n[i].value[j] = static_cast<float>(llr_values[i * _GF_ + j]);
-					}
-				}
-			}
-			else if constexpr (SimulationParams::method == SimulationParams::LLRMethod::FAST_LUT)
-			{
-				// Fast method: lookup table
-				float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
-				for (int i = 0; i < N; i++)
-				{
-					for (int j = 0; j < _GF_; j++)
-					{
-						llrs_n[i].value[j] = probabilities[i * _GF_ + j];
+						llrs_n[i * q + j] = static_cast<float>(llr_values[i * q + j]);
 					}
 				}
 			}
@@ -600,6 +506,20 @@ int main(int argc, char *argv[])
 			// #endif
 
 			// Decode
+
+			else if constexpr (SimulationParams::method == SimulationParams::LLRMethod::FAST_LUT)
+			{
+				// Fast method: lookup table
+				float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
+				for (int i = 0; i < N; i++)
+				{
+					for (int j = 0; j < q; j++)
+					{
+						llrs_n[i * q + j] = probabilities[i * q + j];
+					}
+				}
+			}
+
 			dec->setResult(r_symb);
 			dec->execute(llrs_n.data(), decoded_n.data());
 
@@ -639,13 +559,14 @@ int main(int argc, char *argv[])
 
 					double FER_ratio = (double)FER_out / gen_frames_out;
 					std::ostringstream oss;
-					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+					//					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+					oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
 					std::string FER_str = oss.str();
 
 					auto end = std::chrono::high_resolution_clock::now();
 					double sec = std::chrono::duration<double>(end - start).count();
 
-					std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0
+					std::cout << "\r" << std::fixed << std::setprecision(1) << EbN0
 							  << " dB, FER = " << std::setw(8) << FER_out
 							  << "/" << std::setw(8) << gen_frames_out
 							  << " = " << FER_str;
@@ -657,7 +578,8 @@ int main(int argc, char *argv[])
 					else
 					{
 						double tps_p_err = (double)sec / (double)FER_out;
-						double tps_rest = (double)(FER_STOP - FER_out) * tps_p_err;
+						double restant = (FER_STOP - FER_out) >= 0 ? (FER_STOP - FER_out) : 0;
+						double tps_rest = (double)(restant)*tps_p_err;
 						//
 						//						printf("[%6d, %6d, %f]  ", FER_STOP, FER_out, tps_p_err);
 						//
@@ -681,7 +603,9 @@ int main(int argc, char *argv[])
 
 	double FER_ratio = (double)FER_out / gen_frames_out;
 	std::ostringstream oss;
-	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+	//	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+	oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
+
 	std::string FER_str = oss.str();
 
 	std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0
@@ -690,16 +614,16 @@ int main(int argc, char *argv[])
 			  << " = " << FER_str
 			  << std::flush;
 
-	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, fake_sigma, (int)sec, nbits);
+	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, llr_sigma, (int)sec, nbits);
 
 	// Final results
-	std::cout << "\nPolar Code: N=" << N << ", K=" << K << ", GF=" << _GF_ << std::endl;
+std::cout << "\nPolar Code: N=" << N << ", K=" << K << ", GF=" << q << std::endl;
 	std::cout << "Decoder: " << dec_type << std::endl;
-	std::cout << "Eb/N0: " << EbN0 << " dB, Sigma: " << sigma << std::endl;
+	std::cout << "Eb/N0: " << EbN0 << " dB, noise_sigma: " << noise_sigma << std::endl;
 	std::cout << "Actual frames: " << gen_frames_out << std::endl;
 	std::cout << "Time: " << sec << " seconds" << std::endl;
 	std::cout << "Throughput: " << gen_frames_out / sec << " fps" << std::endl;
-	std::cout << "Throughput info: " << (gen_frames_out * K * _logGF_) / sec / 1e6 << " Mbps" << std::endl;
+std::cout << "Throughput info: " << (gen_frames_out * K * p) / sec / 1e6 << " Mbps" << std::endl;
 #ifdef find_llr_rang
 	std::cout << "global_llr_max: " << global_llr_max << std::endl;
 	std::cout << "global_llr_min: " << global_llr_min << std::endl;

@@ -403,6 +403,20 @@ int main(int argc, char *argv[])
 	auto start = std::chrono::high_resolution_clock::now();
 	auto watchdod = std::chrono::high_resolution_clock::now();
 
+
+	//
+	//
+	//
+	FILE* file_k = nullptr;
+	FILE* file_n = nullptr;
+	FILE* file_r = nullptr;
+	//
+
+	//
+	//
+	//
+
+
 #ifndef NDEBUG
 #pragma omp parallel num_threads(1)
 	printf("Debug build - single thread mode\n");
@@ -523,7 +537,9 @@ int main(int argc, char *argv[])
 			dec->setResult(r_symb);
 			dec->execute(llrs_n.data(), decoded_n.data());
 
+			//
 			// Check for errors
+			//
 			for (uint16_t i = 0; i < code_param.K; i++)
 			{
 				if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
@@ -535,7 +551,7 @@ int main(int argc, char *argv[])
 
 			global_counter.fetch_add(1);
 			uint64_t succ_now = global_counter.load() - FER.load();
-			if (!succ_dec)
+			if ( !succ_dec )
 			{
 				FER.fetch_add(1);
 			}
@@ -597,6 +613,7 @@ int main(int argc, char *argv[])
 		}
 		delete dec;
 	}
+
 
 	auto end = std::chrono::high_resolution_clock::now();
 	double sec = std::chrono::duration<double>(end - start).count();

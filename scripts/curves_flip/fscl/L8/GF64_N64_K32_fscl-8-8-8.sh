@@ -25,4 +25,4 @@ LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.50  -q 64 -N 64 -K 32 -dec fs
 LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.25  -q 64 -N 64 -K 32 -dec fscl{8-8-8} -errors 100 -cores 40
 LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.00  -q 64 -N 64 -K 32 -dec fscl{8-8-8} -errors 100 -cores 40
 LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.75  -q 64 -N 64 -K 32 -dec fscl{8-8-8} -errors 100 -cores 40
-LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -8.50  -q 64 -N 64 -K 32 -dec fscl{8-8-8} -errors 100 -cores 40
+LD_PRELOAD=./libNbScFFTdec.so ./build/Sim2 -snr -7.50  -q 64 -N 64 -K 32 -dec fscl{8-8-8} -errors 100 -cores 40

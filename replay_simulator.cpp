@@ -390,6 +390,8 @@ int main(int argc, char *argv[])
 		exit( EXIT_FAILURE );
 	}
 
+	double exec_time = 0.0;
+    auto start = std::chrono::high_resolution_clock::now();
 	while (true)
 	{
 		//
@@ -421,7 +423,10 @@ int main(int argc, char *argv[])
 		// Decode
 		//
         dec->setResult(r_symb);
+	    auto e_start = std::chrono::high_resolution_clock::now();
 		dec->execute(llrs_n.data(), decoded_n.data());
+	    auto e_stop  = std::chrono::high_resolution_clock::now();
+	    exec_time   += (float)std::chrono::duration_cast<std::chrono::microseconds>(e_stop - e_start).count() / 1000.f;
 
 		//
 		// Check for errors
@@ -440,6 +445,9 @@ int main(int argc, char *argv[])
 		nFrames += 1;
 
 	}
+    const auto stop      = std::chrono::high_resolution_clock::now();
+    const float time_sec = (float)std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() / 1000.f;
+    const float exec_sec =  exec_time / 1000.f;
 
 	fclose(file_k);
 	fclose(file_n);
@@ -447,8 +455,21 @@ int main(int argc, char *argv[])
 
 	delete dec;
 
+	const float FER         = ((float)nErrors) / (float)(decoded_frames + nFrames - nErrors);
+	const float fps         = ((float)nFrames / exec_sec);
+	const float thgt_n      = ((float)p * (float)N) * fps;
+	const float thgt_k      = ((float)p * (float)K) * fps;
+	const float thgt_mbps_n = thgt_n / 1000.f / 1000.f;
+	const float thgt_mbps_k = thgt_k / 1000.f / 1000.f;
+
 	printf("nFrames = %d\n", nFrames);
 	printf("nErrors = %d\n", nErrors);
+	std::cout << "Overall time     : " << time_sec    << " seconds" << std::endl;
+	std::cout << "Execution time   : " << exec_sec    << " seconds" << std::endl;
+	std::cout << "Throughput coded : " << thgt_mbps_n << " Mbps" << std::endl;
+	std::cout << "Throughput info. : " << thgt_mbps_k << " Mbps" << std::endl;
+
+	printf("FER = %1.3e\n", FER);
 
 	return EXIT_SUCCESS;
 }

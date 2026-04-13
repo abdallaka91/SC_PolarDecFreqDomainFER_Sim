@@ -22,7 +22,7 @@ void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR,
   std::ostringstream fname;
   fname << folder.str() << "GF" << code.q << "N" << code.N << ".txt";
 
-  std::cout << "Reading reliability file: " << fname.str() << std::endl;
+  std::cout << "#(DD) Reading reliability file: " << fname.str() << std::endl;
 
   std::ifstream opfile(fname.str());
   if (!opfile)
@@ -96,11 +96,11 @@ void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR,
 
   if (best_idx < 0)
   {
-    std::cerr << "Nearest SNR not found!" << std::endl;
+    std::cerr << "#(DD) Nearest SNR not found!" << std::endl;
     exit(EXIT_FAILURE);
   }
 
-  std::cout << "Requested SNR: " << SNR
+  std::cout << "#(DD) Requested SNR: " << SNR
             << "  --> Using nearest SNR: " << entries[best_idx].snr
             << std::endl;
 

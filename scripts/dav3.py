@@ -11,7 +11,7 @@ q = 256
 N = 64
 K = 48
 err_cnt = 100
-sigma = 5.4
+noise_sigma = 5.4
 
 
 bits = np.arange(14, 15, 1)
@@ -48,6 +48,6 @@ for b in bits:
     )
     subprocess.run(f"cmake --build  {build_dir} -j 2>&1 | grep -i 'error'", shell=True)
     for snr in snr_values:
-        cmd = f"OMP_NUM_THREADS={NUM_THREADS}  ./{build_dir}/Sim2 {int(Mont_carlo)} {snr} {q} {N} {K} {dec} {err_cnt} {sigma}"
+        cmd = f"OMP_NUM_THREADS={NUM_THREADS}  ./{build_dir}/Sim2 {int(Mont_carlo)} {snr} {q} {N} {K} {dec} {err_cnt} {noise_sigma}"
         print(f"Running: INTEGER_BITS={b}, SNR={snr}")
         subprocess.run(cmd, shell=True)

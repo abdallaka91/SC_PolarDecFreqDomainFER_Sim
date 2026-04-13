@@ -8,8 +8,8 @@ namespace aff3ct_wrapper {
     public:
         FastNoiseGenerator(int seed = 0) : gen(seed) {}
         
-        void generate(R* noise, int length, R sigma, R mu = 0.0) {
-            gen.generate(noise, (unsigned)length, sigma, mu);
+        void generate(R* noise, int length, R noise_sigma, R mu = 0.0) {
+            gen.generate(noise, (unsigned)length, noise_sigma, mu);
         }
         
         void set_seed(int seed) {

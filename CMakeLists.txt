@@ -49,14 +49,16 @@ add_compile_options(
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_BUILD_TYPE Release)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
 
 # ===========================
 #  Build type configuration
 # ===========================
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring Debug build")
-    set(CMAKE_CXX_FLAGS "-g -O0 -w")  # Keep -w to disable warnings
+    set(CMAKE_CXX_FLAGS "-g -O0 -w -fopenmp")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
@@ -106,6 +108,10 @@ file(GLOB_RECURSE SRC_FILES
 
 add_executable(Sim2 ${SRC_FILES})
 
+set_target_properties(Sim2 PROPERTIES
+    BUILD_RPATH "${CMAKE_SOURCE_DIR}"
+)
+
 # ===========================
 #  Include Directories
 # ===========================
@@ -120,15 +126,7 @@ if(FFTW3_FOUND)
     target_compile_definitions(Sim2 PUBLIC USE_FFTW3)
 endif()
 
-# Option for ALL_GFs
-option(USE_ALL_GFs "Enable ALL_GFs compilation" OFF)
-message(STATUS "USE_ALL_GFs value: ${USE_ALL_GFs}")
-if(USE_ALL_GFs)
-    target_compile_definitions(Sim2 PUBLIC ALL_GFs)
-    message(STATUS "ALL_GFs compilation enabled")
-else()
-    message(STATUS "ALL_GFs compilation disabled")
-endif()
+
 
 # ===========================
 #  Link Libraries

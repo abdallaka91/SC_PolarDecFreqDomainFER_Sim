@@ -1,51 +1,84 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+# Build directories
+build/
+cmake-build*/
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
+*.a
 *.so
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
-*.smod
+# Results and data
+results/
+*.txt
+*.csv
+*.dat
+*.log
+*.out
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Python files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+venv/
+env/
+.env
+*.venv
+
+# VSCode
+.vscode/
+*.code-workspace
+*.code-workspace.user
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Compiled executables
+Sim2
+*.exe
+*.exe~
+*.out
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+*.cmake
+
+# Backup files
+*.backup
+*.bak
+*.orig
+*.rej
+
+# VSCode (any directory)
+.vscode/
+**/.vscode/
+
+# Compiled objects
+*.o
+*.so
+*.dylib
+
+# CMake generated
+compile_commands.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 
 # Executables
+Sim2
 *.exe
-*.out
-*.app
-src/.DS_Store
-.idea/vcs.xml
-.idea/modules.xml
-.idea/misc.xml
-.idea/fwht_simd.iml
-.idea/editor.xml
-.idea/.name
-.DS_Store
-build/
-compile_commands.json
-.cache
-.idea
-.vscode
-log/testing/
-.DS_Storebuild
-compile_commands.json
-build
-*.raw
-

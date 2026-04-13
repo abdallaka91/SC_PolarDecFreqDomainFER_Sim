@@ -67,7 +67,7 @@ inline std::vector<uint16_t> load_reliability_sequence(int GF, int N,
   fname << folder.str() << "GF" << GF << "N" << N << ".txt";
 
   std::string filename = fname.str();
-  std::cout << "Reading reliability file: " << filename << std::endl;
+  std::cout << "#(DD) Reading reliability file: " << filename << std::endl;
 
   std::ifstream file(filename);
   if (!file) {
@@ -134,7 +134,7 @@ inline std::vector<uint16_t> load_reliability_sequence(int GF, int N,
   }
 
   // --- Output and Return ---
-  std::cout << "✅ Requested SNR: " << SNR
+  std::cout << "#(DD)) Requested SNR: " << SNR
             << " --> Using nearest SNR: " << entries[best_idx].snr << " from "
             << filename << std::endl;
 

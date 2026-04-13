@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 	printf("#(II) +        and by Bertrand LE GAL   in 2025...\n");
 	printf("#(II)\n");
 	printf("#(II) Binary generated : %s - %s\n", __DATE__, __TIME__);
-
+	printf("#(II)\n");
 	signal(SIGINT, intHandler);
 
 #ifdef __APPLE__
@@ -164,10 +164,10 @@ int main(int argc, char *argv[])
 	bool ok = loader_so::open("libNbScFFTdec.so");
 #endif
 
-	if (ok)
-		printf("#(II) + Decoder library was loaded successfully...\n");
-	else
+	if (ok == false){
 		printf("#(EE) + Error during the library loading...\n");
+		exit( EXIT_FAILURE );
+	}
 
 	int num_threads = omp_get_max_threads();
 
@@ -179,7 +179,8 @@ int main(int argc, char *argv[])
 
 	std::string dec_type = "";
 	uint64_t NbMonteCarlo = 10000000000;
-	float EbN0 = -1000.f;
+	float        EbN0 = -1000.f;
+	float forced_EbN0 = -1000.f;
 	uint16_t q = 0;
 	uint16_t p = 0;
 	uint16_t N = 0;
@@ -196,6 +197,12 @@ int main(int argc, char *argv[])
 		if (std::string(argv[i]) == "-snr")
 		{
 			EbN0 = stod(std::string(argv[i + 1]));
+			forced_EbN0 = EbN0;
+			i += 1;
+		}
+		else if (std::string(argv[i]) == "-target")
+		{
+			forced_EbN0 = stod(std::string(argv[i + 1]));
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-q")
@@ -306,15 +313,15 @@ int main(int argc, char *argv[])
 
 	/////////////////////////////////////////////////////////////////
 
-	std::cout << "(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
-	std::cout << "(DD) EbN0         : " << EbN0 << std::endl;
-	std::cout << "(DD) q            : " << q << std::endl;
-	std::cout << "(DD) p            : " << p << std::endl;
-	std::cout << "(DD) N            : " << N << std::endl;
-	std::cout << "(DD) K            : " << K << std::endl;
-	std::cout << "(DD) dec_type     : " << dec_type << std::endl;
-	std::cout << "(DD) FER_STOP     : " << FER_STOP << std::endl;
-	std::cout << "(DD) num_threads  : " << num_threads << std::endl;
+	std::cout << "#(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
+	std::cout << "#(DD) EbN0         : " << EbN0 << std::endl;
+	std::cout << "#(DD) q            : " << q << std::endl;
+	std::cout << "#(DD) p            : " << p << std::endl;
+	std::cout << "#(DD) N            : " << N << std::endl;
+	std::cout << "#(DD) K            : " << K << std::endl;
+	std::cout << "#(DD) dec_type     : " << dec_type << std::endl;
+	std::cout << "#(DD) FER_STOP     : " << FER_STOP << std::endl;
+	std::cout << "#(DD) num_threads  : " << num_threads << std::endl;
 
 	/////////////////////////////////////////////////////////////////
 
@@ -359,14 +366,15 @@ int main(int argc, char *argv[])
 
 	table_GF table;
 
-	cout << "(II) Loading code_param [START]" << endl;
-	LoadCode(code_param, EbN0, "./matrices/");
-	cout << "(II) Loading code_param [END OK]" << endl;
+	
+	printf("#(DD)\n");
+	printf("#(DD) Frozen vector configured for EbN0 = %f\n", forced_EbN0);
+	LoadCode(code_param, forced_EbN0, "./matrices/");
 
-	cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations."
-		 << endl;
+//	cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations."
+//		 << endl;
 
-	cout << "Simulation starts..." << endl;
+//	cout << "Simulation starts..." << endl;
 
 	int frozen_symbols[N];
 	for (int i = 0; i < N; i += 1)
@@ -374,8 +382,8 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < K; i += 1)
 		frozen_symbols[code_param.reliab_sequence[i]] = false;
 
-	printf("(II) Reliability sequence:\n");
-	printf("(II) ");
+	printf("#(II) Reliability sequence:\n");
+	printf("#(II) ");
 	for (int i = 0; i < K; i += 1)
 	{
 		printf("%2d ", code_param.reliab_sequence[i]);
@@ -634,13 +642,14 @@ int main(int argc, char *argv[])
 	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, llr_sigma, (int)sec, nbits);
 
 	// Final results
-std::cout << "\nPolar Code: N=" << N << ", K=" << K << ", GF=" << q << std::endl;
-	std::cout << "Decoder: " << dec_type << std::endl;
-	std::cout << "Eb/N0: " << EbN0 << " dB, noise_sigma: " << noise_sigma << std::endl;
-	std::cout << "Actual frames: " << gen_frames_out << std::endl;
-	std::cout << "Time: " << sec << " seconds" << std::endl;
-	std::cout << "Throughput: " << gen_frames_out / sec << " fps" << std::endl;
-std::cout << "Throughput info: " << (gen_frames_out * K * p) / sec / 1e6 << " Mbps" << std::endl;
+	std::cout << std::endl;
+	std::cout << "#(DD) Polar Code: N=" << N << ", K=" << K << ", GF=" << q << std::endl;
+	std::cout << "#(DD) Decoder: " << dec_type << std::endl;
+	std::cout << "#(DD) Eb/N0: " << EbN0 << " dB, noise_sigma: " << noise_sigma << std::endl;
+	std::cout << "#(DD) Actual frames: " << gen_frames_out << std::endl;
+	std::cout << "#(DD) Time: " << sec << " seconds" << std::endl;
+	std::cout << "#(DD) Throughput: " << gen_frames_out / sec << " fps" << std::endl;
+	std::cout << "#(DD) Throughput info: " << (gen_frames_out * K * p) / sec / 1e6 << " Mbps" << std::endl;
 #ifdef find_llr_rang
 	std::cout << "global_llr_max: " << global_llr_max << std::endl;
 	std::cout << "global_llr_min: " << global_llr_min << std::endl;

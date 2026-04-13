@@ -61,3 +61,24 @@ compile_commands.json
 *.bak
 *.orig
 *.rej
+
+# VSCode (any directory)
+.vscode/
+**/.vscode/
+
+# Compiled objects
+*.o
+*.so
+*.dylib
+
+# CMake generated
+compile_commands.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Executables
+Sim2
+*.exe

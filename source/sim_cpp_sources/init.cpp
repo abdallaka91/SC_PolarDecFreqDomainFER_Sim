@@ -9,7 +9,7 @@
 #include <sstream>
 
 void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR,
-                           const std::string &base_dir)
+                           const std::string &base_dir, const bool debug)
 {
   code.Rate = (float)code.K / (float)code.N;
 
@@ -22,7 +22,8 @@ void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR,
   std::ostringstream fname;
   fname << folder.str() << "GF" << code.q << "N" << code.N << ".txt";
 
-  std::cout << "#(DD) Reading reliability file: " << fname.str() << std::endl;
+  if( debug == true )
+    std::cout << "#(DD) Reading reliability file: " << fname.str() << std::endl;
 
   std::ifstream opfile(fname.str());
   if (!opfile)
@@ -100,7 +101,8 @@ void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR,
     exit(EXIT_FAILURE);
   }
 
-  std::cout << "#(DD) Requested SNR: " << SNR
+  if( debug == true )
+    std::cout << "#(DD) Requested SNR: " << SNR
             << "  --> Using nearest SNR: " << entries[best_idx].snr
             << std::endl;
 

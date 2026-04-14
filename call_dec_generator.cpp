@@ -54,7 +54,7 @@ inline void write_config_code_header(int N, int GF) {
 // method = 1 → first sequence
 // method = 2 → second sequence
 inline std::vector<uint16_t> load_reliability_sequence(int GF, int N,
-                                                       float SNR) {
+                                                       float SNR, bool debug = false) {
   // Determine the base path relative to the current working directory
   std::string base_dir = "../matrices/";
 
@@ -67,7 +67,8 @@ inline std::vector<uint16_t> load_reliability_sequence(int GF, int N,
   fname << folder.str() << "GF" << GF << "N" << N << ".txt";
 
   std::string filename = fname.str();
-  std::cout << "#(DD) Reading reliability file: " << filename << std::endl;
+  if( debug == true )
+    std::cout << "#(DD) Reading reliability file: " << filename << std::endl;
 
   std::ifstream file(filename);
   if (!file) {
@@ -134,7 +135,8 @@ inline std::vector<uint16_t> load_reliability_sequence(int GF, int N,
   }
 
   // --- Output and Return ---
-  std::cout << "#(DD)) Requested SNR: " << SNR
+  if( debug == true )
+    std::cout << "#(DD)) Requested SNR: " << SNR
             << " --> Using nearest SNR: " << entries[best_idx].snr << " from "
             << filename << std::endl;
 

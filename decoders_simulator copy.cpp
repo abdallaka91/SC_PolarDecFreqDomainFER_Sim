@@ -179,42 +179,26 @@ int main(int argc, char *argv[])
 
 	std::string dec_type = "";
 	uint64_t NbMonteCarlo = 10000000000;
-//	float        EbN0 = -1000.f;
+	float        EbN0 = -1000.f;
 	float forced_EbN0 = -1000.f;
 	bool  forced_mode = false;
-
-	float EbN0_mini = -1000.f;
-	float EbN0_maxi = -1000.f;
-	float EbN0_step = -1000.f;
-
 	uint16_t q = 0;
 	uint16_t p = 0;
 	uint16_t N = 0;
 	uint16_t n = 0;
 	uint16_t K = 0;
-
 	int FER_STOP = 100;
 	uint16_t frozen_val = 0;
 	int nbits = -1;
 	float llr_sigma = -1.f;
-	bool debug = false;
 	/////////////////////////////////////////////////////////////////
 
 	for (int i = 1; i < argc; i++)
 	{
-		if (std::string(argv[i]) == "-snr-min")
+		if (std::string(argv[i]) == "-snr")
 		{
-			EbN0_mini = stod(std::string(argv[i + 1]));
-			i += 1;
-		}
-		else if (std::string(argv[i]) == "-snr-max")
-		{
-			EbN0_maxi = stod(std::string(argv[i + 1]));
-			i += 1;
-		}
-		else if (std::string(argv[i]) == "-snr-step")
-		{
-			EbN0_step = stod(std::string(argv[i + 1]));
+			EbN0 = stod(std::string(argv[i + 1]));
+			forced_EbN0 = EbN0;
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-target")
@@ -298,22 +282,10 @@ int main(int argc, char *argv[])
 
 	/////////////////////////////////////////////////////////////////
 
-	if (EbN0_mini == -1000.f)
+	if (EbN0 == -1000.f)
 	{
 		printf("(EE) Error during CLI parsing\n");
-		printf("(EE) missing [-snr-min] option\n");
-		exit(EXIT_FAILURE);
-	}
-	if (EbN0_maxi == -1000.f)
-	{
-		printf("(EE) Error during CLI parsing\n");
-		printf("(EE) missing [-snr-max] option\n");
-		exit(EXIT_FAILURE);
-	}
-	if (EbN0_step == -1000.f)
-	{
-		printf("(EE) Error during CLI parsing\n");
-		printf("(EE) missing [-snr-step] option\n");
+		printf("(EE) missing [-snr] option\n");
 		exit(EXIT_FAILURE);
 	}
 	if (q == 0)
@@ -344,9 +316,7 @@ int main(int argc, char *argv[])
 	/////////////////////////////////////////////////////////////////
 
 	std::cout << "#(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
-	std::cout << "#(DD) EbN0_min     : " << EbN0_mini    << std::endl;
-	std::cout << "#(DD) EbN0_max     : " << EbN0_maxi    << std::endl;
-	std::cout << "#(DD) EbN0_step    : " << EbN0_step    << std::endl;
+	std::cout << "#(DD) EbN0         : " << EbN0 << std::endl;
 	std::cout << "#(DD) q            : " << q << std::endl;
 	std::cout << "#(DD) p            : " << p << std::endl;
 	std::cout << "#(DD) N            : " << N << std::endl;
@@ -388,272 +358,306 @@ int main(int argc, char *argv[])
 	//     }
 	//     dec_type = "pruned-int{" + std::to_string(nbits) + "}";
 	// }
-	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time |\n");
+
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
-	for(float cSNR = EbN0_mini; cSNR <= EbN0_maxi; cSNR += EbN0_step){
-
-		//
-		//
-		//
-		base_code_t code_param(N, K, n, q, p, frozen_val);
-		code_param.sig_mod = "CCSK_BIN";
-
-		int   gf_rand_SEED = 0;
-		float nse_rand_SEED = 1.2544;
-		bool  repeatable_randgen = 0;
-
-		table_GF table;
-
-		const float sSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
-		//printf("#(DD)\n");
-		//printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
-		LoadCode(code_param, sSNR, "./matrices/");
-
-		//
-		//
-		//
-		int frozen_symbols[N];
-		for (int i = 0; i < N; i += 1)
-			frozen_symbols[i] = true;
-		for (int i = 0; i < K; i += 1)
-			frozen_symbols[code_param.reliab_sequence[i]] = false;
 
 
-		if( debug == true ){
-			printf("#(II) Reliability sequence:\n");
-			printf("#(II) ");
-			for (int i = 0; i < K; i += 1)
-			{
-				printf("%2d ", code_param.reliab_sequence[i]);
-			}
-			printf("\n");
-		}
+	base_code_t code_param(N, K, n, q, p, frozen_val);
+	code_param.sig_mod = "CCSK_BIN";
 
-		const auto s_start = std::chrono::system_clock::now();
+	int gf_rand_SEED = 0;
+	float nse_rand_SEED = 1.2544;
+	bool repeatable_randgen = 0;
 
-		//
-		// On cree le canal de simulation
-		//
+	table_GF table;
 
-		const float noise_sigma = sqrt(1.0 / (pow(10, cSNR / 10.0)));
-		if (llr_sigma < 0.f)
-			llr_sigma = noise_sigma;
+	
+	printf("#(DD)\n");
+	printf("#(DD) Frozen vector configured for EbN0 = %f\n", forced_EbN0);
+	LoadCode(code_param, forced_EbN0, "./matrices/");
 
-		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
+//	cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations."
+//		 << endl;
 
-		std::atomic<uint64_t> frame_errors(0);
-		std::atomic<uint64_t> frames_simulated(0);
+//	cout << "Simulation starts..." << endl;
 
-		uint64_t FER_out = 0, gen_frames_out = 0;
-		std::atomic<uint64_t> global_counter(0);
-		std::atomic<uint64_t> FER(0);
-		std::atomic<bool> stop(false);
+	int frozen_symbols[N];
+	for (int i = 0; i < N; i += 1)
+		frozen_symbols[i] = true;
+	for (int i = 0; i < K; i += 1)
+		frozen_symbols[code_param.reliab_sequence[i]] = false;
 
-		std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
-		std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
+	printf("#(II) Reliability sequence:\n");
+	printf("#(II) ");
+	for (int i = 0; i < K; i += 1)
+	{
+		printf("%2d ", code_param.reliab_sequence[i]);
+	}
+	printf("\n");
 
-		auto start = std::chrono::high_resolution_clock::now();
-		auto watchdod = std::chrono::high_resolution_clock::now();
+	const auto s_start = std::chrono::system_clock::now();
 
-		//
-		//
-		//
-		FILE* file_k = nullptr;
-		FILE* file_n = nullptr;
-		FILE* file_r = nullptr;
-		//
+	float noise_sigma = sqrt(1.0 / (pow(10, EbN0 / 10.0)));
+	if (llr_sigma < 0.f)
+		llr_sigma = noise_sigma;
 
-		//
-		//
-		//
+	CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
 
-		#pragma omp parallel
+	std::atomic<uint64_t> frame_errors(0);
+	std::atomic<uint64_t> frames_simulated(0);
+
+	uint64_t FER_out = 0, gen_frames_out = 0;
+	std::atomic<uint64_t> global_counter(0);
+	std::atomic<uint64_t> FER(0);
+	std::atomic<bool> stop(false);
+
+	std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
+	std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
+
+	auto start = std::chrono::high_resolution_clock::now();
+	auto watchdod = std::chrono::high_resolution_clock::now();
+
+
+	//
+	//
+	//
+	FILE* file_k = nullptr;
+	FILE* file_n = nullptr;
+	FILE* file_r = nullptr;
+	//
+
+	//
+	//
+	//
+
+
+#ifndef NDEBUG
+#pragma omp parallel num_threads(1)
+	printf("Debug build - single thread mode\n");
+#else
+#pragma omp parallel
+#endif
+	{
+		int thread_id = omp_get_thread_num();
+		uint16_t K_symb[K];
+		uint16_t u_symb[N];
+		uint16_t r_symb[N];
+		std::vector<float> llrs_n(N * q);
+		std::vector<uint16_t> decoded_n(N);
+
+		// Initialize decoder
+		decoder *dec = nullptr;
+		dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols);
+		// #pragma omp single
+		while (true)
 		{
-			int thread_id = omp_get_thread_num();
-			uint16_t K_symb[K];
-			uint16_t u_symb[N];
-			uint16_t r_symb[N];
-			std::vector<float> llrs_n(N * q);
-			std::vector<uint16_t> decoded_n(N);
+			bool succ_dec = true;
 
-			// Initialize decoder
-			decoder *dec = nullptr;
-			dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols);
-			// #pragma omp single
-			while (true)
+			// Generate symbols for THIS frame
+			simulator.generate_random_symbols(K_symb, K, thread_id);
+			for (int u = 0; u < K; u++)
+				u_symb[code_param.reliab_sequence[u]] = K_symb[u];
+			for (int u = K; u < N; u++)
+				u_symb[code_param.reliab_sequence[u]] = 0;
+
+			for (int u = 0; u < N; u++) // on conserve une copie des données afin d'utiliser
+				r_symb[u] = u_symb[u];	// le mode génie dans la simulation
+
+			polar_encode<_N_>(u_symb);
+
+			// Simulate CCSK transmission
+			double *llr_values = simulator.simulate_frame(u_symb, thread_id);
+
+#ifdef find_llr_rang
+			double local_min = llr_values[0];
+			double local_max = llr_values[0];
+
+			for (int i = 1; i < N * _GF_; i++)
 			{
-				bool succ_dec = true;
-
-				//
-				// Generate symbols for THIS frame
-				//
-				simulator.generate_random_symbols(K_symb, K, thread_id);
-				for (int u = 0; u < K; u++)
-					u_symb[code_param.reliab_sequence[u]] = K_symb[u];
-				for (int u = K; u < N; u++)
-					u_symb[code_param.reliab_sequence[u]] = 0;
-
-				for (int u = 0; u < N; u++) // on conserve une copie des données afin d'utiliser
-					r_symb[u] = u_symb[u];	// le mode génie dans la simulation
-
-				polar_encode<_N_>(u_symb);
-
-				//
-				// Simulate CCSK transmission
-				//
-				double *llr_values = simulator.simulate_frame(u_symb, thread_id);
-
-
-				if constexpr (SimulationParams::method == SimulationParams::LLRMethod::EXP)
-				{
-					// Original method: exp() calls
-					simulator.llr_to_probability<_GF_>(llr_values, N);
-					for (int i = 0; i < N; i++)
-					{
-						for (int j = 0; j < q; j++)
-						{
-							llrs_n[i * q + j] = static_cast<float>(llr_values[i * q + j]);
-						}
-					}
-				}
-
-
-				// Decode
-
-				else if constexpr (SimulationParams::method == SimulationParams::LLRMethod::FAST_LUT)
-				{
-					// Fast method: lookup table
-					float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
-					for (int i = 0; i < N; i++)
-					{
-						for (int j = 0; j < q; j++)
-						{
-							llrs_n[i * q + j] = probabilities[i * q + j];
-						}
-					}
-				}
-
-				dec->setResult(r_symb);
-				dec->execute(llrs_n.data(), decoded_n.data());
-
-				//
-				// Check for errors
-				//
-				for (uint16_t i = 0; i < code_param.K; i++)
-				{
-					if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
-					{
-						succ_dec = false;
-						break;
-					}
-				}
-
-				//
-				//
-				//
-				global_counter.fetch_add(1);
-				uint64_t succ_now = global_counter.load() - FER.load();
-				if ( !succ_dec )
-				{
-					FER.fetch_add(1);
-				}
-				succ_now = global_counter.load() - FER.load();
-
-				//
-				// Plus d'openmp critical car on filtre sur thread 1
-				//
-				if (thread_id == 0)
-				{
-					auto curr = std::chrono::high_resolution_clock::now();
-					auto sec = std::chrono::duration<double>(curr - watchdod).count();
-					if (sec >= 1)
-					{
-						uint64_t local_success = global_counter.load() - FER.load();
-						if ((global_counter.load() >= NbMonteCarlo) ||
-							(FER.load() >= FER_STOP))
-							stop.store(true);
-						FER_out = FER.load();
-						gen_frames_out = global_counter.load();
-
-						double FER_ratio = (double)FER_out / gen_frames_out;
-						//std::ostringstream oss;
-						//					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
-						//oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
-						//std::string FER_str = oss.str();
-
-						auto end   = std::chrono::high_resolution_clock::now();
-						double sec = std::chrono::duration<double>(end - start).count();
-
-						//std::cout << "\r" << std::fixed << std::setprecision(1) << cSNR
-						//		<< " dB, FER = " << std::setw(8) << FER_out
-						//		<< "/" << std::setw(8) << gen_frames_out
-						//		<< " = " << FER_str;
-
-						//printf(" | %6d sec. | ", (int)sec);
-
-						if( FER_out != 0 ){
-							double tps_p_err = (double)sec / (double)FER_out;
-							double restant = (FER_STOP - FER_out) >= 0 ? (FER_STOP - FER_out) : 0;
-							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)tps_rest);
-						} else {
-							printf("%6.2f | %6d | %10d | %1.3e | %6d | ------ |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
-						}
-						fflush( stdout );
-
-						watchdod = std::chrono::high_resolution_clock::now();
-					}
-				}
-				if (stop.load())
-					break;
-
-				if (force_quit == true)
-					break;
+				if (llr_values[i] < local_min)
+					local_min = llr_values[i];
+				if (llr_values[i] > local_max)
+					local_max = llr_values[i];
 			}
 
-			delete dec;
+			// update global min
+			double current_min = global_llr_min.load();
+			while (local_min < current_min &&
+				   !global_llr_min.compare_exchange_weak(current_min, local_min))
+			{
+			}
 
+			// update global max
+			double current_max = global_llr_max.load();
+			while (local_max > current_max &&
+				   !global_llr_max.compare_exchange_weak(current_max, local_max))
+			{
+			}
+#endif
+
+			if constexpr (SimulationParams::method == SimulationParams::LLRMethod::EXP)
+			{
+				// Original method: exp() calls
+				simulator.llr_to_probability<_GF_>(llr_values, N);
+				for (int i = 0; i < N; i++)
+				{
+					for (int j = 0; j < q; j++)
+					{
+						llrs_n[i * q + j] = static_cast<float>(llr_values[i * q + j]);
+					}
+				}
+			}
+
+			// #ifdef find_llr_rang
+			// 			for (int i = 0; i < N; i++)
+			// 			{
+			// 				for (int j = 0; j < _GF_; j++)
+			// 				{
+			// 					double val = llrs_n[i].value[j];
+			// 					// llrs_n[i].value[j] = val;
+
+			// 					// Update min
+			// 					double current_min = global_llr_min.load();
+			// 					while (val < current_min &&
+			// 						   !global_llr_min.compare_exchange_weak(current_min, val))
+			// 					{
+			// 					}
+
+			// 					// Update max
+			// 					double current_max = global_llr_max.load();
+			// 					while (val > current_max &&
+			// 						   !global_llr_max.compare_exchange_weak(current_max, val))
+			// 					{
+			// 					}
+			// 				}
+			// 			}
+			// #endif
+
+			// Decode
+
+			else if constexpr (SimulationParams::method == SimulationParams::LLRMethod::FAST_LUT)
+			{
+				// Fast method: lookup table
+				float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
+				for (int i = 0; i < N; i++)
+				{
+					for (int j = 0; j < q; j++)
+					{
+						llrs_n[i * q + j] = probabilities[i * q + j];
+					}
+				}
+			}
+
+			dec->setResult(r_symb);
+			dec->execute(llrs_n.data(), decoded_n.data());
+
+			//
+			// Check for errors
+			//
+			for (uint16_t i = 0; i < code_param.K; i++)
+			{
+				if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
+				{
+					succ_dec = false;
+					break;
+				}
+			}
+
+			global_counter.fetch_add(1);
+			uint64_t succ_now = global_counter.load() - FER.load();
+			if ( !succ_dec )
+			{
+				FER.fetch_add(1);
+			}
+			succ_now = global_counter.load() - FER.load();
+
+			//
+			// Plus d'openmp critical car on filtre sur thread 1
+			//
+			if (thread_id == 0)
+			{
+				auto curr = std::chrono::high_resolution_clock::now();
+				auto sec = std::chrono::duration<double>(curr - watchdod).count();
+				if (sec >= 1)
+				{
+					uint64_t local_success = global_counter.load() - FER.load();
+					if ((global_counter.load() >= NbMonteCarlo) ||
+						(FER.load() >= FER_STOP))
+						stop.store(true);
+					FER_out = FER.load();
+					gen_frames_out = global_counter.load();
+
+					double FER_ratio = (double)FER_out / gen_frames_out;
+					std::ostringstream oss;
+					//					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+					oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
+					std::string FER_str = oss.str();
+
+					auto end = std::chrono::high_resolution_clock::now();
+					double sec = std::chrono::duration<double>(end - start).count();
+
+					std::cout << "\r" << std::fixed << std::setprecision(1) << EbN0
+							  << " dB, FER = " << std::setw(8) << FER_out
+							  << "/" << std::setw(8) << gen_frames_out
+							  << " = " << FER_str;
+
+					printf(" | %6d sec. | ", (int)sec);
+
+					if (FER_out == 0)
+						printf("------");
+					else
+					{
+						double tps_p_err = (double)sec / (double)FER_out;
+						double restant = (FER_STOP - FER_out) >= 0 ? (FER_STOP - FER_out) : 0;
+						double tps_rest = (double)(restant)*tps_p_err;
+						//
+						//						printf("[%6d, %6d, %f]  ", FER_STOP, FER_out, tps_p_err);
+						//
+						printf("%6d sec. | ", (int)tps_rest);
+					}
+					std::cout << std::flush << "\r";
+					watchdod = std::chrono::high_resolution_clock::now();
+				}
+			}
+			if (stop.load())
+				break;
+
+			if (force_quit == true)
+				break;
 		}
+		delete dec;
+	}
 
-		auto end   = std::chrono::high_resolution_clock::now();
-		double sec = std::chrono::duration<double>(end - start).count();
 
-		double FER_ratio = (double)FER_out / gen_frames_out;
-		//std::ostringstream oss;
-		//	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
-		//oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
+	auto end   = std::chrono::high_resolution_clock::now();
+	double sec = std::chrono::duration<double>(end - start).count();
 
-		//std::string FER_str = oss.str();
+	double FER_ratio = (double)FER_out / gen_frames_out;
+	std::ostringstream oss;
+	//	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
+	oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
 
-		//std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << cSNR
-		//		<< " dB, FER = " << std::setw(8) << FER_out
-		//		<< "/" << std::setw(8) << gen_frames_out
-		//		<< " = " << FER_str
-		//		<< std::flush;
-		printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d | ---\n", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)0);
+	std::string FER_str = oss.str();
 
-		append_results_to_file1(dec_type, q, N, K, cSNR, FER_out, gen_frames_out, llr_sigma, (int)sec, nbits);
+	std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << EbN0
+			  << " dB, FER = " << std::setw(8) << FER_out
+			  << "/" << std::setw(8) << gen_frames_out
+			  << " = " << FER_str
+			  << std::flush;
 
-		//
-		// Si CTRL+C alors on quitte la simulation
-		//
-		if (force_quit == true)
-			break;
-
-	} // fin de la boucle sur le SNR
-
+	append_results_to_file1(dec_type, q, N, K, EbN0, FER_out, gen_frames_out, llr_sigma, (int)sec, nbits);
 
 	// Final results
 	std::cout << std::endl;
 	std::cout << "#(DD) Polar Code: N=" << N << ", K=" << K << ", GF=" << q << std::endl;
 	std::cout << "#(DD) Decoder: " << dec_type << std::endl;
-//	std::cout << "#(DD) Eb/N0: " << EbN0 << " dB, noise_sigma: " << noise_sigma << std::endl;
-//	std::cout << "#(DD) Actual frames: " << gen_frames_out << std::endl;
-//	std::cout << "#(DD) Time: " << sec << " seconds" << std::endl;
-//	std::cout << "#(DD) Throughput: " << gen_frames_out / sec << " fps" << std::endl;
-//	std::cout << "#(DD) Throughput info: " << (gen_frames_out * K * p) / sec / 1e6 << " Mbps" << std::endl;
+	std::cout << "#(DD) Eb/N0: " << EbN0 << " dB, noise_sigma: " << noise_sigma << std::endl;
+	std::cout << "#(DD) Actual frames: " << gen_frames_out << std::endl;
+	std::cout << "#(DD) Time: " << sec << " seconds" << std::endl;
+	std::cout << "#(DD) Throughput: " << gen_frames_out / sec << " fps" << std::endl;
+	std::cout << "#(DD) Throughput info: " << (gen_frames_out * K * p) / sec / 1e6 << " Mbps" << std::endl;
 #ifdef find_llr_rang
 	std::cout << "global_llr_max: " << global_llr_max << std::endl;
 	std::cout << "global_llr_min: " << global_llr_min << std::endl;

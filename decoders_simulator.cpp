@@ -300,6 +300,14 @@ int main(int argc, char *argv[])
 			nbits = std::atoi(argv[i + 1]);
 			i += 1;
 		}
+		else if (std::string(argv[i]) == "-debug")
+		{
+			debug = true;
+		}
+		else if (std::string(argv[i]) == "-verbose")
+		{
+			debug = true;
+		}
 		else
 		{
 			printf("(EE) Error during CLI parsing\n");
@@ -413,16 +421,16 @@ int main(int argc, char *argv[])
 		base_code_t code_param(N, K, n, q, p, frozen_val);
 		code_param.sig_mod = "CCSK_BIN";
 
-		int   gf_rand_SEED = 0;
-		float nse_rand_SEED = 1.2544;
-		bool  repeatable_randgen = 0;
+//		int   gf_rand_SEED = 0;
+//		float nse_rand_SEED = 1.2544;
+//		bool  repeatable_randgen = 0;
 
 		table_GF table;
 
 		const float sSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
 		//printf("#(DD)\n");
 		//printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
-		LoadCode(code_param, sSNR, "./matrices/");
+		LoadCode(code_param, sSNR, "./matrices/", debug);
 
 		//
 		//
@@ -685,9 +693,9 @@ int main(int argc, char *argv[])
 
 
 	// Final results
-	std::cout << std::endl;
-	std::cout << "#(DD) Polar Code: N=" << N << ", K=" << K << ", GF=" << q << std::endl;
-	std::cout << "#(DD) Decoder: " << dec_type << std::endl;
+//	std::cout << std::endl;
+//	std::cout << "#(DD) Polar Code: N=" << N << ", K=" << K << ", GF=" << q << std::endl;
+//	std::cout << "#(DD) Decoder: " << dec_type << std::endl;
 //	std::cout << "#(DD) Eb/N0: " << EbN0 << " dB, noise_sigma: " << noise_sigma << std::endl;
 //	std::cout << "#(DD) Actual frames: " << gen_frames_out << std::endl;
 //	std::cout << "#(DD) Time: " << sec << " seconds" << std::endl;

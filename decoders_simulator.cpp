@@ -67,7 +67,13 @@ std::string format_FER(double FER_value, int width = 10)
 	return s;
 }
 
-void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, float llr_sigma, int seconds, int nbits = -1)
+void append_results_to_file1(
+	const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame,
+	const float forced_EbN0,
+	const bool  forced_mode,
+	const float llr_sigma,
+	const int seconds,
+	const int nbits = -1)
 {
 	fs::path dir = "results";
 
@@ -85,6 +91,12 @@ void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, do
 	fs::path filename =
 		dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
 			   std::to_string(Kx) + "_" + dec.c_str() + ".txt");
+
+	if( forced_mode == true ){
+		filename =
+		dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
+			   std::to_string(Kx) + "_" + dec.c_str() + "_forced_" + std::to_string(forced_EbN0) + ".txt");
+	}
 
 	FILE *fou = fopen(filename.c_str(), "a");
 
@@ -344,15 +356,16 @@ int main(int argc, char *argv[])
 	/////////////////////////////////////////////////////////////////
 
 	std::cout << "#(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
-	std::cout << "#(DD) EbN0_min     : " << EbN0_mini    << std::endl;
-	std::cout << "#(DD) EbN0_max     : " << EbN0_maxi    << std::endl;
-	std::cout << "#(DD) EbN0_step    : " << EbN0_step    << std::endl;
-	std::cout << "#(DD) q            : " << q << std::endl;
-	std::cout << "#(DD) p            : " << p << std::endl;
+	std::cout << "#(DD) EbN0_min     : " << EbN0_mini    << " dB" << std::endl;
+	std::cout << "#(DD) EbN0_max     : " << EbN0_maxi    << " dB" << std::endl;
+	std::cout << "#(DD) EbN0_step    : " << EbN0_step    << " dB" << std::endl;
 	std::cout << "#(DD) N            : " << N << std::endl;
 	std::cout << "#(DD) K            : " << K << std::endl;
-	std::cout << "#(DD) dec_type     : " << dec_type << std::endl;
-	std::cout << "#(DD) FER_STOP     : " << FER_STOP << std::endl;
+	std::cout << "#(DD) GF(q)        : " << q << std::endl;
+	if(forced_mode == true)	
+	std::cout << "#(DD) Targeted SNR : " << forced_EbN0 << " dB" << std::endl;
+	std::cout << "#(DD) dec_type     : " << dec_type    << std::endl;
+	std::cout << "#(DD) FER_STOP     : " << FER_STOP    << std::endl;
 	std::cout << "#(DD) num_threads  : " << num_threads << std::endl;
 
 	/////////////////////////////////////////////////////////////////
@@ -388,7 +401,7 @@ int main(int argc, char *argv[])
 	//     }
 	//     dec_type = "pruned-int{" + std::to_string(nbits) + "}";
 	// }
-	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time |\n");
+	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time | Latency | Througput |\n");
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
@@ -446,7 +459,7 @@ int main(int argc, char *argv[])
 		std::atomic<uint64_t> frame_errors(0);
 		std::atomic<uint64_t> frames_simulated(0);
 
-		uint64_t FER_out = 0, gen_frames_out = 0;
+		int64_t FER_out = 0, gen_frames_out = 0;
 		std::atomic<uint64_t> global_counter(0);
 		std::atomic<uint64_t> FER(0);
 		std::atomic<bool> stop(false);
@@ -481,6 +494,24 @@ int main(int argc, char *argv[])
 			// Initialize decoder
 			decoder *dec = nullptr;
 			dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols);
+#if 0
+			printf("n_decoded_frames()   = %d\n", dec->n_decoded_frames() );
+			printf("dec_avg_info_mbps()  = %f\n", dec->dec_avg_info_mbps() );
+			printf("dec_min_info_mbps()  = %f\n", dec->dec_min_info_mbps() );
+			printf("dec_max_info_mbps()  = %f\n", dec->dec_max_info_mbps() );
+			printf("dec_avg_coded_mbps() = %f\n", dec->dec_avg_coded_mbps() );
+			printf("dec_min_coded_mbps() = %f\n", dec->dec_min_coded_mbps() );
+			printf("dec_max_coded_mbps() = %f\n", dec->dec_max_coded_mbps() );
+			printf("dec_avg_latency()    = %f\n", dec->dec_avg_latency() );
+			printf("dec_min_latency()    = %f\n", dec->dec_min_latency() );
+			printf("dec_max_latency()    = %f\n", dec->dec_max_latency() );
+
+			printf("n()  = %d\n", dec->n());
+			printf("k()  = %d\n", dec->k());
+			printf("gf() = %d\n", dec->gf());
+
+			exit(EXIT_FAILURE);
+#endif
 			// #pragma omp single
 			while (true)
 			{
@@ -592,25 +623,30 @@ int main(int argc, char *argv[])
 						//		<< " = " << FER_str;
 
 						//printf(" | %6d sec. | ", (int)sec);
+						const float d = dec->dec_avg_coded_mbps();
+						const float l = dec->dec_avg_latency();
+    					//printf("time us = %f us - %f us - %f Mbps\n", 0, d, l);
 
 						if( FER_out != 0 ){
 							double tps_p_err = (double)sec / (double)FER_out;
-							double restant = (FER_STOP - FER_out) >= 0 ? (FER_STOP - FER_out) : 0;
+							double restAnt = (FER_STOP - FER_out);
+							double restant = std::max(restAnt, 0.0);
 							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)tps_rest);
+							printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)tps_rest, d, l);
 						} else {
-							printf("%6.2f | %6d | %10d | %1.3e | %6d | ------ |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
+							printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, 0, d, l);
 						}
 						fflush( stdout );
-
 						watchdod = std::chrono::high_resolution_clock::now();
 					}
 				}
-				if (stop.load())
+				if (stop.load()){
 					break;
+				}
 
-				if (force_quit == true)
+				if (force_quit == true){
 					break;
+				}
 			}
 
 			delete dec;
@@ -632,9 +668,12 @@ int main(int argc, char *argv[])
 		//		<< "/" << std::setw(8) << gen_frames_out
 		//		<< " = " << FER_str
 		//		<< std::flush;
-		printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d | ---\n", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)0);
+		printf("\r%6.2f | %6d | %10d | %1.3e | %6d | ------ |", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
+		printf("\n");
+		fflush( stdout );
 
-		append_results_to_file1(dec_type, q, N, K, cSNR, FER_out, gen_frames_out, llr_sigma, (int)sec, nbits);
+		append_results_to_file1(dec_type, q, N, K, cSNR, FER_out, gen_frames_out,
+			forced_EbN0, forced_mode, llr_sigma, (int)sec, nbits);
 
 		//
 		// Si CTRL+C alors on quitte la simulation

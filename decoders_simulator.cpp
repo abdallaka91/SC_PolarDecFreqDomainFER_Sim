@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
 
 	std::string dec_type = "";
 	uint64_t NbMonteCarlo = 10000000000;
-//	float        EbN0 = -1000.f;
+
 	float forced_EbN0 = -1000.f;
 	bool  forced_mode = false;
 
@@ -428,19 +428,23 @@ int main(int argc, char *argv[])
 		table_GF table;
 
 		const float sSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
-		//printf("#(DD)\n");
-		//printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
+		if( debug ){
+			printf("#(DD)\n");
+			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
+		}
 		LoadCode(code_param, sSNR, "./matrices/", debug);
 
 		//
 		//
 		//
 		int frozen_symbols[N];
-		for (int i = 0; i < N; i += 1)
+		for (int i = 0; i < N; i += 1)	// per defaut l'ensemble des noeuds sont frozen
 			frozen_symbols[i] = true;
-		for (int i = 0; i < K; i += 1)
+		for (int i = 0; i < K; i += 1)	// on dégèle les K noeuds les plus fiables
 			frozen_symbols[code_param.reliab_sequence[i]] = false;
-
+		//
+		//
+		//
 
 		if( debug == true ){
 			printf("#(II) Reliability sequence:\n");
@@ -467,7 +471,8 @@ int main(int argc, char *argv[])
 		std::atomic<uint64_t> frame_errors(0);
 		std::atomic<uint64_t> frames_simulated(0);
 
-		int64_t FER_out = 0, gen_frames_out = 0;
+		int64_t FER_out = 0;
+		int64_t gen_frames_out = 0;
 		std::atomic<uint64_t> global_counter(0);
 		std::atomic<uint64_t> FER(0);
 		std::atomic<bool> stop(false);
@@ -475,7 +480,7 @@ int main(int argc, char *argv[])
 		std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
 		std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
 
-		auto start = std::chrono::high_resolution_clock::now();
+		auto start    = std::chrono::high_resolution_clock::now();
 		auto watchdod = std::chrono::high_resolution_clock::now();
 
 		//
@@ -484,8 +489,6 @@ int main(int argc, char *argv[])
 		FILE* file_k = nullptr;
 		FILE* file_n = nullptr;
 		FILE* file_r = nullptr;
-		//
-
 		//
 		//
 		//
@@ -502,24 +505,7 @@ int main(int argc, char *argv[])
 			// Initialize decoder
 			decoder *dec = nullptr;
 			dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols);
-#if 0
-			printf("n_decoded_frames()   = %d\n", dec->n_decoded_frames() );
-			printf("dec_avg_info_mbps()  = %f\n", dec->dec_avg_info_mbps() );
-			printf("dec_min_info_mbps()  = %f\n", dec->dec_min_info_mbps() );
-			printf("dec_max_info_mbps()  = %f\n", dec->dec_max_info_mbps() );
-			printf("dec_avg_coded_mbps() = %f\n", dec->dec_avg_coded_mbps() );
-			printf("dec_min_coded_mbps() = %f\n", dec->dec_min_coded_mbps() );
-			printf("dec_max_coded_mbps() = %f\n", dec->dec_max_coded_mbps() );
-			printf("dec_avg_latency()    = %f\n", dec->dec_avg_latency() );
-			printf("dec_min_latency()    = %f\n", dec->dec_min_latency() );
-			printf("dec_max_latency()    = %f\n", dec->dec_max_latency() );
 
-			printf("n()  = %d\n", dec->n());
-			printf("k()  = %d\n", dec->k());
-			printf("gf() = %d\n", dec->gf());
-
-			exit(EXIT_FAILURE);
-#endif
 			// #pragma omp single
 			while (true)
 			{
@@ -605,18 +591,19 @@ int main(int argc, char *argv[])
 				//
 				if (thread_id == 0)
 				{
-					auto curr = std::chrono::high_resolution_clock::now();
-					auto sec = std::chrono::duration<double>(curr - watchdod).count();
+					const auto curr = std::chrono::high_resolution_clock::now();
+					const auto sec = std::chrono::duration<double>(curr - watchdod).count();
 					if (sec >= 1)
 					{
-						uint64_t local_success = global_counter.load() - FER.load();
+						const uint64_t local_success = global_counter.load() - FER.load();
 						if ((global_counter.load() >= NbMonteCarlo) ||
-							(FER.load() >= FER_STOP))
-							stop.store(true);
+							(FER.load() >= FER_STOP)){
+								stop.store(true);
+						}
 						FER_out = FER.load();
 						gen_frames_out = global_counter.load();
 
-						double FER_ratio = (double)FER_out / gen_frames_out;
+						const double FER_ratio = (double)FER_out / gen_frames_out;
 						//std::ostringstream oss;
 						//					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
 						//oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;

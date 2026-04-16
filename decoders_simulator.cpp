@@ -142,6 +142,10 @@ void append_results_to_file1(
 static bool force_quit = false;
 void intHandler(int dummy)
 {
+	if( force_quit == true ){
+		printf("\n#(DD) CTRL+C was already called, forcing the program termination !\n");
+		exit( EXIT_FAILURE );
+	}
 	printf("\n#(DD) CTRL+C was detected\n");
 	force_quit = true;
 }

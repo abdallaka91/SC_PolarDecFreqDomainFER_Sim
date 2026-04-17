@@ -143,21 +143,51 @@ int main(int argc, char *argv[])
 {
 
 #ifdef __AVX512BW__
-	printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
+	printf("#(II) Non-binary FFT Successive Cancellation wrong frame replay "
 		   "program (AVX512 version)\n");
 #elif __AVX2__
-	printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
+	printf("#(II) Non-binary FFT Successive Cancellation wrong frame replay "
 		   "program (AVX2 version)\n");
 #else
-	printf("#(II) Non-binary FFT Successive Cancellation decoder evaluation "
+	printf("#(II) Non-binary FFT Successive Cancellation wrong frame replay "
 		   "program (ARM NEON version)\n");
 #endif
+
 	printf("#(II) + developped by Abdallah ABDALLAH in 2025...\n");
 	printf("#(II) +        and by Camille MONIERE   in 2025...\n");
 	printf("#(II) +        and by Bertrand LE GAL   in 2025...\n");
 	printf("#(II)\n");
 	printf("#(II) Binary generated : %s - %s\n", __DATE__, __TIME__);
 	printf("#(II)\n");
+#if defined(__clang__)
+	/* Clang/LLVM. ---------------------------------------------- */
+	printf("#(II) + Clang/LLVM version %d.%d.%d\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
+#elif defined(__ICC) || defined(__INTEL_COMPILER)
+	/* Intel ICC/ICPC. ------------------------------------------ */
+	printf("# + Intel ICC/ICPC version %d.%d\n", __INTEL_COMPILER, __INTEL_COMPILER_BUILD_DATE);
+#elif defined(__GNUC__) || defined(__GNUG__)
+	/* GNU GCC/G++. --------------------------------------------- */
+	printf("#(II) + GNU GCC/G++ version %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#elif defined(_MSC_VER)
+	/* Microsoft Visual Studio. --------------------------------- */
+	printf("#(II) + Microsoft Visual Studio\n");
+#else
+	#error "#(II) + Undetected compiler !"
+#endif
+
+#if (defined(__ICC) || defined(__INTEL_COMPILER)) == 0
+	std::time_t t = std::time(nullptr);
+	std::cout << "#(II) + Trace date and time : "
+			  << std::put_time(std::localtime(&t), "%c %Z") << '\n';
+	printf("#(II)\n");
+#endif
+
+    printf("# Run command:\n# ");
+    for(uint32_t i = 0; i < argc; i += 1){
+        printf("%s ", argv[i]);
+    }printf("\n");
+	printf("#(II)\n");
+	
 	signal(SIGINT, intHandler);
 
 #ifdef __APPLE__

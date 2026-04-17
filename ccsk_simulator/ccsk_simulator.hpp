@@ -26,27 +26,25 @@ class CCSK_Simulator
 	static constexpr double LUT_fcat = (LUT_SIZE - 1) / MAX_LLR_VALUE;
 
 	// COMPILE-TIME LOOKUP TABLE
-	static constexpr std::array<float, LUT_SIZE> create_exp_lut()
+	void create_exp_lut(std::array<float, LUT_SIZE>::iterator start, std::array<float, LUT_SIZE>::iterator stop)
 	{
-		std::array<float, LUT_SIZE> lut {};
 		constexpr double step = MAX_LLR_VALUE / (LUT_SIZE - 1);
 
-		for (int i = 0; i < LUT_SIZE; i++)
+		for (auto it = start; it < stop; it++)
 		{
-			double llr = i * step;
+			double llr = std::distance(start, it) * step;
 			if (llr > 150.0)
 			{
-				lut[i] = 0.0f;
+				*it = 0.0f;
 			}
 			else
 			{
-				lut[i] = static_cast<float>(std::exp(-llr));
+				*it = static_cast<float>(std::exp(-llr));
 			}
 		}
-		return lut;
 	}
 
-	static constexpr std::array<float, LUT_SIZE> exp_neg_lut = create_exp_lut();
+	std::array<float, LUT_SIZE> exp_neg_lut;
 
 	const std::array<double, 2 * __GF__> base_seq;
 
@@ -82,6 +80,7 @@ class CCSK_Simulator
 		: base_seq(get_base_seq_float<__GF__>()),
 		  llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(llr_sigma))
 	{
+		create_exp_lut(exp_neg_lut.begin(), exp_neg_lut.end());
 		thread_resources.reserve(max_threads);
 		for (int i = 0; i < max_threads; i++)
 		{
@@ -92,7 +91,7 @@ class CCSK_Simulator
 
   private:
 	// Quantize LLR value to LUT index (compile-time friendly)
-	static constexpr int quantize_llr(double llr)
+	int quantize_llr(double llr)
 	{
 		if (llr <= 0.0)
 			return 0;
@@ -105,7 +104,7 @@ class CCSK_Simulator
 	}
 
 	// Fast exp(-llr) using compile-time LUT
-	static float fast_exp_neg(double llr)
+	float fast_exp_neg(double llr)
 	{
 		return exp_neg_lut[quantize_llr(llr)];
 	}

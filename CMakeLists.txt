@@ -11,6 +11,7 @@ project(REPLAY LANGUAGES C CXX)
  
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #set(CMAKE_BUILD_TYPE Release)
@@ -25,11 +26,11 @@ endif()
 # ===========================
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring Debug build")
-    set(CMAKE_CXX_FLAGS "-g3 -O0 -fopenmp")
+    set(CMAKE_CXX_FLAGS "-g3 -O0")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native -ffast-math -funroll-loops -fopenmp")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native -ffast-math -funroll-loops")
 	set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
  
@@ -82,6 +83,8 @@ file(GLOB_RECURSE SRC_FILES
  
 add_library(ccsk_simulators OBJECT)
 target_include_directories (ccsk_simulators PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(ccsk_simulators PUBLIC ${FFTW3_INCLUDE_DIR})
+target_link_libraries(ccsk_simulators PUBLIC ${FFTW3_LIBRARY})
 foreach (GF 64 128 256 512 1024)
 foreach (N 8 16 32 64 128 256 512 1024 2048)
 configure_file (ccsk_simulator/ccsk_simulator_implementations.cpp.in ccsk_stub_${GF}_${N}.cpp @ONLY)
@@ -104,11 +107,6 @@ target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/ccsk_simulator/aff3ct_randn_gen
 )
  
-if(FFTW3_FOUND)
-    target_include_directories(Sim2 PUBLIC ${FFTW3_INCLUDE_DIR})
-    target_compile_definitions(Sim2 PUBLIC USE_FFTW3)
-endif()
- 
  
 # ===========================
 #  Link Libraries
@@ -116,10 +114,6 @@ endif()
 target_link_libraries(Sim2 PRIVATE Threads::Threads ccsk_simulators)
 if (NOT APPLE)
 	target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
-endif()
-
-if(FFTW3_FOUND)
-    target_link_libraries(Sim2 PRIVATE ${FFTW3_LIBRARY})
 endif()
  
 add_executable(replay ${SRC_FILES} ${CMAKE_SOURCE_DIR}/replay_simulator.cpp)
@@ -132,11 +126,6 @@ target_include_directories(replay PUBLIC
     ${CMAKE_SOURCE_DIR}/ccsk_simulator
     ${CMAKE_SOURCE_DIR}/ccsk_simulator/aff3ct_randn_gen
 )
- 
-if(FFTW3_FOUND)
-    target_include_directories(replay PUBLIC ${FFTW3_INCLUDE_DIR})
-    target_compile_definitions(replay PUBLIC USE_FFTW3)
-endif()
  
 # Option for ALL_GFs
 option(USE_ALL_GFs "Enable ALL_GFs compilation" OFF)
@@ -151,16 +140,9 @@ endif()
 # ===========================
 #  Link Libraries
 # ===========================
-target_link_libraries(replay PRIVATE Threads::Threads)
-#if(OpenMP_CXX_FOUND)
-#    target_link_libraries(replay PRIVATE OpenMP::OpenMP_CXX)
-#endif()
- 
-if(FFTW3_FOUND)
-    target_link_libraries(replay PRIVATE ${FFTW3_LIBRARY})
-    # Link math library for exp(), cos(), etc.
-    target_link_libraries(replay PRIVATE m)
-    target_link_libraries(replay PRIVATE dl)
+target_link_libraries(replay PRIVATE Threads::Threads ccsk_simulators)
+if (NOT APPLE)
+	target_link_libraries(replay PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
 # ===========================

@@ -30,7 +30,7 @@ BinPackParameters: false
 ColumnLimit: 0  # No column limit
 AllowShortFunctionsOnASingleLine: None
 AllowShortBlocksOnASingleLine: false
-AllowShortIfStatStatementsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLoopsOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AlwaysBreakAfterReturnType: None

@@ -2,7 +2,6 @@
 
 #include "init.h"
 #include "struct.h"
-#include "tools.h"
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -10,14 +9,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
-#include <fstream>
 #include <inttypes.h>
 #include <iomanip>
 #include <iostream>
-#include <limits>
-#include <memory>
 #include <omp.h>
-#include <random>
 #include <signal.h>
 #include <sstream>
 #include <string>
@@ -28,35 +23,18 @@
 #include <chrono>
 #include <iostream>
 
-#include "./include/custom_types.hpp"
 #include "./include/encoder_1.hpp"
 #include "./include/loader_so.hpp"
 
 using namespace PoAwN::structures;
-using namespace PoAwN::tools;
 using namespace PoAwN::init;
-//
-//
-//
-//
-using namespace std;
-//
-//
-//
-//
+
 #include <cstdio>
-#include <fstream>
 #include <iostream>
 #include <string>
-//
-//
-//
-//
+
 namespace fs = std::filesystem;
-//
-//
-//
-//
+
 std::string format_FER(double FER_value, int width = 10)
 {
 	std::ostringstream oss;
@@ -77,8 +55,7 @@ std::string format_FER(double FER_value, int width = 10)
 //
 //
 //
-void append_results_to_file1(
-	const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, const float forced_EbN0, const bool forced_mode, const float llr_sigma, const int seconds, const int nbits = -1)
+void append_results_to_file1(const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, const float forced_EbN0, const bool forced_mode, const float llr_sigma, const int seconds, const int nbits = -1)
 {
 	fs::path dir = "results";
 
@@ -99,9 +76,9 @@ void append_results_to_file1(
 
 	if (forced_mode == true)
 	{
-		filename =
-			dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
-				   std::to_string(Kx) + "_" + dec.c_str() + "_forced_" + std::to_string(forced_EbN0) + ".txt");
+		filename = dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) +
+						  "_K" + std::to_string(Kx) + "_" + dec.c_str() +
+						  "_forced_" + std::to_string(forced_EbN0) + ".txt");
 	}
 
 	FILE *fou = fopen(filename.c_str(), "a");
@@ -112,7 +89,8 @@ void append_results_to_file1(
 		return;
 	}
 
-	double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
+	double FER_value =
+		(nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 	std::string FER_str = format_FER(FER_value, 11); // 11 chars wide
 
 	fprintf(fou, "%+7.3f   %s   %6lu   %12" PRIu64, SNR, FER_str.c_str(), nb_err, nb_gen_frame);
@@ -150,7 +128,8 @@ void intHandler(int dummy)
 {
 	if (force_quit == true)
 	{
-		printf("\n#(DD) CTRL+C was already called, forcing the program termination !\n");
+		printf("\n#(DD) CTRL+C was already called, forcing the program termination "
+			   "!\n");
 		exit(EXIT_FAILURE);
 	}
 	printf("\n#(DD) CTRL+C was detected\n");
@@ -421,7 +400,8 @@ int main(int argc, char *argv[])
 	//     }
 	//     dec_type = "pruned-int{" + std::to_string(nbits) + "}";
 	// }
-	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time | Latency | Througput |\n");
+	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time | Latency "
+		   "| Througput |\n");
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
@@ -451,11 +431,9 @@ int main(int argc, char *argv[])
 		//
 		//
 		//
-		int frozen_symbols[N];
-		for (int i = 0; i < N; i += 1) // per defaut l'ensemble des noeuds sont frozen
-			frozen_symbols[i] = true;
+		std::vector<int> frozen_symbols(N, true);
 		for (int i = 0; i < K; i += 1) // on dégèle les K noeuds les plus fiables
-			frozen_symbols[code_param.reliab_sequence[i]] = false;
+			frozen_symbols.at(code_param.reliab_sequence[i]) = false;
 		//
 		//
 		//
@@ -482,35 +460,84 @@ int main(int argc, char *argv[])
 		llr_sigma = noise_sigma;
 		// printf("llr_sigma = %f\n", llr_sigma);
 
-		//		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
+		//		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma,
+		// num_threads);
 		CCSK_Channel *simulator = nullptr;
-		     if (N ==   64 && q ==  64) simulator = new CCSK_Simulator< 64,   64>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  128 && q ==  64) simulator = new CCSK_Simulator< 64,  128>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  256 && q ==  64) simulator = new CCSK_Simulator< 64,  256>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  512 && q ==  64) simulator = new CCSK_Simulator< 64,  512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q ==  64) simulator = new CCSK_Simulator< 64, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q ==  64) simulator = new CCSK_Simulator< 64, 2048>(noise_sigma, llr_sigma, num_threads);
+		if (N == 64 && q == 64)
+			simulator =
+				new CCSK_Simulator<64, 64>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 128 && q == 64)
+			simulator =
+				new CCSK_Simulator<64, 128>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 256 && q == 64)
+			simulator =
+				new CCSK_Simulator<64, 256>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 512 && q == 64)
+			simulator =
+				new CCSK_Simulator<64, 512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 64)
+			simulator =
+				new CCSK_Simulator<64, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 64)
+			simulator =
+				new CCSK_Simulator<64, 2048>(noise_sigma, llr_sigma, num_threads);
 
-		else if (N ==   64 && q == 128) simulator = new CCSK_Simulator<128,   64>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  128 && q == 128) simulator = new CCSK_Simulator<128,  128>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  256 && q == 128) simulator = new CCSK_Simulator<128,  256>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  512 && q == 128) simulator = new CCSK_Simulator<128,  512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q == 128) simulator = new CCSK_Simulator<128, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q == 128) simulator = new CCSK_Simulator<128, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 64 && q == 128)
+			simulator =
+				new CCSK_Simulator<128, 64>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 128 && q == 128)
+			simulator =
+				new CCSK_Simulator<128, 128>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 256 && q == 128)
+			simulator =
+				new CCSK_Simulator<128, 256>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 512 && q == 128)
+			simulator =
+				new CCSK_Simulator<128, 512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 128)
+			simulator =
+				new CCSK_Simulator<128, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 128)
+			simulator =
+				new CCSK_Simulator<128, 2048>(noise_sigma, llr_sigma, num_threads);
 
-		else if (N ==   64 && q == 256) simulator = new CCSK_Simulator<256,   64>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  128 && q == 256) simulator = new CCSK_Simulator<256,  128>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  256 && q == 256) simulator = new CCSK_Simulator<256,  256>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  512 && q == 256) simulator = new CCSK_Simulator<256,  512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q == 256) simulator = new CCSK_Simulator<256, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q == 256) simulator = new CCSK_Simulator<256, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 64 && q == 256)
+			simulator =
+				new CCSK_Simulator<256, 64>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 128 && q == 256)
+			simulator =
+				new CCSK_Simulator<256, 128>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 256 && q == 256)
+			simulator =
+				new CCSK_Simulator<256, 256>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 512 && q == 256)
+			simulator =
+				new CCSK_Simulator<256, 512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 256)
+			simulator =
+				new CCSK_Simulator<256, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 256)
+			simulator =
+				new CCSK_Simulator<256, 2048>(noise_sigma, llr_sigma, num_threads);
 
-		else if (N ==   64 && q == 512) simulator = new CCSK_Simulator<512,   64>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  128 && q == 512) simulator = new CCSK_Simulator<512,  128>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  256 && q == 512) simulator = new CCSK_Simulator<512,  256>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  512 && q == 512) simulator = new CCSK_Simulator<512,  512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q == 512) simulator = new CCSK_Simulator<512, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q == 512) simulator = new CCSK_Simulator<512, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 64 && q == 512)
+			simulator =
+				new CCSK_Simulator<512, 64>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 128 && q == 512)
+			simulator =
+				new CCSK_Simulator<512, 128>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 256 && q == 512)
+			simulator =
+				new CCSK_Simulator<512, 256>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 512 && q == 512)
+			simulator =
+				new CCSK_Simulator<512, 512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 512)
+			simulator =
+				new CCSK_Simulator<512, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 512)
+			simulator =
+				new CCSK_Simulator<512, 2048>(noise_sigma, llr_sigma, num_threads);
 
 		if (simulator == nullptr)
 		{
@@ -526,7 +553,7 @@ int main(int argc, char *argv[])
 		std::atomic<uint64_t> FER(0);
 		std::atomic<bool> stop(false);
 
-		auto start    = std::chrono::high_resolution_clock::now();
+		auto start = std::chrono::high_resolution_clock::now();
 		auto watchdod = std::chrono::high_resolution_clock::now();
 
 		//
@@ -542,21 +569,21 @@ int main(int argc, char *argv[])
 #pragma omp parallel
 		{
 			int thread_id = omp_get_thread_num();
-			uint16_t K_symb[K];
-			uint16_t u_symb[N];
-			uint16_t r_symb[N];
-			std::vector< float > llrs_n(N * q);
+			std::vector<uint16_t> K_symb(K);
+			std::vector<uint16_t> u_symb(N);
+			std::vector<uint16_t> r_symb(N);
+			std::vector<float> llrs_n(N * q);
 			std::vector<uint16_t> decoded_n(N);
 
 			// Initialize decoder
 			decoder *dec = nullptr;
-			dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols);
 #if 0
 			printf("dec->k  = %d\n", dec->k());
 			printf("dec->n  = %d\n", dec->n());
 			printf("dec->gf = %d\n", dec->gf());
 #endif
-			// #pragma omp single
+			dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols.data());
+
 			while (true)
 			{
 				bool succ_dec = true;
@@ -564,7 +591,7 @@ int main(int argc, char *argv[])
 				//
 				// Generate symbols for THIS frame
 				//
-				simulator->generate_random_symbols(K_symb, K, thread_id);
+				simulator->generate_random_symbols(K_symb.data(), K, thread_id);
 				for (int u = 0; u < K; u++)
 				{
 					u_symb[code_param.reliab_sequence[u]] = K_symb[u];
@@ -574,25 +601,48 @@ int main(int argc, char *argv[])
 					u_symb[code_param.reliab_sequence[u]] = 0;
 				}
 
-				for (int u = 0; u < N; u++)
+				for (int u = 0; u < N;
+					 u++)
 				{						   // on conserve une copie des données afin d'utiliser
 					r_symb[u] = u_symb[u]; // le mode génie dans la simulation
 				}
 
-				     if (N ==    64) polar_encode<  64>(u_symb);
-				else if (N ==   128) polar_encode< 128>(u_symb);
-				else if (N ==   256) polar_encode< 256>(u_symb);
-				else if (N ==   512) polar_encode< 512>(u_symb);
-				else if (N ==  1024) polar_encode<1024>(u_symb);
-				else if (N ==  2048) polar_encode<2048>(u_symb);
-				else exit( EXIT_FAILURE );
+				if (N == 64)
+				{
+					polar_encode<64>(u_symb.data());
+				}
+				else if (N == 128)
+				{
+					polar_encode<128>(u_symb.data());
+				}
+				else if (N == 256)
+				{
+					polar_encode<256>(u_symb.data());
+				}
+				else if (N == 512)
+				{
+					polar_encode<512>(u_symb.data());
+				}
+				else if (N == 1024)
+				{
+					polar_encode<1024>(u_symb.data());
+				}
+				else if (N == 2048)
+				{
+					polar_encode<2048>(u_symb.data());
+				}
+				else
+				{
+					exit(EXIT_FAILURE);
+				}
 
 				//
 				// Simulate CCSK transmission
 				//
-				double *llr_values = simulator->simulate_frame(u_symb, thread_id);
+				double *llr_values = simulator->simulate_frame(u_symb.data(), thread_id);
 
-				if constexpr (SimulationParams::method == SimulationParams::LLRMethod::EXP)
+				if constexpr (SimulationParams::method ==
+							  SimulationParams::LLRMethod::EXP)
 				{
 					// Original method: exp() calls
 					simulator->llr_to_probability(llr_values, N);
@@ -607,10 +657,12 @@ int main(int argc, char *argv[])
 
 				// Decode
 
-				else if constexpr (SimulationParams::method == SimulationParams::LLRMethod::FAST_LUT)
+				else if constexpr (SimulationParams::method ==
+								   SimulationParams::LLRMethod::FAST_LUT)
 				{
 					// Fast method: lookup table
-					float *probabilities = simulator->llr_to_probability_fast(llr_values, N, thread_id);
+					float *probabilities =
+						simulator->llr_to_probability_fast(llr_values, N, thread_id);
 					for (int i = 0; i < N; i++)
 					{
 						for (int j = 0; j < q; j++)
@@ -620,7 +672,7 @@ int main(int argc, char *argv[])
 					}
 				}
 
-				dec->setResult(r_symb);
+				dec->setResult(r_symb.data());
 				dec->execute(llrs_n.data(), decoded_n.data());
 
 				//
@@ -645,7 +697,7 @@ int main(int argc, char *argv[])
 				for (uint16_t i = 0; i < code_param.K; i++)
 				{
 					if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
-					{	
+					{
 						succ_dec = false;
 						break;
 					}
@@ -668,10 +720,12 @@ int main(int argc, char *argv[])
 				if (thread_id == 0)
 				{
 					const auto curr = std::chrono::high_resolution_clock::now();
-					const auto sec = std::chrono::duration<double>(curr - watchdod).count();
+					const auto sec =
+						std::chrono::duration<double>(curr - watchdod).count();
 					if (sec >= 1)
 					{
-						// const uint64_t local_success = global_counter.load() - FER.load();
+						// const uint64_t local_success = global_counter.load() -
+						// FER.load();
 						if ((global_counter.load() >= NbMonteCarlo) ||
 							(FER.load() >= FER_STOP))
 						{
@@ -682,9 +736,12 @@ int main(int argc, char *argv[])
 
 						const double FER_ratio = (double)FER_out / gen_frames_out;
 						// std::ostringstream oss;
-						//					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
-						// oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
-						// std::string FER_str = oss.str();
+						//					FER_ratio < 0.0001 ? oss <<
+						// std::scientific << std::setprecision(3) << std::setw(10) <<
+						// FER_ratio : oss << std::fixed << std::setprecision(6) <<
+						// std::setw(10) << FER_ratio;
+						// oss << std::scientific << std::setprecision(3) << std::setw(10)
+						// << FER_ratio; std::string FER_str = oss.str();
 
 						auto end = std::chrono::high_resolution_clock::now();
 						double sec = std::chrono::duration<double>(end - start).count();
@@ -705,11 +762,29 @@ int main(int argc, char *argv[])
 							double restAnt = (FER_STOP - FER_out);
 							double restant = std::max(restAnt, 0.0);
 							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6lld | %10lld | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)tps_rest, d, l);
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %7.2f | "
+								   "%9.2f |\r",
+								   cSNR,
+								   FER_out,
+								   gen_frames_out,
+								   FER_ratio,
+								   (int)sec,
+								   (int)tps_rest,
+								   d,
+								   l);
 						}
 						else
 						{
-							printf("%6.2f | %6lld | %10lld | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, 0, d, l);
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %7.2f | "
+								   "%9.2f |\r",
+								   cSNR,
+								   FER_out,
+								   gen_frames_out,
+								   FER_ratio,
+								   (int)sec,
+								   0,
+								   d,
+								   l);
 						}
 						fflush(stdout);
 						watchdod = std::chrono::high_resolution_clock::now();
@@ -734,8 +809,11 @@ int main(int argc, char *argv[])
 
 		double FER_ratio = (double)FER_out / gen_frames_out;
 		// std::ostringstream oss;
-		//	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
-		// oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
+		//	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) <<
+		// std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) <<
+		// std::setw(10) << FER_ratio;
+		// oss << std::scientific << std::setprecision(3) << std::setw(10) <<
+		// FER_ratio;
 
 		// std::string FER_str = oss.str();
 
@@ -744,7 +822,7 @@ int main(int argc, char *argv[])
 		//		<< "/" << std::setw(8) << gen_frames_out
 		//		<< " = " << FER_str
 		//		<< std::flush;
-		printf("\r%6.2f | %6lld | %10lld | %1.3e | %6d | ------ |", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
+		printf("\r%6.2f | %6lu | %10lu | %1.3e | %6d | ------ |", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
 		printf("\n");
 		fflush(stdout);
 
@@ -762,13 +840,14 @@ int main(int argc, char *argv[])
 
 	// Final results
 //	std::cout << std::endl;
-//	std::cout << "#(DD) Polar Code: N=" << N << ", K=" << K << ", GF=" << q << std::endl;
-//	std::cout << "#(DD) Decoder: " << dec_type << std::endl;
-//	std::cout << "#(DD) Eb/N0: " << EbN0 << " dB, noise_sigma: " << noise_sigma << std::endl;
-//	std::cout << "#(DD) Actual frames: " << gen_frames_out << std::endl;
-//	std::cout << "#(DD) Time: " << sec << " seconds" << std::endl;
-//	std::cout << "#(DD) Throughput: " << gen_frames_out / sec << " fps" << std::endl;
-//	std::cout << "#(DD) Throughput info: " << (gen_frames_out * K * p) / sec / 1e6 << " Mbps" << std::endl;
+//	std::cout << "#(DD) Polar Code: N=" << N << ", K=" << K << ", GF=" << q
+//<< std::endl; 	std::cout << "#(DD) Decoder: " << dec_type << std::endl;
+//	std::cout << "#(DD) Eb/N0: " << EbN0 << " dB, noise_sigma: " <<
+// noise_sigma << std::endl; 	std::cout << "#(DD) Actual frames: " <<
+// gen_frames_out << std::endl; 	std::cout << "#(DD) Time: " << sec << " seconds"
+//<< std::endl; 	std::cout << "#(DD) Throughput: " << gen_frames_out / sec << "
+// fps" << std::endl; 	std::cout << "#(DD) Throughput info: " << (gen_frames_out *
+// K * p) / sec / 1e6 << " Mbps" << std::endl;
 #ifdef find_llr_rang
 	std::cout << "global_llr_max: " << global_llr_max << std::endl;
 	std::cout << "global_llr_min: " << global_llr_min << std::endl;

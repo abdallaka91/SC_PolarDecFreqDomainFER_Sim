@@ -14,32 +14,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-#set(CMAKE_BUILD_TYPE Release)
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
-endif()
- 
-
 # ===========================
 #  Build type configuration
 # ===========================
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring Debug build")
-    set(CMAKE_CXX_FLAGS "-g3 -O0")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Configuring Release build")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native -ffast-math -funroll-loops")
-	set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-endif()
- 
+
+set(DEBUG_FLAGS -g3 -O0)
+set(RELEASE_FLAGS -O3 -march=native -mtune=native -ffast-math -funroll-loops)
+set(COMPILE_FLAGS $<$<CONFIG:Debug,RelWithDebInfo>:${DEBUG_FLAGS}> $<$<CONFIG:Release,RelWithDebInfo>:${RELEASE_FLAGS}>)
+add_compile_options( "${COMPILE_FLAGS}" )
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG FALSE)
+
 # ===========================
 #  Dependencies
 # ===========================
 find_package(Threads REQUIRED) 
 if (APPLE)
-	message (NOTICE "-- Apple system targetted, resorting to hard coded OpenMP flags.")
+	message (NOTICE "-- Apple system targeted, resorting to hard coded OpenMP flags.")
 	add_compile_options(-fopenmp)
 	add_link_options(-fopenmp)
 else()

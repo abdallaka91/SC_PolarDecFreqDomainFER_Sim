@@ -582,7 +582,7 @@ int main(int argc, char *argv[])
 			printf("dec->n  = %d\n", dec->n());
 			printf("dec->gf = %d\n", dec->gf());
 #endif
-			dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols.data());
+			dec = allocate_dec(dec_type, N, q, frozen_symbols.data());
 
 			while (true)
 			{
@@ -678,7 +678,7 @@ int main(int argc, char *argv[])
 				//
 				// Check for errors
 				//
-#if 1
+#if 0
 				for (int i = 0; i < N * q; i++)
 					printf("%1.3f ", llrs_n[i]);
 				printf("\n");

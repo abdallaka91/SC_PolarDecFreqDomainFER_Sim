@@ -23,18 +23,18 @@ public:
 
 
 // Configuration as template parameters
-template <int __GF__, int N = 1024, int MAX_LLR_1000 = SimulationParams::MAX_LLR_1000, int LLR_QUANT_BITS = SimulationParams::LLR_QUANT_BITS>
+template <int Tgf, int N = 1024, int MAX_LLR_1000 = SimulationParams::MAX_LLR_1000, int LLR_QUANT_BITS = SimulationParams::LLR_QUANT_BITS>
 class CCSK_Simulator : public CCSK_Channel
 {
 	// Compile-time validation
 	static_assert(N > 0, "N must be positive");
-	static_assert((__GF__ & (__GF__ - 1)) == 0, "__GF__ must be power of 2");
+	static_assert((Tgf & (Tgf - 1)) == 0, "__GF__ must be power of 2");
 	static_assert(LLR_QUANT_BITS > 0 && LLR_QUANT_BITS <= 16,
 				  "LLR_QUANT_BITS must be 1-16");
 
 	static constexpr double MAX_LLR_VALUE = static_cast<double>(MAX_LLR_1000) / 1000;
 
-	static constexpr int CHIPS_PER_SYMBOL = __GF__;
+	static constexpr int CHIPS_PER_SYMBOL = Tgf;
 	static constexpr int LUT_SIZE = 1 << LLR_QUANT_BITS; // 4096 for 12 bits
 	static constexpr double LUT_fcat = (LUT_SIZE - 1) / MAX_LLR_VALUE;
 
@@ -59,7 +59,7 @@ class CCSK_Simulator : public CCSK_Channel
 
 	std::array<float, LUT_SIZE> exp_neg_lut;
 
-	const std::array<double, 2 * __GF__> base_seq;
+	const std::array<double, 2 * Tgf> base_seq;
 
 	struct ThreadResources
 	{
@@ -76,11 +76,11 @@ class CCSK_Simulator : public CCSK_Channel
 		ThreadResources(double noise_sigma, int seed)
 			: rng(seed),
 			  noise_gen(noise_sigma, seed),
-			  sym_dist(0, __GF__ - 1),
-			  llr_buffer(N * __GF__),
+			  sym_dist(0, Tgf - 1),
+			  llr_buffer(N * Tgf),
 			  noise_buffer(N * CHIPS_PER_SYMBOL),
 			  y_buffer(CHIPS_PER_SYMBOL),
-			  prob_buffer(N * __GF__)
+			  prob_buffer(N * Tgf)
 		{
 		}
 	};
@@ -90,7 +90,7 @@ class CCSK_Simulator : public CCSK_Channel
 
   public:
 	CCSK_Simulator(double noise_sigma, double llr_sigma, int max_threads = 1)
-		: base_seq(get_base_seq_float<__GF__>()),
+		: base_seq(get_base_seq_float<Tgf>()),
 		  llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(llr_sigma))
 	{
 		create_exp_lut(exp_neg_lut.begin(), exp_neg_lut.end());
@@ -135,7 +135,7 @@ class CCSK_Simulator : public CCSK_Channel
 
 		for (int sym_idx = 0; sym_idx < N; sym_idx++)
 		{
-			const double *rotated_seq = &base_seq[__GF__ - tx_symbol[sym_idx]];
+			const double *rotated_seq = &base_seq[Tgf - tx_symbol[sym_idx]];
 			const float *symbol_noise = &noise_buf[sym_idx * CHIPS_PER_SYMBOL];
 
 			for (int i = 0; i < CHIPS_PER_SYMBOL; i++)
@@ -143,7 +143,7 @@ class CCSK_Simulator : public CCSK_Channel
 				y[i] = rotated_seq[i] + static_cast<double>(symbol_noise[i]);
 			}
 
-			llr_calc->calculate(y, &llr_output[sym_idx * __GF__]);
+			llr_calc->calculate(y, &llr_output[sym_idx * Tgf]);
 		}
 
 		return llr_output;
@@ -153,16 +153,16 @@ class CCSK_Simulator : public CCSK_Channel
 	{
 		for (int sym_idx = 0; sym_idx < num_symbols; sym_idx++)
 		{
-			double *symbol_llr = &llr_values[sym_idx * __GF__];
+			double *symbol_llr = &llr_values[sym_idx * Tgf];
 			double sum_exp = 0.0;
 
-			for (int j = 0; j < __GF__; j++)
+			for (int j = 0; j < Tgf; j++)
 			{
 				symbol_llr[j] = exp(-symbol_llr[j]);
 				sum_exp += symbol_llr[j];
 			}
 
-			for (int j = 0; j < __GF__; j++)
+			for (int j = 0; j < Tgf; j++)
 			{
 				symbol_llr[j] /= sum_exp;
 			}
@@ -177,12 +177,12 @@ class CCSK_Simulator : public CCSK_Channel
 
 		for (int sym_idx = 0; sym_idx < num_symbols; sym_idx++)
 		{
-			double *symbol_llr = &llr_values[sym_idx * __GF__];
-			float *symbol_prob = &prob_output[sym_idx * __GF__];
+			double *symbol_llr = &llr_values[sym_idx * Tgf];
+			float *symbol_prob = &prob_output[sym_idx * Tgf];
 			float sum_exp = 0.0f;
 
 			// Convert LLR to probability using LUT
-			for (int j = 0; j < __GF__; j++)
+			for (int j = 0; j < Tgf; j++)
 			{
 				symbol_prob[j] = fast_exp_neg(symbol_llr[j]);
 				sum_exp += symbol_prob[j];
@@ -190,7 +190,7 @@ class CCSK_Simulator : public CCSK_Channel
 
 			// Normalize to sum = 1
 			float inv_sum = 1.0f / sum_exp;
-			for (int j = 0; j < __GF__; j++)
+			for (int j = 0; j < Tgf; j++)
 			{
 				symbol_prob[j] *= inv_sum;
 			}

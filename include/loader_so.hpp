@@ -93,4 +93,7 @@ void* loader_so::handle = nullptr;
 allocate_dec_func loader_so::allocate_dec_ptr = nullptr;
 allocate_enc_func loader_so::allocate_enc_ptr = nullptr;
 
+extern "C" polar_encoder* allocate_enc(int N, int K, int GF, const int* f_vector);
+extern "C" decoder* allocate_dec(const std::string& type, int N, int GF, const int* f_vector);
+
 #endif // GENERATOR_LOADER_SO_H

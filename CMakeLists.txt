@@ -102,7 +102,8 @@ target_include_directories(Sim2 PUBLIC
 # ===========================
 #  Link Libraries
 # ===========================
-target_link_libraries(Sim2 PRIVATE Threads::Threads ccsk_simulators)
+target_link_libraries(Sim2 PRIVATE Threads::Threads ccsk_simulators NbScFFTdec)
+target_link_directories(Sim2 PRIVATE ${CMAKE_SOURCE_DIR})
 if (NOT APPLE)
 	target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
 endif()

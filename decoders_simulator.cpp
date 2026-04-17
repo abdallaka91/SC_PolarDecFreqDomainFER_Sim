@@ -35,21 +35,28 @@
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
 using namespace PoAwN::init;
-using std::array;
-using std::cout;
-using std::endl;
-using std::stod;
-using std::stoi;
-using std::string;
-using std::vector;
-
+//
+//
+//
+//
+using namespace std;
+//
+//
+//
+//
 #include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <string>
-
+//
+//
+//
+//
 namespace fs = std::filesystem;
-
+//
+//
+//
+//
 std::string format_FER(double FER_value, int width = 10)
 {
 	std::ostringstream oss;
@@ -66,7 +73,10 @@ std::string format_FER(double FER_value, int width = 10)
 
 	return s;
 }
-
+//
+//
+//
+//
 void append_results_to_file1(
 	const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame,
 	const float forced_EbN0,
@@ -109,7 +119,7 @@ void append_results_to_file1(
 	double FER_value = (nb_gen_frame == 0) ? 0.0 : static_cast<double>(nb_err) / nb_gen_frame;
 	std::string FER_str = format_FER(FER_value, 11); // 11 chars wide
 
-	fprintf(fou, "%+7.3f   %s   %6d   %12" PRIu64, SNR, FER_str.c_str(), nb_err, nb_gen_frame);
+	fprintf(fou, "%+7.3f   %s   %6lu   %12" PRIu64, SNR, FER_str.c_str(), nb_err, nb_gen_frame);
 	fprintf(fou, " %6d ", seconds);
 	if ((nbits > 0))
 	{
@@ -189,7 +199,7 @@ int main(int argc, char *argv[])
 
 	////////////////////////////
 
-	softdata_t offset;
+	//softdata_t offset;
 
 	////////////////////////////
 
@@ -467,13 +477,13 @@ int main(int argc, char *argv[])
 		//
 
 		const float noise_sigma = sqrt(1.0 / (pow(10, cSNR / 10.0)));
-		if (llr_sigma < 0.f)
-			llr_sigma = noise_sigma;
+		//if (llr_sigma < 0.f) car on est en mode SNR evolutif !
+		llr_sigma = noise_sigma;
 
 		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
 
-		std::atomic<uint64_t> frame_errors(0);
-		std::atomic<uint64_t> frames_simulated(0);
+		//std::atomic<uint64_t> frame_errors(0);
+		//std::atomic<uint64_t> frames_simulated(0);
 
 		int64_t FER_out = 0;
 		int64_t gen_frames_out = 0;
@@ -481,8 +491,8 @@ int main(int argc, char *argv[])
 		std::atomic<uint64_t> FER(0);
 		std::atomic<bool> stop(false);
 
-		std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
-		std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
+//		std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
+//		std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
 
 		auto start    = std::chrono::high_resolution_clock::now();
 		auto watchdod = std::chrono::high_resolution_clock::now();
@@ -519,13 +529,16 @@ int main(int argc, char *argv[])
 				// Generate symbols for THIS frame
 				//
 				simulator.generate_random_symbols(K_symb, K, thread_id);
-				for (int u = 0; u < K; u++)
+				for (int u = 0; u < K; u++){
 					u_symb[code_param.reliab_sequence[u]] = K_symb[u];
-				for (int u = K; u < N; u++)
+				}
+				for (int u = K; u < N; u++){
 					u_symb[code_param.reliab_sequence[u]] = 0;
+				}
 
-				for (int u = 0; u < N; u++) // on conserve une copie des données afin d'utiliser
-					r_symb[u] = u_symb[u];	// le mode génie dans la simulation
+				for (int u = 0; u < N; u++){  // on conserve une copie des données afin d'utiliser
+					r_symb[u] = u_symb[u];	  // le mode génie dans la simulation
+				}
 
 				polar_encode<_N_>(u_symb);
 
@@ -583,12 +596,12 @@ int main(int argc, char *argv[])
 				//
 				//
 				global_counter.fetch_add(1);
-				uint64_t succ_now = global_counter.load() - FER.load();
+				//uint64_t succ_now = global_counter.load() - FER.load();
 				if ( !succ_dec )
 				{
 					FER.fetch_add(1);
 				}
-				succ_now = global_counter.load() - FER.load();
+				//succ_now = global_counter.load() - FER.load();
 
 				//
 				// Plus d'openmp critical car on filtre sur thread 1
@@ -599,7 +612,7 @@ int main(int argc, char *argv[])
 					const auto sec = std::chrono::duration<double>(curr - watchdod).count();
 					if (sec >= 1)
 					{
-						const uint64_t local_success = global_counter.load() - FER.load();
+						//const uint64_t local_success = global_counter.load() - FER.load();
 						if ((global_counter.load() >= NbMonteCarlo) ||
 							(FER.load() >= FER_STOP)){
 								stop.store(true);
@@ -631,9 +644,9 @@ int main(int argc, char *argv[])
 							double restAnt = (FER_STOP - FER_out);
 							double restant = std::max(restAnt, 0.0);
 							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)tps_rest, d, l);
+							printf("%6.2f | %6lld | %10lld | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)tps_rest, d, l);
 						} else {
-							printf("%6.2f | %6d | %10d | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, 0, d, l);
+							printf("%6.2f | %6lld | %10lld | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, 0, d, l);
 						}
 						fflush( stdout );
 						watchdod = std::chrono::high_resolution_clock::now();
@@ -667,7 +680,7 @@ int main(int argc, char *argv[])
 		//		<< "/" << std::setw(8) << gen_frames_out
 		//		<< " = " << FER_str
 		//		<< std::flush;
-		printf("\r%6.2f | %6d | %10d | %1.3e | %6d | ------ |", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
+		printf("\r%6.2f | %6lld | %10lld | %1.3e | %6d | ------ |", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
 		printf("\n");
 		fflush( stdout );
 

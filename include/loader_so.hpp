@@ -39,7 +39,8 @@ public:
         dlerror(); // clear previous errors
 
         allocate_dec_ptr = (allocate_dec_func)dlsym(handle, "allocate_dec");
-        if (const char* err = dlerror()) {
+        char* err = dlerror();
+        if ( err != nullptr ) {
             dlclose(handle);
             handle = nullptr;
             printf("(EE) Error dlsym allocate_dec failed\n");
@@ -50,7 +51,8 @@ public:
         }
 
         allocate_enc_ptr = (allocate_enc_func)dlsym(handle, "allocate_enc");
-        if (const char* err = dlerror()) {
+        err = dlerror();
+        if ( err != nullptr ) {
             dlclose(handle);
             handle = nullptr;
             printf("(EE) Error dlsym allocate_enc failed\n");

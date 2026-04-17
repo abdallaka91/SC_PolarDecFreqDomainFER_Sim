@@ -477,8 +477,9 @@ int main(int argc, char *argv[])
 		//
 
 		const float noise_sigma = sqrt(1.0 / (pow(10, cSNR / 10.0)));
-		//if (llr_sigma < 0.f) car on est en mode SNR evolutif !
+		//if (llr_sigma < 0.f)
 		llr_sigma = noise_sigma;
+		//printf("llr_sigma = %f\n", llr_sigma);
 
 		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
 

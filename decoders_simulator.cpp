@@ -526,10 +526,7 @@ int main(int argc, char *argv[])
 		std::atomic<uint64_t> FER(0);
 		std::atomic<bool> stop(false);
 
-		//		std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
-		//		std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
-
-		auto start = std::chrono::high_resolution_clock::now();
+		auto start    = std::chrono::high_resolution_clock::now();
 		auto watchdod = std::chrono::high_resolution_clock::now();
 
 		//
@@ -548,13 +545,17 @@ int main(int argc, char *argv[])
 			uint16_t K_symb[K];
 			uint16_t u_symb[N];
 			uint16_t r_symb[N];
-			std::vector<float> llrs_n(N * q);
+			std::vector< float > llrs_n(N * q);
 			std::vector<uint16_t> decoded_n(N);
 
 			// Initialize decoder
 			decoder *dec = nullptr;
 			dec = loader_so::allocate_dec(dec_type, N, q, frozen_symbols);
-
+#if 0
+			printf("dec->k  = %d\n", dec->k());
+			printf("dec->n  = %d\n", dec->n());
+			printf("dec->gf = %d\n", dec->gf());
+#endif
 			// #pragma omp single
 			while (true)
 			{
@@ -625,10 +626,26 @@ int main(int argc, char *argv[])
 				//
 				// Check for errors
 				//
+#if 1
+				for (int i = 0; i < N * q; i++)
+					printf("%1.3f ", llrs_n[i]);
+				printf("\n");
+
+				for (int i = 0; i < N; i++)
+					printf("%d ", r_symb[i]);
+				printf("\n");
+				for (int i = 0; i < N; i++)
+					printf("%d ", u_symb[i]);
+				printf("\n");
+				for (int i = 0; i < N; i++)
+					printf("%d ", decoded_n[i]);
+				printf("\n");
+				printf("\n");
+#endif
 				for (uint16_t i = 0; i < code_param.K; i++)
 				{
 					if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
-					{
+					{	
 						succ_dec = false;
 						break;
 					}

@@ -78,12 +78,7 @@ std::string format_FER(double FER_value, int width = 10)
 //
 //
 void append_results_to_file1(
-	const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame,
-	const float forced_EbN0,
-	const bool  forced_mode,
-	const float llr_sigma,
-	const int seconds,
-	const int nbits = -1)
+	const std::string &dec, int GFx, int Nx, int Kx, double SNR, unsigned long nb_err, uint64_t nb_gen_frame, const float forced_EbN0, const bool forced_mode, const float llr_sigma, const int seconds, const int nbits = -1)
 {
 	fs::path dir = "results";
 
@@ -102,10 +97,11 @@ void append_results_to_file1(
 		dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
 			   std::to_string(Kx) + "_" + dec.c_str() + ".txt");
 
-	if( forced_mode == true ){
+	if (forced_mode == true)
+	{
 		filename =
-		dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
-			   std::to_string(Kx) + "_" + dec.c_str() + "_forced_" + std::to_string(forced_EbN0) + ".txt");
+			dir / ("GF" + std::to_string(GFx) + "_N" + std::to_string(Nx) + "_K" +
+				   std::to_string(Kx) + "_" + dec.c_str() + "_forced_" + std::to_string(forced_EbN0) + ".txt");
 	}
 
 	FILE *fou = fopen(filename.c_str(), "a");
@@ -152,9 +148,10 @@ void append_results_to_file1(
 static bool force_quit = false;
 void intHandler(int dummy)
 {
-	if( force_quit == true ){
+	if (force_quit == true)
+	{
 		printf("\n#(DD) CTRL+C was already called, forcing the program termination !\n");
-		exit( EXIT_FAILURE );
+		exit(EXIT_FAILURE);
 	}
 	printf("\n#(DD) CTRL+C was detected\n");
 	force_quit = true;
@@ -190,16 +187,17 @@ int main(int argc, char *argv[])
 	bool ok = loader_so::open("libNbScFFTdec.so");
 #endif
 
-	if (ok == false){
+	if (ok == false)
+	{
 		printf("#(EE) + Error during the library loading...\n");
-		exit( EXIT_FAILURE );
+		exit(EXIT_FAILURE);
 	}
 
 	int num_threads = omp_get_max_threads();
 
 	////////////////////////////
 
-	//softdata_t offset;
+	// softdata_t offset;
 
 	////////////////////////////
 
@@ -207,7 +205,7 @@ int main(int argc, char *argv[])
 	uint64_t NbMonteCarlo = 10000000000;
 
 	float forced_EbN0 = -1000.f;
-	bool  forced_mode = false;
+	bool forced_mode = false;
 
 	float EbN0_mini = -1000.f;
 	float EbN0_maxi = -1000.f;
@@ -378,16 +376,16 @@ int main(int argc, char *argv[])
 	/////////////////////////////////////////////////////////////////
 
 	std::cout << "#(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
-	std::cout << "#(DD) EbN0_min     : " << EbN0_mini    << " dB" << std::endl;
-	std::cout << "#(DD) EbN0_max     : " << EbN0_maxi    << " dB" << std::endl;
-	std::cout << "#(DD) EbN0_step    : " << EbN0_step    << " dB" << std::endl;
+	std::cout << "#(DD) EbN0_min     : " << EbN0_mini << " dB" << std::endl;
+	std::cout << "#(DD) EbN0_max     : " << EbN0_maxi << " dB" << std::endl;
+	std::cout << "#(DD) EbN0_step    : " << EbN0_step << " dB" << std::endl;
 	std::cout << "#(DD) N            : " << N << std::endl;
 	std::cout << "#(DD) K            : " << K << std::endl;
 	std::cout << "#(DD) GF(q)        : " << q << std::endl;
-	if(forced_mode == true)	
-	std::cout << "#(DD) Targeted SNR : " << forced_EbN0 << " dB" << std::endl;
-	std::cout << "#(DD) dec_type     : " << dec_type    << std::endl;
-	std::cout << "#(DD) FER_STOP     : " << FER_STOP    << std::endl;
+	if (forced_mode == true)
+		std::cout << "#(DD) Targeted SNR : " << forced_EbN0 << " dB" << std::endl;
+	std::cout << "#(DD) dec_type     : " << dec_type << std::endl;
+	std::cout << "#(DD) FER_STOP     : " << FER_STOP << std::endl;
 	std::cout << "#(DD) num_threads  : " << num_threads << std::endl;
 
 	/////////////////////////////////////////////////////////////////
@@ -427,7 +425,8 @@ int main(int argc, char *argv[])
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
-	for(float cSNR = EbN0_mini; cSNR <= EbN0_maxi; cSNR += EbN0_step){
+	for (float cSNR = EbN0_mini; cSNR <= EbN0_maxi; cSNR += EbN0_step)
+	{
 
 		//
 		//
@@ -435,14 +434,15 @@ int main(int argc, char *argv[])
 		base_code_t code_param(N, K, n, q, p, frozen_val);
 		code_param.sig_mod = "CCSK_BIN";
 
-//		int   gf_rand_SEED = 0;
-//		float nse_rand_SEED = 1.2544;
-//		bool  repeatable_randgen = 0;
+		//		int   gf_rand_SEED = 0;
+		//		float nse_rand_SEED = 1.2544;
+		//		bool  repeatable_randgen = 0;
 
 		table_GF table;
 
 		const float sSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
-		if( debug ){
+		if (debug)
+		{
 			printf("#(DD)\n");
 			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
 		}
@@ -452,15 +452,16 @@ int main(int argc, char *argv[])
 		//
 		//
 		int frozen_symbols[N];
-		for (int i = 0; i < N; i += 1)	// per defaut l'ensemble des noeuds sont frozen
+		for (int i = 0; i < N; i += 1) // per defaut l'ensemble des noeuds sont frozen
 			frozen_symbols[i] = true;
-		for (int i = 0; i < K; i += 1)	// on dégèle les K noeuds les plus fiables
+		for (int i = 0; i < K; i += 1) // on dégèle les K noeuds les plus fiables
 			frozen_symbols[code_param.reliab_sequence[i]] = false;
 		//
 		//
 		//
 
-		if( debug == true ){
+		if (debug == true)
+		{
 			printf("#(II) Reliability sequence:\n");
 			printf("#(II) ");
 			for (int i = 0; i < K; i += 1)
@@ -477,14 +478,47 @@ int main(int argc, char *argv[])
 		//
 
 		const float noise_sigma = sqrt(1.0 / (pow(10, cSNR / 10.0)));
-		//if (llr_sigma < 0.f)
+		// if (llr_sigma < 0.f)
 		llr_sigma = noise_sigma;
-		//printf("llr_sigma = %f\n", llr_sigma);
+		// printf("llr_sigma = %f\n", llr_sigma);
 
-		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
+		//		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
+		CCSK_Channel *simulator = nullptr;
+		     if (N ==   64 && q ==  64) simulator = new CCSK_Simulator< 64,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q ==  64) simulator = new CCSK_Simulator< 64,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q ==  64) simulator = new CCSK_Simulator< 64,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q ==  64) simulator = new CCSK_Simulator< 64,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q ==  64) simulator = new CCSK_Simulator< 64, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q ==  64) simulator = new CCSK_Simulator< 64, 2048>(noise_sigma, llr_sigma, num_threads);
 
-		//std::atomic<uint64_t> frame_errors(0);
-		//std::atomic<uint64_t> frames_simulated(0);
+		else if (N ==   64 && q == 128) simulator = new CCSK_Simulator<128,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 128) simulator = new CCSK_Simulator<128,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 128) simulator = new CCSK_Simulator<128,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 128) simulator = new CCSK_Simulator<128,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 128) simulator = new CCSK_Simulator<128, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 128) simulator = new CCSK_Simulator<128, 2048>(noise_sigma, llr_sigma, num_threads);
+
+		else if (N ==   64 && q == 256) simulator = new CCSK_Simulator<256,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 256) simulator = new CCSK_Simulator<256,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 256) simulator = new CCSK_Simulator<256,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 256) simulator = new CCSK_Simulator<256,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 256) simulator = new CCSK_Simulator<256, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 256) simulator = new CCSK_Simulator<256, 2048>(noise_sigma, llr_sigma, num_threads);
+
+		else if (N ==   64 && q == 512) simulator = new CCSK_Simulator<512,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 512) simulator = new CCSK_Simulator<512,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 512) simulator = new CCSK_Simulator<512,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 512) simulator = new CCSK_Simulator<512,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 512) simulator = new CCSK_Simulator<512, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 512) simulator = new CCSK_Simulator<512, 2048>(noise_sigma, llr_sigma, num_threads);
+
+		if (simulator == nullptr)
+		{
+			printf("#(EE) + Error during the simulation env. creation...\n");
+			exit(EXIT_FAILURE);
+		}
+		// std::atomic<uint64_t> frame_errors(0);
+		// std::atomic<uint64_t> frames_simulated(0);
 
 		int64_t FER_out = 0;
 		int64_t gen_frames_out = 0;
@@ -492,23 +526,23 @@ int main(int argc, char *argv[])
 		std::atomic<uint64_t> FER(0);
 		std::atomic<bool> stop(false);
 
-//		std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
-//		std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
+		//		std::atomic<double> global_llr_min {std::numeric_limits<double>::max()};
+		//		std::atomic<double> global_llr_max {std::numeric_limits<double>::lowest()};
 
-		auto start    = std::chrono::high_resolution_clock::now();
+		auto start = std::chrono::high_resolution_clock::now();
 		auto watchdod = std::chrono::high_resolution_clock::now();
 
 		//
 		//
 		//
-		FILE* file_k = nullptr;
-		FILE* file_n = nullptr;
-		FILE* file_r = nullptr;
+		FILE *file_k = nullptr;
+		FILE *file_n = nullptr;
+		FILE *file_r = nullptr;
 		//
 		//
 		//
 
-		#pragma omp parallel
+#pragma omp parallel
 		{
 			int thread_id = omp_get_thread_num();
 			uint16_t K_symb[K];
@@ -529,30 +563,38 @@ int main(int argc, char *argv[])
 				//
 				// Generate symbols for THIS frame
 				//
-				simulator.generate_random_symbols(K_symb, K, thread_id);
-				for (int u = 0; u < K; u++){
+				simulator->generate_random_symbols(K_symb, K, thread_id);
+				for (int u = 0; u < K; u++)
+				{
 					u_symb[code_param.reliab_sequence[u]] = K_symb[u];
 				}
-				for (int u = K; u < N; u++){
+				for (int u = K; u < N; u++)
+				{
 					u_symb[code_param.reliab_sequence[u]] = 0;
 				}
 
-				for (int u = 0; u < N; u++){  // on conserve une copie des données afin d'utiliser
-					r_symb[u] = u_symb[u];	  // le mode génie dans la simulation
+				for (int u = 0; u < N; u++)
+				{						   // on conserve une copie des données afin d'utiliser
+					r_symb[u] = u_symb[u]; // le mode génie dans la simulation
 				}
 
-				polar_encode<_N_>(u_symb);
+				     if (N ==    64) polar_encode<  64>(u_symb);
+				else if (N ==   128) polar_encode< 128>(u_symb);
+				else if (N ==   256) polar_encode< 256>(u_symb);
+				else if (N ==   512) polar_encode< 512>(u_symb);
+				else if (N ==  1024) polar_encode<1024>(u_symb);
+				else if (N ==  2048) polar_encode<2048>(u_symb);
+				else exit( EXIT_FAILURE );
 
 				//
 				// Simulate CCSK transmission
 				//
-				double *llr_values = simulator.simulate_frame(u_symb, thread_id);
-
+				double *llr_values = simulator->simulate_frame(u_symb, thread_id);
 
 				if constexpr (SimulationParams::method == SimulationParams::LLRMethod::EXP)
 				{
 					// Original method: exp() calls
-					simulator.llr_to_probability<_GF_>(llr_values, N);
+					simulator->llr_to_probability(llr_values, N);
 					for (int i = 0; i < N; i++)
 					{
 						for (int j = 0; j < q; j++)
@@ -562,13 +604,12 @@ int main(int argc, char *argv[])
 					}
 				}
 
-
 				// Decode
 
 				else if constexpr (SimulationParams::method == SimulationParams::LLRMethod::FAST_LUT)
 				{
 					// Fast method: lookup table
-					float *probabilities = simulator.llr_to_probability_fast<_GF_>(llr_values, N, thread_id);
+					float *probabilities = simulator->llr_to_probability_fast(llr_values, N, thread_id);
 					for (int i = 0; i < N; i++)
 					{
 						for (int j = 0; j < q; j++)
@@ -597,12 +638,12 @@ int main(int argc, char *argv[])
 				//
 				//
 				global_counter.fetch_add(1);
-				//uint64_t succ_now = global_counter.load() - FER.load();
-				if ( !succ_dec )
+				// uint64_t succ_now = global_counter.load() - FER.load();
+				if (!succ_dec)
 				{
 					FER.fetch_add(1);
 				}
-				//succ_now = global_counter.load() - FER.load();
+				// succ_now = global_counter.load() - FER.load();
 
 				//
 				// Plus d'openmp critical car on filtre sur thread 1
@@ -613,80 +654,84 @@ int main(int argc, char *argv[])
 					const auto sec = std::chrono::duration<double>(curr - watchdod).count();
 					if (sec >= 1)
 					{
-						//const uint64_t local_success = global_counter.load() - FER.load();
+						// const uint64_t local_success = global_counter.load() - FER.load();
 						if ((global_counter.load() >= NbMonteCarlo) ||
-							(FER.load() >= FER_STOP)){
-								stop.store(true);
+							(FER.load() >= FER_STOP))
+						{
+							stop.store(true);
 						}
 						FER_out = FER.load();
 						gen_frames_out = global_counter.load();
 
 						const double FER_ratio = (double)FER_out / gen_frames_out;
-						//std::ostringstream oss;
+						// std::ostringstream oss;
 						//					FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
-						//oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
-						//std::string FER_str = oss.str();
+						// oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
+						// std::string FER_str = oss.str();
 
-						auto end   = std::chrono::high_resolution_clock::now();
+						auto end = std::chrono::high_resolution_clock::now();
 						double sec = std::chrono::duration<double>(end - start).count();
 
-						//std::cout << "\r" << std::fixed << std::setprecision(1) << cSNR
+						// std::cout << "\r" << std::fixed << std::setprecision(1) << cSNR
 						//		<< " dB, FER = " << std::setw(8) << FER_out
 						//		<< "/" << std::setw(8) << gen_frames_out
 						//		<< " = " << FER_str;
 
-						//printf(" | %6d sec. | ", (int)sec);
+						// printf(" | %6d sec. | ", (int)sec);
 						const float d = dec->dec_avg_coded_mbps();
 						const float l = dec->dec_avg_latency();
-    					//printf("time us = %f us - %f us - %f Mbps\n", 0, d, l);
+						// printf("time us = %f us - %f us - %f Mbps\n", 0, d, l);
 
-						if( FER_out != 0 ){
+						if (FER_out != 0)
+						{
 							double tps_p_err = (double)sec / (double)FER_out;
 							double restAnt = (FER_STOP - FER_out);
 							double restant = std::max(restAnt, 0.0);
 							double tps_rest = (double)(restant)*tps_p_err;
 							printf("%6.2f | %6lld | %10lld | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, (int)tps_rest, d, l);
-						} else {
+						}
+						else
+						{
 							printf("%6.2f | %6lld | %10lld | %1.3e | %6d | %6d | %7.2f | %9.2f |\r", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec, 0, d, l);
 						}
-						fflush( stdout );
+						fflush(stdout);
 						watchdod = std::chrono::high_resolution_clock::now();
 					}
 				}
-				if (stop.load()){
+				if (stop.load())
+				{
 					break;
 				}
 
-				if (force_quit == true){
+				if (force_quit == true)
+				{
 					break;
 				}
 			}
 
 			delete dec;
-
 		}
 
-		auto end   = std::chrono::high_resolution_clock::now();
+		auto end = std::chrono::high_resolution_clock::now();
 		double sec = std::chrono::duration<double>(end - start).count();
 
 		double FER_ratio = (double)FER_out / gen_frames_out;
-		//std::ostringstream oss;
+		// std::ostringstream oss;
 		//	FER_ratio < 0.0001 ? oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio : oss << std::fixed << std::setprecision(6) << std::setw(10) << FER_ratio;
-		//oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
+		// oss << std::scientific << std::setprecision(3) << std::setw(10) << FER_ratio;
 
-		//std::string FER_str = oss.str();
+		// std::string FER_str = oss.str();
 
-		//std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << cSNR
+		// std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << cSNR
 		//		<< " dB, FER = " << std::setw(8) << FER_out
 		//		<< "/" << std::setw(8) << gen_frames_out
 		//		<< " = " << FER_str
 		//		<< std::flush;
 		printf("\r%6.2f | %6lld | %10lld | %1.3e | %6d | ------ |", cSNR, FER_out, gen_frames_out, FER_ratio, (int)sec);
 		printf("\n");
-		fflush( stdout );
+		fflush(stdout);
 
-		append_results_to_file1(dec_type, q, N, K, cSNR, FER_out, gen_frames_out,
-			forced_EbN0, forced_mode, llr_sigma, (int)sec, nbits);
+		append_results_to_file1(dec_type, q, N, K, cSNR, FER_out, gen_frames_out, forced_EbN0, forced_mode, llr_sigma, (int)sec, nbits);
 
 		//
 		// Si CTRL+C alors on quitte la simulation
@@ -694,8 +739,9 @@ int main(int argc, char *argv[])
 		if (force_quit == true)
 			break;
 
-	} // fin de la boucle sur le SNR
+		delete simulator;
 
+	} // fin de la boucle sur le SNR
 
 	// Final results
 //	std::cout << std::endl;

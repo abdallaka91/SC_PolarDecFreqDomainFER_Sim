@@ -13,38 +13,6 @@ constexpr int NBITS = 12;
 }
 //
 //
-// For generic NB polar decoders
-//
-//
-struct symbols_t
-{
-	float value[_GF_];
-	bool is_freq;
-};
-//
-//
-inline symbols_t convert_to_symbols_t(const float *values, const int gf_size, const bool is_freq)
-{
-	symbols_t result;
-	result.is_freq = is_freq;
-	for (int i = 0; i < gf_size; i++)
-	{
-		result.value[i] = values[i];
-	}
-	return result;
-}
-//
-//
-inline void convert_from_symbols_t(float *dst, const symbols_t &src, const int gf_size)
-{
-	for (int i = 0; i < gf_size; i++)
-	{
-		dst[i] = src.value[i];
-	}
-}
-//
-//
-//
 // For specialized NB polar decoders
 //
 //

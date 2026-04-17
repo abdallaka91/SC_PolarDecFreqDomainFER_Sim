@@ -9,9 +9,22 @@
 #include <stdexcept>
 #include <vector>
 
+
+class CCSK_Channel
+{
+public:
+	CCSK_Channel(){};
+	virtual ~CCSK_Channel(){};
+	virtual void    llr_to_probability     (double* llr_values, int num_symbols) = 0;
+	virtual float*  llr_to_probability_fast(double* llr_values, int num_symbols, int thread_id = 0) = 0;
+	virtual double* simulate_frame         (const uint16_t *tx_symbol,        int thread_id = 0) = 0;
+	virtual void    generate_random_symbols(      uint16_t *tx_symbol, int K, int thread_id = 0)  = 0;
+};
+
+
 // Configuration as template parameters
 template <int __GF__, int N = 1024, int MAX_LLR_1000 = SimulationParams::MAX_LLR_1000, int LLR_QUANT_BITS = SimulationParams::LLR_QUANT_BITS>
-class CCSK_Simulator
+class CCSK_Simulator : public CCSK_Channel
 {
 	// Compile-time validation
 	static_assert(N > 0, "N must be positive");
@@ -136,21 +149,20 @@ class CCSK_Simulator
 		return llr_output;
 	}
 
-	template <int GF>
 	void llr_to_probability(double *llr_values, int num_symbols)
 	{
 		for (int sym_idx = 0; sym_idx < num_symbols; sym_idx++)
 		{
-			double *symbol_llr = &llr_values[sym_idx * GF];
+			double *symbol_llr = &llr_values[sym_idx * __GF__];
 			double sum_exp = 0.0;
 
-			for (int j = 0; j < GF; j++)
+			for (int j = 0; j < __GF__; j++)
 			{
 				symbol_llr[j] = exp(-symbol_llr[j]);
 				sum_exp += symbol_llr[j];
 			}
 
-			for (int j = 0; j < GF; j++)
+			for (int j = 0; j < __GF__; j++)
 			{
 				symbol_llr[j] /= sum_exp;
 			}
@@ -158,7 +170,6 @@ class CCSK_Simulator
 	}
 
 	// FAST VERSION using lookup table (output in thread's prob_buffer)
-	template <int GF>
 	float *llr_to_probability_fast(double *llr_values, int num_symbols, int thread_id = 0)
 	{
 		auto &thread_res = get_thread_res(thread_id);
@@ -166,12 +177,12 @@ class CCSK_Simulator
 
 		for (int sym_idx = 0; sym_idx < num_symbols; sym_idx++)
 		{
-			double *symbol_llr = &llr_values[sym_idx * GF];
-			float *symbol_prob = &prob_output[sym_idx * GF];
+			double *symbol_llr = &llr_values[sym_idx * __GF__];
+			float *symbol_prob = &prob_output[sym_idx * __GF__];
 			float sum_exp = 0.0f;
 
 			// Convert LLR to probability using LUT
-			for (int j = 0; j < GF; j++)
+			for (int j = 0; j < __GF__; j++)
 			{
 				symbol_prob[j] = fast_exp_neg(symbol_llr[j]);
 				sum_exp += symbol_prob[j];
@@ -179,7 +190,7 @@ class CCSK_Simulator
 
 			// Normalize to sum = 1
 			float inv_sum = 1.0f / sum_exp;
-			for (int j = 0; j < GF; j++)
+			for (int j = 0; j < __GF__; j++)
 			{
 				symbol_prob[j] *= inv_sum;
 			}

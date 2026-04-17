@@ -9,28 +9,32 @@ project(REPLAY LANGUAGES C CXX)
 #  ENABLE ALL WARNINGS
 # ===========================
  
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+#set(CMAKE_BUILD_TYPE Release)
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
  
+
 # ===========================
 #  Build type configuration
 # ===========================
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring Debug build")
-    set(CMAKE_CXX_FLAGS "-g -O0")
+    set(CMAKE_CXX_FLAGS "-g3 -O0 -fopenmp")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native -ffast-math -funroll-loops -fopenmp")
 	set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fsanitize=thread -fsanitize=undefined -fsanitize=float-cast-overflow -L${CMAKE_SOURCE_DIR}")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fsanitize=thread -fsanitize=undefined -fsanitize=float-cast-overflow -L${CMAKE_SOURCE_DIR}")
  
-link_libraries(NbScFFTdec)
+#link_libraries(NbScFFTdec)
 # ===========================
 #  Dependencies
 # ===========================

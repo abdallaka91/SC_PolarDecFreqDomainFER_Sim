@@ -82,3 +82,4 @@ __pycache__/
 # Executables
 Sim2
 *.exe
+.cache

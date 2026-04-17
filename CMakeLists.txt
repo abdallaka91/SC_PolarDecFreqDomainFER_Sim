@@ -32,14 +32,18 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -mtune=native -ffast-math -funroll-loops -fopenmp")
 	set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fsanitize=thread -fsanitize=undefined -fsanitize=float-cast-overflow -L${CMAKE_SOURCE_DIR}")
  
-#link_libraries(NbScFFTdec)
 # ===========================
 #  Dependencies
 # ===========================
 find_package(Threads REQUIRED) 
-#find_package(OpenMP REQUIRED)
+if (APPLE)
+	message (NOTICE "-- Apple system targetted, resorting to hard coded OpenMP flags.")
+	add_compile_options(-fopenmp)
+	add_link_options(-fopenmp)
+else()
+	find_package(OpenMP REQUIRED)
+endif()
  
 # Simple FFTW3 detection (works on Ubuntu)
 find_path(FFTW3_INCLUDE_DIR fftw3.h
@@ -49,13 +53,23 @@ find_path(FFTW3_INCLUDE_DIR fftw3.h
 find_library(FFTW3_LIBRARY fftw3
     PATHS /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib
 )
+
+# Simple FFTW3F detection (works on Ubuntu)
+find_path(FFTW3F_INCLUDE_DIR fftw3f.h
+    PATHS /usr/include /usr/local/include
+)
+ 
+find_library(FFTW3F_LIBRARY fftw3f
+    PATHS /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib
+)
+ 
  
 if(FFTW3_INCLUDE_DIR AND FFTW3_LIBRARY)
     set(FFTW3_FOUND TRUE)
     message(STATUS "Found FFTW3: ${FFTW3_LIBRARY}")
 else()
     set(FFTW3_FOUND FALSE)
-    message(WARNING "FFTW3 not found. Install with: sudo apt install libfftw3-dev")
+    message(WARNING "FFTW3 not found.")
 endif()
  
 # ===========================
@@ -66,6 +80,15 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/source/*.cpp"
 )
  
+add_library(ccsk_simulators OBJECT)
+target_include_directories (ccsk_simulators PRIVATE ${CMAKE_SOURCE_DIR})
+foreach (GF 64 128 256 512 1024)
+foreach (N 8 16 32 64 128 256 512 1024 2048)
+configure_file (ccsk_simulator/ccsk_simulator_implementations.cpp.in ccsk_stub_${GF}_${N}.cpp @ONLY)
+target_sources (ccsk_simulators PRIVATE ccsk_stub_${GF}_${N}.cpp)
+endforeach ()
+endforeach ()
+
 add_executable(Sim2 ${SRC_FILES} ${CMAKE_SOURCE_DIR}/decoders_simulator.cpp)
  
 set_target_properties(Sim2 PROPERTIES
@@ -90,14 +113,13 @@ endif()
 # ===========================
 #  Link Libraries
 # ===========================
-target_link_libraries(Sim2 PRIVATE Threads::Threads)
-#target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
- 
+target_link_libraries(Sim2 PRIVATE Threads::Threads ccsk_simulators)
+if (NOT APPLE)
+	target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
+endif()
+
 if(FFTW3_FOUND)
     target_link_libraries(Sim2 PRIVATE ${FFTW3_LIBRARY})
-    # Link math library for exp(), cos(), etc.
-    target_link_libraries(Sim2 PRIVATE m)
-    target_link_libraries(Sim2 PRIVATE dl)
 endif()
  
 add_executable(replay ${SRC_FILES} ${CMAKE_SOURCE_DIR}/replay_simulator.cpp)
@@ -140,7 +162,7 @@ if(FFTW3_FOUND)
     target_link_libraries(replay PRIVATE m)
     target_link_libraries(replay PRIVATE dl)
 endif()
- 
+
 # ===========================
 #  Diagnostics
 # ===========================

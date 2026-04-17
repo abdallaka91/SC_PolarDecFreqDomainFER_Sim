@@ -1,0 +1,3 @@
+#include "./ccsk_simulator/ccsk_simulator.hpp"
+
+static CCSK_Simulator<@GF@, @N@> simulator = CCSK_Simulator<@GF@, @N@>(0, 0, 1);

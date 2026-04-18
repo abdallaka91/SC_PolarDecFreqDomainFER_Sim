@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
 	uint16_t frozen_val = 0;
 	int nbits = -1;
 	float llr_sigma = -1.f;
-	bool debug = false;
+	int debug = 0;
 	/////////////////////////////////////////////////////////////////
 
 	for (int i = 1; i < argc; i++)
@@ -327,7 +327,7 @@ int main(int argc, char *argv[])
 		}
 		else if (std::string(argv[i]) == "-verbose")
 		{
-			debug = true;
+			debug += 1;
 		}
 		else
 		{
@@ -450,12 +450,12 @@ int main(int argc, char *argv[])
 		table_GF table;
 
 		const float sSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
-		if (debug)
+		if (debug >= 2)
 		{
 			printf("#(DD)\n");
 			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
 		}
-		LoadCode(code_param, sSNR, "./matrices/", debug);
+		LoadCode(code_param, sSNR, "./matrices/", debug != 0);
 
 		//
 		//
@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
 		//
 		//
 
-		if (debug == true)
+		if (debug >= 2)
 		{
 			printf("#(II) Reliability sequence:\n");
 			printf("#(II) ");
@@ -843,13 +843,14 @@ int main(int argc, char *argv[])
 		// std::setw(10) << FER_ratio;
 		// oss << std::scientific << std::setprecision(3) << std::setw(10) <<
 		// FER_ratio;
-#if 0
+
+		if( debug >= 1 )
 		{
 			double fps = (double)gen_frames_out / (double)sec;
 			double tgt = (fps * N * p) / 1000.0 / 1000.0;
 			printf("#(DD) Simulation throughput = %f Mbps\n", tgt);
 		}
-#endif
+
 		// std::string FER_str = oss.str();
 
 		// std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << cSNR

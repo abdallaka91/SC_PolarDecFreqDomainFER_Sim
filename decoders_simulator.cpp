@@ -455,7 +455,7 @@ int main(int argc, char *argv[])
 			printf("#(DD)\n");
 			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
 		}
-		LoadCode(code_param, sSNR, "./matrices/", debug != 0);
+		LoadCode(code_param, sSNR, "./matrices/", debug >= 2);
 
 		//
 		//

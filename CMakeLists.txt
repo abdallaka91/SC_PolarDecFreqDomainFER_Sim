@@ -42,7 +42,11 @@ find_path(FFTW3_INCLUDE_DIR fftw3.h
     PATHS /usr/include /usr/local/include
 )
  
-find_library(FFTW3_LIBRARY fftw3
+find_library(FFTW3_LIBRARY fftw3 
+    PATHS /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib
+)
+
+find_library(FFTW3_LIBRARY_float fftw3f
     PATHS /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib
 )
 
@@ -75,7 +79,7 @@ file(GLOB_RECURSE SRC_FILES
 add_library(ccsk_simulators OBJECT)
 target_include_directories (ccsk_simulators PRIVATE ${CMAKE_SOURCE_DIR})
 target_include_directories(ccsk_simulators PUBLIC ${FFTW3_INCLUDE_DIR})
-target_link_libraries(ccsk_simulators PUBLIC ${FFTW3_LIBRARY})
+target_link_libraries(ccsk_simulators PUBLIC ${FFTW3_LIBRARY} ${FFTW3_LIBRARY_float} )
 foreach (GF 64 128 256 512 1024)
 foreach (N 8 16 32 64 128 256 512 1024 2048)
 configure_file (ccsk_simulator/ccsk_simulator_implementations.cpp.in ccsk_stub_${GF}_${N}.cpp @ONLY)

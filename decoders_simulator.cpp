@@ -430,8 +430,7 @@ int main(int argc, char *argv[])
 	//     }
 	//     dec_type = "pruned-int{" + std::to_string(nbits) + "}";
 	// }
-	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time | Latency "
-		   "| Througput |\n");
+	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time | Througput |  Latency  |\n");
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
@@ -583,7 +582,7 @@ int main(int argc, char *argv[])
 		std::atomic<uint64_t> FER(0);
 		std::atomic<bool> stop(false);
 
-		auto start = std::chrono::high_resolution_clock::now();
+		auto start    = std::chrono::high_resolution_clock::now();
 		auto watchdod = std::chrono::high_resolution_clock::now();
 
 		//
@@ -773,7 +772,7 @@ int main(int argc, char *argv[])
 						// oss << std::scientific << std::setprecision(3) << std::setw(10)
 						// << FER_ratio; std::string FER_str = oss.str();
 
-						auto end = std::chrono::high_resolution_clock::now();
+						auto end   = std::chrono::high_resolution_clock::now();
 						double sec = std::chrono::duration<double>(end - start).count();
 
 						// std::cout << "\r" << std::fixed << std::setprecision(1) << cSNR
@@ -792,7 +791,7 @@ int main(int argc, char *argv[])
 							double restAnt = (FER_STOP - FER_out);
 							double restant = std::max(restAnt, 0.0);
 							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %7.2f | "
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | "
 								   "%9.2f |\r",
 								   cSNR,
 								   FER_out,
@@ -805,7 +804,7 @@ int main(int argc, char *argv[])
 						}
 						else
 						{
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %7.2f | "
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | "
 								   "%9.2f |\r",
 								   cSNR,
 								   FER_out,
@@ -834,7 +833,7 @@ int main(int argc, char *argv[])
 			delete dec;
 		}
 
-		auto end = std::chrono::high_resolution_clock::now();
+		auto   end = std::chrono::high_resolution_clock::now();
 		double sec = std::chrono::duration<double>(end - start).count();
 
 		double FER_ratio = (double)FER_out / gen_frames_out;
@@ -844,7 +843,13 @@ int main(int argc, char *argv[])
 		// std::setw(10) << FER_ratio;
 		// oss << std::scientific << std::setprecision(3) << std::setw(10) <<
 		// FER_ratio;
-
+#if 0
+		{
+			double fps = (double)gen_frames_out / (double)sec;
+			double tgt = (fps * N * p) / 1000.0 / 1000.0;
+			printf("#(DD) Simulation throughput = %f Mbps\n", tgt);
+		}
+#endif
 		// std::string FER_str = oss.str();
 
 		// std::cout << "\rSNR: " << std::fixed << std::setprecision(1) << cSNR

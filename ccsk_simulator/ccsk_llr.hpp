@@ -66,7 +66,7 @@ public:
 
     void calculate(const double *y, double *llr)
     {
-        fftw_complex *in = tls_buffers.in;
+        fftw_complex *in  = tls_buffers.in;
         fftw_complex *out = tls_buffers.out;
 
         for (int i = 0; i < L; i++)
@@ -101,7 +101,7 @@ public:
             llr[i] -= min_val;
         }
     }
-
+/*
     template <int BatchSize = 4>
     void calculate_batch(const double **y_batch, double **llr_batch)
     {
@@ -110,7 +110,7 @@ public:
             calculate(y_batch[b], llr_batch[b]);
         }
     }
-
+*/
 private:
     void compute_scaled_pn_fft(fftw_complex *in, fftw_complex *out)
     {

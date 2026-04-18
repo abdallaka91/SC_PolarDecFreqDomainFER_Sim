@@ -1,6 +1,7 @@
 #pragma once
 #include "aff3ct_randn_gen/fast_noise_simple.hpp"
 #include "ccsk_llr.hpp"
+#include "ccsk_llr_float.hpp" 
 #include "simul_parameters.hpp"
 #include <array>
 #include <cmath>
@@ -85,20 +86,35 @@ class CCSK_Simulator : public CCSK_Channel
 		}
 	};
 
-	std::vector<std::unique_ptr<ThreadResources>> thread_resources;
-	std::unique_ptr<CCSK_LLR<CHIPS_PER_SYMBOL>> llr_calc;
+//#define _DOUBLE_
 
+	std::vector<std::unique_ptr<ThreadResources>> thread_resources;
+#ifdef _DOUBLE_
+	std::unique_ptr<CCSK_LLR<CHIPS_PER_SYMBOL>> llr_calc;
+#else
+	std::vector< CCSK_LLR_float<CHIPS_PER_SYMBOL>* > llr_calc;
+//	std::unique_ptr< CCSK_LLR_float<CHIPS_PER_SYMBOL> > llr_calc;
+#endif
   public:
 	CCSK_Simulator(double noise_sigma, double llr_sigma, int max_threads = 1)
+#ifdef _DOUBLE_
 		: base_seq(get_base_seq_float<Tgf>()),
 		  llr_calc(std::make_unique<CCSK_LLR<CHIPS_PER_SYMBOL>>(llr_sigma))
+#else
+		: base_seq(get_base_seq_float<Tgf>())
+//		  llr_calc(std::make_unique<CCSK_LLR_float<CHIPS_PER_SYMBOL>>(llr_sigma))
+#endif
 	{
+#ifndef _DOUBLE_
+		for(int t = 0; t < max_threads; t += 1)
+		  llr_calc.push_back( new CCSK_LLR_float<CHIPS_PER_SYMBOL>(llr_sigma) );
+#endif
+
 		create_exp_lut(exp_neg_lut.begin(), exp_neg_lut.end());
 		thread_resources.reserve(max_threads);
 		for (int i = 0; i < max_threads; i++)
 		{
-			thread_resources.push_back(
-				std::make_unique<ThreadResources>(noise_sigma, 42 + i));
+			thread_resources.push_back( std::make_unique<ThreadResources>(noise_sigma, 42 + i) );
 		}
 	}
 
@@ -135,20 +151,24 @@ class CCSK_Simulator : public CCSK_Channel
 
 		for (int sym_idx = 0; sym_idx < N; sym_idx++)
 		{
-			const double *rotated_seq = &base_seq[Tgf - tx_symbol[sym_idx]];
-			const float *symbol_noise = &noise_buf[sym_idx * CHIPS_PER_SYMBOL];
+			const double* rotated_seq  = &base_seq [Tgf - tx_symbol[sym_idx]];
+			const float*  symbol_noise = &noise_buf[sym_idx * CHIPS_PER_SYMBOL];
 
 			for (int i = 0; i < CHIPS_PER_SYMBOL; i++)
 			{
 				y[i] = rotated_seq[i] + static_cast<double>(symbol_noise[i]);
 			}
 
+#ifdef _DOUBLE_
 			llr_calc->calculate(y, &llr_output[sym_idx * Tgf]);
+#else
+			llr_calc[thread_id]->calculate(y, &llr_output[sym_idx * Tgf]);
+#endif
 		}
 
 		return llr_output;
 	}
-
+#if 0
 	void llr_to_probability(double *llr_values, int num_symbols)
 	{
 		for (int sym_idx = 0; sym_idx < num_symbols; sym_idx++)
@@ -168,6 +188,47 @@ class CCSK_Simulator : public CCSK_Channel
 			}
 		}
 	}
+#else
+	void llr_to_probability(double* llr_values, int num_symbols)
+	{
+		float buffer[Tgf];
+		for (int sym_idx = 0; sym_idx < num_symbols; sym_idx++)
+		{
+			//
+			//////////////////////////////////////////////////
+			//
+			for (int j = 0; j < Tgf; j++)
+			{
+				buffer[j] = llr_values[sym_idx * Tgf + j];
+			}
+			//
+			//////////////////////////////////////////////////
+			//
+			for (int j = 0; j < Tgf; j++)
+			{
+				buffer[j] = exp(-buffer[j]);
+			}
+			//
+			//////////////////////////////////////////////////
+			//
+			float sum_exp = 0.f;
+			for (int j = 0; j < Tgf; j++)
+			{
+				sum_exp += buffer[j];
+			}
+			//
+			//////////////////////////////////////////////////
+			//
+			for (int j = 0; j < Tgf; j++)
+			{
+				llr_values[sym_idx * Tgf + j] = (buffer[j] / sum_exp);
+			}
+			//
+			//////////////////////////////////////////////////
+			//
+		}
+	}
+#endif
 
 	// FAST VERSION using lookup table (output in thread's prob_buffer)
 	float *llr_to_probability_fast(double *llr_values, int num_symbols, int thread_id = 0)

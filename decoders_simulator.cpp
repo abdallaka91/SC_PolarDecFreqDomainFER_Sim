@@ -430,7 +430,8 @@ int main(int argc, char *argv[])
 	//     }
 	//     dec_type = "pruned-int{" + std::to_string(nbits) + "}";
 	// }
-	printf("SNR    | F.Errs |     Frames |       FER | E.Time | R.Time | Througput |  Latency  |\n");
+	printf("# SNR  | Simul. |  Simulated |  Obtained | Elaps. | Remain | Decoding  | Decoding  | Simulat°  |\n");
+	printf("  SNR  | F.Errs |     frames |       FER | E.Time | R.Time | Througput |  Latency  | Througput |\n");
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
@@ -780,10 +781,19 @@ int main(int argc, char *argv[])
 						//		<< "/" << std::setw(8) << gen_frames_out
 						//		<< " = " << FER_str;
 
-						// printf(" | %6d sec. | ", (int)sec);
+						//
+						// NB-polar decoder statistics (thread 0)
+						//
 						const float d = dec->dec_avg_coded_mbps();
 						const float l = dec->dec_avg_latency();
-						// printf("time us = %f us - %f us - %f Mbps\n", 0, d, l);
+
+						//
+						// Simulation statistics
+						//
+						auto   cend = std::chrono::high_resolution_clock::now();
+						double csec = std::chrono::duration<double>(cend - start).count();
+						const float fps = (double)gen_frames_out / (double)csec;
+						const float tgt = (fps * N * p) / 1000.0 / 1000.0;
 
 						if (FER_out != 0)
 						{
@@ -791,8 +801,7 @@ int main(int argc, char *argv[])
 							double restAnt = (FER_STOP - FER_out);
 							double restant = std::max(restAnt, 0.0);
 							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | "
-								   "%9.2f |\r",
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | %9.2f | %9.2f |\r",
 								   cSNR,
 								   FER_out,
 								   gen_frames_out,
@@ -800,12 +809,11 @@ int main(int argc, char *argv[])
 								   (int)sec,
 								   (int)tps_rest,
 								   d,
-								   l);
+								   l), tgt;
 						}
 						else
 						{
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | "
-								   "%9.2f |\r",
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | %9.2f | %9.2f |\r",
 								   cSNR,
 								   FER_out,
 								   gen_frames_out,
@@ -813,7 +821,7 @@ int main(int argc, char *argv[])
 								   (int)sec,
 								   0,
 								   d,
-								   l);
+								   l, tgt);
 						}
 						fflush(stdout);
 						watchdod = std::chrono::high_resolution_clock::now();

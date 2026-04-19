@@ -809,7 +809,7 @@ int main(int argc, char *argv[])
 								   (int)sec,
 								   (int)tps_rest,
 								   d,
-								   l), tgt;
+								   l, tgt);
 						}
 						else
 						{

@@ -808,8 +808,7 @@ int main(int argc, char *argv[])
 								   FER_ratio,
 								   (int)sec,
 								   (int)tps_rest,
-								   d,
-								   l, tgt);
+								   d, l, tgt);
 						}
 						else
 						{
@@ -819,9 +818,7 @@ int main(int argc, char *argv[])
 								   gen_frames_out,
 								   FER_ratio,
 								   (int)sec,
-								   0,
-								   d,
-								   l, tgt);
+								   0, d, l, tgt);
 						}
 						fflush(stdout);
 						watchdod = std::chrono::high_resolution_clock::now();

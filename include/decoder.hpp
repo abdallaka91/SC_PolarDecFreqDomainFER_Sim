@@ -48,7 +48,8 @@ public:
     decoder(const int _gf_, const int _n_, const int * frozen_symb);
     virtual ~decoder();
     virtual void execute(void * channel, uint16_t * decoded) = 0;
-    virtual void setResult(const uint16_t * decoded) { }
+    virtual void setResult     (const uint16_t* decoded) { }
+	virtual void setReliability(const uint16_t* probas ) { }
 
 public:
     virtual int64_t n_decoded_frames();

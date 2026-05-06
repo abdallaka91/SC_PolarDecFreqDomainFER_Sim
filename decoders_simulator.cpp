@@ -25,6 +25,8 @@
 
 #include "./include/encoder_1.hpp"
 #include "./include/loader_so.hpp"
+#include "./include/frame_dump.hpp"
+#include "./include/frame_reader.hpp"
 
 using namespace PoAwN::structures;
 using namespace PoAwN::init;
@@ -201,20 +203,23 @@ int main(int argc, char *argv[])
 		printf("#(EE) + Error during the library loading...\n");
 		exit(EXIT_FAILURE);
 	}
+	
+	/////////////////////////////////////////////////////////////////
 
 	int num_threads = omp_get_max_threads();
-
-	////////////////////////////
-
-	// softdata_t offset;
-
-	////////////////////////////
+	
+	/////////////////////////////////////////////////////////////////
 
 	std::string dec_type = "";
 	uint64_t NbMonteCarlo = 10000000000;
 
 	float forced_EbN0 = -1000.f;
-	bool forced_mode = false;
+	bool  forced_mode = false;
+
+	bool  dump_err_frames = false;
+
+	bool time_limit_ena = false;
+	int  time_limit_val =  0;
 
 	float EbN0_mini = -1000.f;
 	float EbN0_maxi = -1000.f;
@@ -231,6 +236,7 @@ int main(int argc, char *argv[])
 	int nbits = -1;
 	float llr_sigma = -1.f;
 	int debug = 0;
+
 	/////////////////////////////////////////////////////////////////
 
 	for (int i = 1; i < argc; i++)
@@ -329,6 +335,16 @@ int main(int argc, char *argv[])
 		{
 			debug += 1;
 		}
+		else if (std::string(argv[i]) == "-dump")
+		{
+			dump_err_frames = true;
+		}
+		else if (std::string(argv[i]) == "-time-limit")
+		{
+			time_limit_ena  = true;
+			time_limit_val = std::atoi(argv[i + 1]);
+			i += 1;
+		}
 		else
 		{
 			printf("(EE) Error during CLI parsing\n");
@@ -382,6 +398,17 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+/*	NOTE: I added a mutex to solve this issue ;-)
+
+	if ((dump_err_frames == true) && (num_threads != 1))
+	{
+		printf("(EE) Error during CLI parsing\n");
+		printf("(EE) It is impossible to enable both [-dump] and [-thread] options\n");
+		printf("(EE) Currently, [-dump] is monothreaded only !\n");
+		exit(EXIT_FAILURE);
+	}
+*/
+
 	/////////////////////////////////////////////////////////////////
 
 	std::cout << "#(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
@@ -430,13 +457,24 @@ int main(int argc, char *argv[])
 	//     }
 	//     dec_type = "pruned-int{" + std::to_string(nbits) + "}";
 	// }
+	printf("#------+--------+------------+-----------+--------+--------+-----------+-----------+-----------+\n");
+	printf("#         Simulation parameters          | Simualtion time | Decoder (single-core) | Simulat°  |\n");
 	printf("# SNR  | Simul. |  Simulated |  Obtained | Elaps. | Remain | Decoding  | Decoding  | Simulat°  |\n");
+	printf("#  dB  | errors |     frames |       FER |   sec. |   sec. |      MBps |     usec  |     MBps  |\n");
+	printf("#------+--------+------------+-----------+--------+--------+-----------+-----------+-----------+\n");
 	printf("  SNR  | F.Errs |     frames |       FER | E.Time | R.Time | Througput |  Latency  | Througput |\n");
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
 	for (float cSNR = EbN0_mini; cSNR <= EbN0_maxi; cSNR += EbN0_step)
 	{
+		//
+		// On cree toujours le logger et le parametre "dump_err_frames" active
+		// ou pas le code en interne.
+		//
+		std::mutex mtx;  // Declare a mutex
+		frame_dumper frame_store(N, K, q, cSNR, dump_err_frames);
+
 
 		//
 		//
@@ -589,12 +627,6 @@ int main(int argc, char *argv[])
 		//
 		//
 		//
-		FILE *file_k = nullptr;
-		FILE *file_n = nullptr;
-		FILE *file_r = nullptr;
-		//
-		//
-		//
 
 #pragma omp parallel
 		{
@@ -613,6 +645,7 @@ int main(int argc, char *argv[])
 			printf("dec->gf = %d\n", dec->gf());
 #endif
 			dec = allocate_dec(dec_type, N, q, frozen_symbols.data());
+			dec->setReliability( code_param.reliab_sequence.data() ); // fot SC-flip decoders
 
 			while (true)
 			{
@@ -733,6 +766,7 @@ int main(int argc, char *argv[])
 					}
 				}
 
+
 				//
 				//
 				//
@@ -743,6 +777,16 @@ int main(int argc, char *argv[])
 					FER.fetch_add(1);
 				}
 				// succ_now = global_counter.load() - FER.load();
+
+				if( (succ_dec == false) && (dump_err_frames == true) )
+				{
+					mtx.lock();  // Lock the mutex before accessing the shared variable
+					frame_store.write_k_symbols ( K_symb );
+					frame_store.write_u_symbols ( r_symb );
+					frame_store.write_noisy_llrs( llrs_n );
+					frame_store.write_number_proc_frames( global_counter.load() );					
+					mtx.unlock();  // Unlock the mutex after the critical section
+				}
 
 				//
 				// Plus d'openmp critical car on filtre sur thread 1
@@ -833,6 +877,19 @@ int main(int argc, char *argv[])
 				{
 					break;
 				}
+
+				//
+				// Used to limit simulation time of SNR point /OR/ draw throughput curves for SCL/SCF decoders
+				//
+				if( time_limit_ena == true )
+				{
+					auto   cend = std::chrono::high_resolution_clock::now();
+					double csec = std::chrono::duration<double>(cend - start).count();
+					if( csec >= time_limit_val ){
+						break;
+					}
+				}
+
 			}
 
 			delete dec;

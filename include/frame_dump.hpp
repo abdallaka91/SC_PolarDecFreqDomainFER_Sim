@@ -58,7 +58,7 @@ public:
             exit( EXIT_FAILURE );
         }
 
-        filen = std::format("./replay/N_{}/K_{}/SNR_{}/frame_symb_n.raw",  N, K, snr);
+        filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_n.raw",  N, K, snr, target);
         file_n = fopen(filen.c_str(), "wb");
         if( file_n == nullptr ){ 
             std::cout << "(EE) Error during file opening " << filen << std::endl;
@@ -66,7 +66,7 @@ public:
             exit( EXIT_FAILURE );
         }
 
-        filen = std::format("./replay/N_{}/K_{}/SNR_{}/frame_symb_k.raw", N, K, snr);
+        filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_k.raw", N, K, snr, target);
         file_r = fopen(filen.c_str(), "wb");
         if( file_r == nullptr ){
             std::cout << "(EE) Error during file opening " << filen << std::endl;
@@ -139,7 +139,7 @@ public:
         if( enable == false ){
             return false;
         }
-        std::string filen = std::format("./replay/N_{}/K_{}/SNR_{}/corrected_frames.raw", N, K, snr);
+        std::string filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/corrected_frames.raw", N, K, snr, target);
         FILE* hh = fopen(filen.c_str(), "wb");
         if( hh == nullptr ){
             exit( EXIT_FAILURE );

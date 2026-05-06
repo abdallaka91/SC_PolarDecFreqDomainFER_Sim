@@ -33,12 +33,13 @@ private:
     const int K;
     const int GF;
     const float snr;    
+    const float target;    
     const bool enable;
 	//
 public:
 
-    frame_dumper(const int _N, const int _K, const int _GF, const float _snr, const bool enabled)
-        : N(_N), K(_K), GF(_GF), snr(_snr), enable(enabled)
+    frame_dumper(const int _N, const int _K, const int _GF, const float _snr, const float _target, const bool enabled)
+        : N(_N), K(_K), GF(_GF), snr(_snr), target(_target), enable(enabled)
     {
         if( enable == false )
             return;
@@ -46,10 +47,10 @@ public:
         //
         // On cree les repertoires pour stocker les fichiers en cas de besoin
         //
-        std::string path = std::format("./replay/N_{}/K_{}/SNR_{}/",  N, K, snr);
+        std::string path = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/",  N, K, snr, target);
         make_dirs( path );
 
-        std::string filen = std::format("./replay/N_{}/K_{}/SNR_{}/frame_symb_k.raw",  N, K, snr);
+        std::string filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_k.raw",  N, K, snr, target);
         file_k = fopen(filen.c_str(), "wb");
         if( file_k == nullptr ){
             std::cout << "(EE) Error during file opening " << filen << std::endl;

@@ -469,14 +469,6 @@ int main(int argc, char *argv[])
 	for (float cSNR = EbN0_mini; cSNR <= EbN0_maxi; cSNR += EbN0_step)
 	{
 		//
-		// On cree toujours le logger et le parametre "dump_err_frames" active
-		// ou pas le code en interne.
-		//
-		std::mutex mtx;  // Declare a mutex
-		frame_dumper frame_store(N, K, q, cSNR, dump_err_frames);
-
-
-		//
 		//
 		//
 		base_code_t code_param(N, K, n, q, p, frozen_val);
@@ -495,6 +487,13 @@ int main(int argc, char *argv[])
 			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
 		}
 		LoadCode(code_param, sSNR, "./matrices/", debug >= 2);
+
+		//
+		// On cree toujours le logger et le parametre "dump_err_frames" active
+		// ou pas le code en interne.
+		//
+		std::mutex mtx;  // Declare a mutex
+		frame_dumper frame_store(N, K, q, cSNR, sSNR, dump_err_frames);
 
 		//
 		//

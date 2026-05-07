@@ -96,50 +96,50 @@ int main(int argc, char *argv[])
 {
 
 #ifdef __AVX512BW__
-	printf("#(II) Non-binary FFT Successive Cancellation wrong frame replay "
+	printf("# Non-binary FFT Successive Cancellation wrong frame replay "
 		   "program (AVX512 version)\n");
 #elif __AVX2__
-	printf("#(II) Non-binary FFT Successive Cancellation wrong frame replay "
+	printf("# Non-binary FFT Successive Cancellation wrong frame replay "
 		   "program (AVX2 version)\n");
 #else
-	printf("#(II) Non-binary FFT Successive Cancellation wrong frame replay "
+	printf("# Non-binary FFT Successive Cancellation wrong frame replay "
 		   "program (ARM NEON version)\n");
 #endif
 
-	printf("#(II) + developped by Abdallah ABDALLAH in 2025...\n");
-	printf("#(II) +        and by Camille MONIERE   in 2025...\n");
-	printf("#(II) +        and by Bertrand LE GAL   in 2025...\n");
-	printf("#(II)\n");
-	printf("#(II) Binary generated : %s - %s\n", __DATE__, __TIME__);
-	printf("#(II)\n");
+//	printf("# + developped by Abdallah ABDALLAH in 2025...\n");
+//	printf("# +        and by Camille MONIERE   in 2025...\n");
+//	printf("# +        and by Bertrand LE GAL   in 2025...\n");
+//	printf("#\n");
+	printf("# Binary generated     : %s - %s\n", __DATE__, __TIME__);
+#if (defined(__ICC) || defined(__INTEL_COMPILER)) == 0
+	std::time_t t = std::time(nullptr);
+	std::cout << "# Trace date and time  : "
+			  << std::put_time(std::localtime(&t), "%c %Z") << '\n';
+#endif
+
 #if defined(__clang__)
 	/* Clang/LLVM. ---------------------------------------------- */
-	printf("#(II) + Clang/LLVM version %d.%d.%d\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
+	printf("# Clang/LLVM version %d.%d.%d\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
 #elif defined(__ICC) || defined(__INTEL_COMPILER)
 	/* Intel ICC/ICPC. ------------------------------------------ */
 	printf("# + Intel ICC/ICPC version %d.%d\n", __INTEL_COMPILER, __INTEL_COMPILER_BUILD_DATE);
 #elif defined(__GNUC__) || defined(__GNUG__)
 	/* GNU GCC/G++. --------------------------------------------- */
-	printf("#(II) + GNU GCC/G++ version %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+	printf("# + GNU GCC/G++ version %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #elif defined(_MSC_VER)
 	/* Microsoft Visual Studio. --------------------------------- */
-	printf("#(II) + Microsoft Visual Studio\n");
+	printf("# + Microsoft Visual Studio\n");
 #else
-	#error "#(II) + Undetected compiler !"
+	#error "# + Undetected compiler !"
 #endif
+	printf("#\n");
 
-#if (defined(__ICC) || defined(__INTEL_COMPILER)) == 0
-	std::time_t t = std::time(nullptr);
-	std::cout << "#(II) + Trace date and time : "
-			  << std::put_time(std::localtime(&t), "%c %Z") << '\n';
-	printf("#(II)\n");
-#endif
 
     printf("# Run command:\n# ");
     for(uint32_t i = 0; i < argc; i += 1){
         printf("%s ", argv[i]);
     }printf("\n");
-	printf("#(II)\n");
+	printf("#\n");
 
 	signal(SIGINT, intHandler);
 
@@ -159,6 +159,9 @@ int main(int argc, char *argv[])
 	float EbN0_mini = -1000.f;
 	float EbN0_maxi = -1000.f;
 	float EbN0_step = -1000.f;
+
+	float forced_EbN0 = -1000.f;
+	bool  forced_mode = false;
 
 	uint16_t q            = 0;
     uint16_t p            = 0;
@@ -188,6 +191,11 @@ int main(int argc, char *argv[])
 		else if (std::string(argv[i]) == "-snr-step")
 		{
 			EbN0_step = stod(std::string(argv[i + 1]));
+			i += 1;
+		}else if (std::string(argv[i]) == "-target")
+		{
+			forced_EbN0 = stod(std::string(argv[i + 1]));
+			forced_mode = true;
 			i += 1;
         } else if (std::string(argv[i]) == "-q") {
             q = stoi(std::string(argv[i+1]));
@@ -276,12 +284,8 @@ int main(int argc, char *argv[])
 #else
     bool ok = loader_so::open("libNbScFFTdec.so");
 #endif
-    
-	if( compact == false ){
-		if( ok )
-			printf("#(II) + Decoder library was loaded successfully...\n");
-		else
-			printf("#(EE) + Error during the library loading...\n");
+	if( ok == false ){
+		printf("#(EE) + Error during the library loading...\n");
 	}
 
     /////////////////////////////////////////////////////////////////
@@ -290,6 +294,7 @@ int main(int argc, char *argv[])
     std::cout << "# N            : " << N            << std::endl;
     std::cout << "# K            : " << K            << std::endl;
     std::cout << "# dec_type     : " << dec_type     << std::endl;
+	printf("#\n");
 
     /////////////////////////////////////////////////////////////////
 	if(compact == false){
@@ -313,7 +318,13 @@ int main(int argc, char *argv[])
 
 		table_GF table;
 
-		LoadCode(code_param, cSNR, "./matrices/");
+		const float sSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
+		if (debug >= 2)
+		{
+			printf("#(DD)\n");
+			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
+		}
+		LoadCode(code_param, sSNR, "./matrices/");
 
 //		cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations." << endl;
 //		cout << "Simulation starts..." << endl;
@@ -345,7 +356,8 @@ int main(int argc, char *argv[])
 		//
 		//
 		//
-		frame_reader freader(code_param.N, code_param.K, q, cSNR);
+		const float tSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
+		frame_reader freader(code_param.N, code_param.K, q, cSNR, tSNR);
 
 		uint64_t decoded_frames = freader.read_number_proc_frames();
 		
@@ -406,6 +418,9 @@ int main(int argc, char *argv[])
 
 			nErrors += (succ_dec == false);
 			nFrames += 1;
+
+			if(force_quit == true)
+				break;
 		}
 		const auto stop      = std::chrono::high_resolution_clock::now();
 		const float time_sec = (float)std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() / 1000.f;
@@ -414,7 +429,10 @@ int main(int argc, char *argv[])
 		auto   end = std::chrono::high_resolution_clock::now();
 		double sec = std::chrono::duration<double>(end - start).count();
 
-		double FER_ratio = (double)nErrors / (double)(nFrames + decoded_frames);
+		// ATTENTION: decoded_frames contient déjà les trames qui n'avaient pas
+		//			  été correctement décodée, donc pas la peine de les rajouter ;-)
+		//double FER_ratio = (double)nErrors / (double)(nFrames + decoded_frames);
+		double FER_ratio = (double)nErrors / (double)(decoded_frames);
 		if( debug >= 1 )
 		{
 			double fps = (double)nFrames / (double)sec;
@@ -436,6 +454,9 @@ int main(int argc, char *argv[])
 		}
 
 		delete decoder;
+
+		if(force_quit == true)
+			break;
 	}
 
 	return EXIT_SUCCESS;

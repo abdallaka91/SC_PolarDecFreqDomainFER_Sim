@@ -855,11 +855,12 @@ int main(int argc, char *argv[])
 						}
 						else
 						{
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | %9.2f | %9.2f |\r",
+							const double FER_ratiO = (double)1.0 / gen_frames_out;
+							printf("%6.2f | %6lu | %10lu | < %1.1e | %6d | %6d | %9.2f | %9.2f | %9.2f |\r",
 								   cSNR,
 								   FER_out,
 								   gen_frames_out,
-								   FER_ratio,
+								   FER_ratiO,
 								   (int)sec,
 								   0, d, l, tgt);
 						}

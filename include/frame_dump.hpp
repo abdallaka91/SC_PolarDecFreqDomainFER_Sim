@@ -66,7 +66,7 @@ public:
             exit( EXIT_FAILURE );
         }
 
-        filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_k.raw", N, K, snr, target);
+        filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_r.raw", N, K, snr, target);
         file_r = fopen(filen.c_str(), "wb");
         if( file_r == nullptr ){
             std::cout << "(EE) Error during file opening " << filen << std::endl;

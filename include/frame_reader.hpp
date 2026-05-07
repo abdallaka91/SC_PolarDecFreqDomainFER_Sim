@@ -21,13 +21,14 @@ private:
     const int K;
     const int GF;
     const float snr;    
+    const float target;    
 	//
 public:
 
-    frame_reader(const int _N, const int _K, const int _GF, const float _snr)
-        : N(_N), K(_K), GF(_GF), snr(_snr)
+    frame_reader(const int _N, const int _K, const int _GF, const float _snr, const float _target)
+        : N(_N), K(_K), GF(_GF), snr(_snr), target(_target)
     {
-        std::string filen = std::format("./replay/N_{}/K_{}/SNR_{}/frame_symb_k.raw",  N, K, snr);
+        std::string filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_k.raw",  N, K, snr, target);
         file_k = fopen(filen.c_str(), "rb");
         if( file_k == nullptr ){
             std::cout << "(EE) Error during file opening " << filen << std::endl;
@@ -35,7 +36,7 @@ public:
             exit( EXIT_FAILURE );
         }
 
-        filen = std::format("./replay/N_{}/K_{}/SNR_{}/frame_symb_n.raw",  N, K, snr);
+        filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_n.raw",  N, K, snr, target);
         file_n = fopen(filen.c_str(), "rb");
         if( file_n == nullptr ){ 
             std::cout << "(EE) Error during file opening " << filen << std::endl;
@@ -43,7 +44,7 @@ public:
             exit( EXIT_FAILURE );
         }
 
-        filen = std::format("./replay/N_{}/K_{}/SNR_{}/frame_symb_k.raw", N, K, snr);
+        filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/frame_symb_r.raw", N, K, snr, target);
         file_r = fopen(filen.c_str(), "rb");
         if( file_r == nullptr ){
             std::cout << "(EE) Error during file opening " << filen << std::endl;
@@ -102,7 +103,7 @@ public:
     uint64_t read_number_proc_frames()
     {
         uint64_t counter = 0;
-        std::string filen = std::format("./replay/N_{}/K_{}/SNR_{}/corrected_frames.raw", N, K, snr);
+        std::string filen = std::format("./replay/N_{}/K_{}/SNR{}-TARGET{}/corrected_frames.raw", N, K, snr, target);
         FILE* hh = fopen(filen.c_str(), "rb");
         if( hh == nullptr ){
             std::cout << "(EE) Error in " << __FILE__ << ":" << __LINE__ << std::endl;

@@ -159,15 +159,16 @@ int main(int argc, char *argv[])
 	signal(SIGINT, intHandler);
 
 #ifdef __APPLE__
-	bool ok = loader_so::open("libNbScFFTdec.dylib");
+    bool ok = loader_so::open("./libNbScFFTdec.dylib");
 #else
-	bool ok = loader_so::open("libNbScFFTdec.so");
+    bool ok = loader_so::open("./libNbScFFTdec.so");
 #endif
 
-	if (ok)
-		printf("#(II) + Decoder library was loaded successfully...\n");
-	else
-		printf("#(EE) + Error during the library loading...\n");
+if (ok)
+    printf("#(II) + Decoder library was loaded successfully...\n");
+else
+    printf("#(EE) + Error during the library loading...\n");
+
 
 	int num_threads = omp_get_max_threads();
 
@@ -360,7 +361,7 @@ int main(int argc, char *argv[])
 	table_GF table;
 
 	cout << "(II) Loading code_param [START]" << endl;
-	LoadCode(code_param, EbN0, "./matrices/");
+	LoadCode(code_param, EbN0, "../matrices/");
 	cout << "(II) Loading code_param [END OK]" << endl;
 
 	cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations."

@@ -143,7 +143,6 @@ void intHandler(int dummy)
 //
 int main(int argc, char *argv[])
 {
-
 #ifdef __AVX512BW__
 	printf("#(II) Non-binary FFT Successive Cancellation wrong frame replay "
 		   "program (AVX512 version)\n");
@@ -457,12 +456,12 @@ int main(int argc, char *argv[])
 	//     }
 	//     dec_type = "pruned-int{" + std::to_string(nbits) + "}";
 	// }
-	printf("#------+--------+------------+-----------+--------+--------+-----------+-----------+-----------+\n");
-	printf("#         Simulation parameters          | Simualtion time | Decoder (single-core) | Simulat°  |\n");
-	printf("# SNR  | Simul. |  Simulated |  Obtained | Elaps. | Remain | Decoding  | Decoding  | Simulat°  |\n");
-	printf("#  dB  | errors |     frames |       FER |   sec. |   sec. |      MBps |     usec  |     MBps  |\n");
-	printf("#------+--------+------------+-----------+--------+--------+-----------+-----------+-----------+\n");
-	printf("  SNR  | F.Errs |     frames |       FER | E.Time | R.Time | Througput |  Latency  | Througput |\n");
+	printf("#------+--------+------------+-----------+--------+--------+--------------------------+--------------------------+-----------+\n");
+	printf("#         Simulation parameters          | Simualtion time |   Performance evaluation on a single-core decoder   | Simulat°  |\n");
+	printf("# SNR  | Simul. |  Simulated |  Obtained | Elaps. | Remain |    decoding throughput   |    decoding latency      | Simulat°  |\n");
+	printf("#  dB  | errors |     frames |       FER |   sec. |   sec. |           in MBps        |         in u-sec         |     MBps  |\n");
+	printf("#------+--------+------------+-----------+--------+--------+--------------------------+--------------------------+-----------+\n");
+	printf("  SNR  | F.Errs |     frames |       FER | E.Time | R.Time |  T.avg |  T.min |  T.max |  L.avg |  L.min |  L.max | Througput |\n");
 	//
 	// Loop ici mais comment gere t'on le forced SNR ?
 	//
@@ -827,8 +826,13 @@ int main(int argc, char *argv[])
 						//
 						// NB-polar decoder statistics (thread 0)
 						//
-						const float d = dec->dec_avg_coded_mbps();
-						const float l = dec->dec_avg_latency();
+						const float d_avg = dec->dec_avg_coded_mbps();
+						const float d_min = dec->dec_min_coded_mbps();
+						const float d_max = dec->dec_max_coded_mbps();
+
+						const float l_avg = dec->dec_avg_latency();
+						const float l_min = dec->dec_min_latency();
+						const float l_max = (dec->dec_max_latency() > 9999.9) ? 9999.9f : dec->dec_max_latency();
 
 						//
 						// Simulation statistics
@@ -844,25 +848,24 @@ int main(int argc, char *argv[])
 							double restAnt = (FER_STOP - FER_out);
 							double restant = std::max(restAnt, 0.0);
 							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %9.2f | %9.2f | %9.2f |\r",
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %6.2f | %6.2f | %6.2f | %6.1f | %6.1f | %6.1f | %9.2f |  \r",
 								   cSNR,
 								   FER_out,
 								   gen_frames_out,
 								   FER_ratio,
-								   (int)sec,
-								   (int)tps_rest,
-								   d, l, tgt);
+								   int(sec), int(tps_rest),
+								   d_avg, d_min, d_max, l_avg, l_min, l_max, tgt);
 						}
 						else
 						{
 							const double FER_ratiO = (double)1.0 / gen_frames_out;
-							printf("%6.2f | %6lu | %10lu | < %1.1e | %6d | %6d | %9.2f | %9.2f | %9.2f |\r",
+							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %6.2f | %6.2f | %6.2f | %6.1f | %6.1f | %6.1f | %9.2f |  \r",
 								   cSNR,
 								   FER_out,
 								   gen_frames_out,
 								   FER_ratiO,
-								   (int)sec,
-								   0, d, l, tgt);
+								   int(sec), 0,
+								   d_avg, d_min, d_max, l_avg, l_min, l_max, tgt);
 						}
 						fflush(stdout);
 						watchdod = std::chrono::high_resolution_clock::now();

@@ -12,6 +12,7 @@
 #include <inttypes.h>
 #include <iomanip>
 #include <iostream>
+#include <mutex>
 #include <omp.h>
 #include <signal.h>
 #include <sstream>

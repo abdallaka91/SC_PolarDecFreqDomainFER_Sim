@@ -129,7 +129,14 @@ private:
     template <int Size>
     const auto &get_sequence()
     {
-        if constexpr (Size == 64)
+		// WRONG CODE BLG 23/05/2026
+        if constexpr (Size == 8)
+            return CCSKSequences::BASE_SEQ_8;
+        else if constexpr (Size == 16)
+            return CCSKSequences::BASE_SEQ_16;
+        else if constexpr (Size == 32)
+            return CCSKSequences::BASE_SEQ_32;
+        else if constexpr (Size == 64)
             return CCSKSequences::BASE_SEQ_64;
         else if constexpr (Size == 128)
             return CCSKSequences::BASE_SEQ_128;
@@ -140,7 +147,7 @@ private:
         else if constexpr (Size == 1024)
             return CCSKSequences::BASE_SEQ_1024;
         else
-            static_assert(Size == 64 || Size == 128 || Size == 256 || Size == 512 || Size == 1024, "Unsupported sequence length");
+            static_assert(Size == 8 || Size == 16 || Size == 32 || Size == 64 || Size == 128 || Size == 256 || Size == 512 || Size == 1024, "Unsupported sequence length");
     }
 
     void complex_multiply_simd(double *a_real, double *a_imag)

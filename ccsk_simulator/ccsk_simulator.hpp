@@ -296,9 +296,16 @@ class CCSK_Simulator : public CCSK_Channel
 	template <int GF>
 	static constexpr auto get_base_seq_float()
 	{
+		// WRONG CODE BLG 23/05/2026
 		constexpr auto get_seq = []() -> const auto &
 		{
-			if constexpr (GF == 64)
+			if constexpr (GF == 8)
+				return CCSKSequences::BASE_SEQ_8;
+			else if constexpr (GF == 16)
+				return CCSKSequences::BASE_SEQ_16;
+			else if constexpr (GF == 32)
+				return CCSKSequences::BASE_SEQ_32;
+			else if constexpr (GF == 64)
 				return CCSKSequences::BASE_SEQ_64;
 			else if constexpr (GF == 128)
 				return CCSKSequences::BASE_SEQ_128;
@@ -309,7 +316,7 @@ class CCSK_Simulator : public CCSK_Channel
 			else if constexpr (GF == 1024)
 				return CCSKSequences::BASE_SEQ_1024;
 			else
-				static_assert(GF == 64 || GF == 128 || GF == 256 ||
+				static_assert(GF == 8 || GF == 16 || GF == 32 || GF == 64 || GF == 128 || GF == 256 ||
 								  GF == 512 || GF == 1024,
 							  "Unsupported GF size - add sequence");
 		};

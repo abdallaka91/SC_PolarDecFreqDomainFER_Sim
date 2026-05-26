@@ -529,81 +529,81 @@ int main(int argc, char *argv[])
 		//		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma,
 		// num_threads);
 		CCSK_Channel *simulator = nullptr;
-		if (N == 64 && q == 64)
-			simulator =
-				new CCSK_Simulator<64, 64>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 128 && q == 64)
-			simulator =
-				new CCSK_Simulator<64, 128>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 256 && q == 64)
-			simulator =
-				new CCSK_Simulator<64, 256>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 512 && q == 64)
-			simulator =
-				new CCSK_Simulator<64, 512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q == 64)
-			simulator =
-				new CCSK_Simulator<64, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q == 64)
-			simulator =
-				new CCSK_Simulator<64, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 64
+		//
+		     if (N ==   64 && q == 64) simulator = new CCSK_Simulator<64,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 64) simulator = new CCSK_Simulator<64,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 64) simulator = new CCSK_Simulator<64,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 64) simulator  = new CCSK_Simulator<64,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 64) simulator = new CCSK_Simulator<64, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 64) simulator = new CCSK_Simulator<64, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 128
+		//
+		else if (N ==   64 && q == 128) simulator = new CCSK_Simulator<128,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 128) simulator = new CCSK_Simulator<128,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 128) simulator = new CCSK_Simulator<128,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 128) simulator = new CCSK_Simulator<128,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 128) simulator = new CCSK_Simulator<128, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 128) simulator = new CCSK_Simulator<128, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 256
+		//
+		else if (N ==   64 && q == 256) simulator = new CCSK_Simulator<256,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 256) simulator = new CCSK_Simulator<256,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 256) simulator = new CCSK_Simulator<256,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 256) simulator = new CCSK_Simulator<256,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 256) simulator = new CCSK_Simulator<256, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 256) simulator = new CCSK_Simulator<256, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 512
+		//
+		else if (N ==   64 && q == 512) simulator = new CCSK_Simulator<512,   64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 512) simulator = new CCSK_Simulator<512,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 512) simulator = new CCSK_Simulator<512,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 512) simulator = new CCSK_Simulator<512,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 512) simulator = new CCSK_Simulator<512, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 512) simulator = new CCSK_Simulator<512, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 1024
+		//
+		else if (N ==   64 && q == 1024) simulator = new CCSK_Simulator<1024 ,  64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 1024) simulator = new CCSK_Simulator<1024,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 1024) simulator = new CCSK_Simulator<1024,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 1024) simulator = new CCSK_Simulator<1024,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 1024) simulator = new CCSK_Simulator<1024, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 1024) simulator = new CCSK_Simulator<1024, 2048>(noise_sigma, llr_sigma, num_threads);
 
-		else if (N == 64 && q == 128)
-			simulator =
-				new CCSK_Simulator<128, 64>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 128 && q == 128)
-			simulator =
-				new CCSK_Simulator<128, 128>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 256 && q == 128)
-			simulator =
-				new CCSK_Simulator<128, 256>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 512 && q == 128)
-			simulator =
-				new CCSK_Simulator<128, 512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q == 128)
-			simulator =
-				new CCSK_Simulator<128, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q == 128)
-			simulator =
-				new CCSK_Simulator<128, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 1024
+		//
+		else if (N ==   64 && q == 8) simulator = new CCSK_Simulator<8 ,  64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 8) simulator = new CCSK_Simulator<8,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 8) simulator = new CCSK_Simulator<8,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 8) simulator = new CCSK_Simulator<8,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 8) simulator = new CCSK_Simulator<8, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 8) simulator = new CCSK_Simulator<8, 2048>(noise_sigma, llr_sigma, num_threads);
 
-		else if (N == 64 && q == 256)
-			simulator =
-				new CCSK_Simulator<256, 64>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 128 && q == 256)
-			simulator =
-				new CCSK_Simulator<256, 128>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 256 && q == 256)
-			simulator =
-				new CCSK_Simulator<256, 256>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 512 && q == 256)
-			simulator =
-				new CCSK_Simulator<256, 512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q == 256)
-			simulator =
-				new CCSK_Simulator<256, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q == 256)
-			simulator =
-				new CCSK_Simulator<256, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 1024
+		//
+		else if (N ==   64 && q == 16) simulator = new CCSK_Simulator<16 ,  64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 16) simulator = new CCSK_Simulator<16,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 16) simulator = new CCSK_Simulator<16,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 16) simulator = new CCSK_Simulator<16,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 16) simulator = new CCSK_Simulator<16, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 16) simulator = new CCSK_Simulator<16, 2048>(noise_sigma, llr_sigma, num_threads);
 
-		else if (N == 64 && q == 512)
-			simulator =
-				new CCSK_Simulator<512, 64>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 128 && q == 512)
-			simulator =
-				new CCSK_Simulator<512, 128>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 256 && q == 512)
-			simulator =
-				new CCSK_Simulator<512, 256>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 512 && q == 512)
-			simulator =
-				new CCSK_Simulator<512, 512>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 1024 && q == 512)
-			simulator =
-				new CCSK_Simulator<512, 1024>(noise_sigma, llr_sigma, num_threads);
-		else if (N == 2048 && q == 512)
-			simulator =
-				new CCSK_Simulator<512, 2048>(noise_sigma, llr_sigma, num_threads);
+		//
+		// Q = 1024
+		//
+		else if (N ==   64 && q == 32) simulator = new CCSK_Simulator<32 ,  64>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  128 && q == 32) simulator = new CCSK_Simulator<32,  128>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  256 && q == 32) simulator = new CCSK_Simulator<32,  256>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 32) simulator = new CCSK_Simulator<32,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 1024 && q == 32) simulator = new CCSK_Simulator<32, 1024>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 2048 && q == 32) simulator = new CCSK_Simulator<32, 2048>(noise_sigma, llr_sigma, num_threads);
 
 		if (simulator == nullptr)
 		{
@@ -645,6 +645,25 @@ int main(int argc, char *argv[])
 			dec = allocate_dec(dec_type, N, q, frozen_symbols.data());
 			dec->setReliability( code_param.reliab_sequence.data() ); // fot SC-flip decoders
 
+			//
+			// On genere le mapping des K symbols dans le mot de N
+			//
+			std::vector<uint16_t> k_pos( K );
+			for (int x = 0; x < K; x += 1) {
+				k_pos[x] = code_param.reliab_sequence[x];
+			}
+			std::sort( k_pos.begin(), k_pos.end() );
+			//
+			//
+#if 0
+			printf("Reordered k_pos[x] : ");
+			for (int x = 0; x < K; x += 1) {
+				printf("%2d ", k_pos[x]);
+			}
+			printf("\n");
+#endif
+			//
+			//
 			while (true)
 			{
 				bool succ_dec = true;

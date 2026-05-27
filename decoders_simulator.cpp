@@ -234,7 +234,10 @@ int main(int argc, char *argv[])
 	int FER_STOP = 100;
 	uint16_t frozen_val = 0;
 	int nbits = -1;
-	float llr_sigma = -1.f;
+
+	float llr_sigma_value  = -1.f;
+	bool  llr_sigma_forced = false;
+
 	int debug = 0;
 
 	/////////////////////////////////////////////////////////////////
@@ -319,7 +322,8 @@ int main(int argc, char *argv[])
 		}
 		else if (std::string(argv[i]) == "-llr_sigma")
 		{
-			llr_sigma = std::stof(argv[i + 1]);
+			llr_sigma_value  = std::stof(argv[i + 1]);
+			llr_sigma_forced = true;
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-nbits_dec")
@@ -523,12 +527,8 @@ int main(int argc, char *argv[])
 		//
 
 		const float noise_sigma = sqrt(1.0 / (pow(10, cSNR / 10.0)));
-		// if (llr_sigma < 0.f)
-		llr_sigma = noise_sigma;
-		// printf("llr_sigma = %f\n", llr_sigma);
+		const float llr_sigma = (llr_sigma_forced == true) ? llr_sigma_value : noise_sigma;
 
-		//		CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma,
-		// num_threads);
 		CCSK_Channel *simulator = nullptr;
 		//
 		// Q = 64
@@ -536,7 +536,7 @@ int main(int argc, char *argv[])
 		     if (N ==   64 && q == 64) simulator = new CCSK_Simulator<64,   64>(noise_sigma, llr_sigma, num_threads);
 		else if (N ==  128 && q == 64) simulator = new CCSK_Simulator<64,  128>(noise_sigma, llr_sigma, num_threads);
 		else if (N ==  256 && q == 64) simulator = new CCSK_Simulator<64,  256>(noise_sigma, llr_sigma, num_threads);
-		else if (N ==  512 && q == 64) simulator  = new CCSK_Simulator<64,  512>(noise_sigma, llr_sigma, num_threads);
+		else if (N ==  512 && q == 64) simulator = new CCSK_Simulator<64,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 64) simulator = new CCSK_Simulator<64, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 64) simulator = new CCSK_Simulator<64, 2048>(noise_sigma, llr_sigma, num_threads);
 		//

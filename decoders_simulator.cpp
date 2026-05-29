@@ -36,6 +36,8 @@ using namespace PoAwN::init;
 #include <iostream>
 #include <string>
 
+#include "./source/crc/crc_16b.hpp"
+
 namespace fs = std::filesystem;
 
 std::string format_FER(double FER_value, int width = 10)
@@ -631,6 +633,7 @@ int main(int argc, char *argv[])
 		{
 			int thread_id = omp_get_thread_num();
 			std::vector<uint16_t> K_symb(K);
+			std::vector<uint16_t> F_symb(K);
 			std::vector<uint16_t> u_symb(N);
 			std::vector<uint16_t> r_symb(N);
 			std::vector<float> llrs_n(N * q);
@@ -667,20 +670,48 @@ int main(int argc, char *argv[])
 			//
 			while (true)
 			{
-				bool succ_dec = true;
 
 				//
 				// Generate symbols for THIS frame
 				//
 				simulator->generate_random_symbols(K_symb.data(), K, thread_id);
+#ifdef _CRC_DEBUG_
+				printf("GEN : "); for (int i = 0; i < K; i++) printf("%2d ", K_symb[i]); printf("\n");
+#endif
+				//
+				// On insere le CRC 16b
+				//
+				crc16_insert(K_symb.data(), K, q);
+				//
+				// On verifie le CRC 16b
+				//
+#ifdef _CRC_DEBUG_
+				const bool crc_ok = crc16_verify(K_symb.data(), K, q);
+				if( crc_ok == false ){
+					printf("CRC error !\n");
+					exit(EXIT_FAILURE);
+				}
+#endif
+				//
+				//
+				//
+
+#ifdef _CRC_DEBUG_
+				printf("CRC : "); for (int i = 0; i < K; i++) printf("%2d ", K_symb[i]); printf("\n");
+#endif
+
+				for (int u = 0; u < N; u++)
+				{
+					u_symb[u] = 0;
+				}
 				for (int u = 0; u < K; u++)
 				{
-					u_symb[code_param.reliab_sequence[u]] = K_symb[u];
+					u_symb[ k_pos[u] ] = K_symb[u];
 				}
-				for (int u = K; u < N; u++)
-				{
-					u_symb[code_param.reliab_sequence[u]] = 0;
-				}
+
+#ifdef _CRC_DEBUG_
+				printf("PRE : "); for (int i = 0; i < N; i++) printf("%2d ", u_symb[i]); printf("\n");
+#endif
 
 				for (int u = 0; u < N;
 					 u++)
@@ -688,34 +719,18 @@ int main(int argc, char *argv[])
 					r_symb[u] = u_symb[u]; // le mode génie dans la simulation
 				}
 
-				if (N == 64)
-				{
-					polar_encode<64>(u_symb.data());
-				}
-				else if (N == 128)
-				{
-					polar_encode<128>(u_symb.data());
-				}
-				else if (N == 256)
-				{
-					polar_encode<256>(u_symb.data());
-				}
-				else if (N == 512)
-				{
-					polar_encode<512>(u_symb.data());
-				}
-				else if (N == 1024)
-				{
-					polar_encode<1024>(u_symb.data());
-				}
-				else if (N == 2048)
-				{
-					polar_encode<2048>(u_symb.data());
-				}
+				     if (N ==   64) polar_encode<  64>(u_symb.data());
+				else if (N ==  128) polar_encode< 128>(u_symb.data());
+				else if (N ==  256) polar_encode< 256>(u_symb.data());
+				else if (N ==  512) polar_encode< 512>(u_symb.data());
+				else if (N == 1024) polar_encode<1024>(u_symb.data());
+				else if (N == 2048) polar_encode<2048>(u_symb.data());
 				else
-				{
 					exit(EXIT_FAILURE);
-				}
+
+#ifdef _CRC_DEBUG_
+				printf("ENC : "); for (int i = 0; i < N; i++) printf("%2d ", u_symb[i]); printf("\n");
+#endif
 
 				//
 				// Simulate CCSK transmission
@@ -775,14 +790,44 @@ int main(int argc, char *argv[])
 				printf("\n");
 				printf("\n");
 #endif
-				for (uint16_t i = 0; i < code_param.K; i++)
-				{
-					if (K_symb[i] != decoded_n[code_param.reliab_sequence[i]])
-					{
-						succ_dec = false;
-						break;
-					}
+
+#ifdef _CRC_DEBUG_
+				printf("DEC : "); for (int i = 0; i < N; i++) printf("%2d ", decoded_n[i]); printf("\n");
+				printf("Kou : "); for (int i = 0; i < K; i++) printf("%2d ", decoded_n[ k_pos[i] ]); printf("\n");
+#endif
+
+				//
+				// On récupère les K symboles décodés (dans le bon ordre)
+				//
+				for (int i = 0; i < K; i++){
+					F_symb[i] = decoded_n[ k_pos[i] ];
 				}
+#ifdef _CRC_DEBUG_
+				printf("Fou : "); for (int i = 0; i < K; i++) printf("%2d ", F_symb[i]); printf("\n");
+#endif
+
+				//
+				// On vérifie que la trame recu = trame émise
+				//
+				bool succ_dec = true;
+				for (int i = 0; i < K; i += 1)
+				{
+					succ_dec &= ( K_symb[i] == F_symb[i] );
+				}
+
+				//
+				// On verifie le CRC 16b
+				//
+				const bool dec_crc_ok = crc16_verify(F_symb.data(), K, q);
+				if( dec_crc_ok ^ succ_dec ){
+					printf("(DD) CRC error : the frame is wrong but the CRC is correct !\n");
+					//printf("succ_dec   = %d\n", succ_dec);
+					//printf("dec_crc_ok = %d\n", dec_crc_ok);
+					//exit(EXIT_FAILURE);
+				}
+				//
+				//
+				//
 
 
 				//

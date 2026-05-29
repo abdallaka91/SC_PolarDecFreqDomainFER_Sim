@@ -820,7 +820,7 @@ int main(int argc, char *argv[])
 				//
 				const bool dec_crc_ok = crc16_verify(F_symb.data(), K, q);
 				if( dec_crc_ok ^ succ_dec ){
-					printf("(DD) CRC error : the frame is wrong but the CRC is correct !\n");
+					printf("#(DD) CRC error : the frame is wrong but the CRC is correct !\n");
 					//printf("succ_dec   = %d\n", succ_dec);
 					//printf("dec_crc_ok = %d\n", dec_crc_ok);
 					//exit(EXIT_FAILURE);

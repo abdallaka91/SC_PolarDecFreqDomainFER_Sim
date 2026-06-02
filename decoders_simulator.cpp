@@ -246,22 +246,22 @@ int main(int argc, char *argv[])
 
 	for (int i = 1; i < argc; i++)
 	{
-		if (std::string(argv[i]) == "-snr-min")
+		if (std::string(argv[i]) == "-snr-min" || std::string(argv[i]) == "-m")
 		{
 			EbN0_mini = stod(std::string(argv[i + 1]));
 			i += 1;
 		}
-		else if (std::string(argv[i]) == "-snr-max")
+		else if (std::string(argv[i]) == "-snr-max" || std::string(argv[i]) == "-M")
 		{
 			EbN0_maxi = stod(std::string(argv[i + 1]));
 			i += 1;
 		}
-		else if (std::string(argv[i]) == "-snr-step")
+		else if (std::string(argv[i]) == "-snr-step" || std::string(argv[i]) == "-s")
 		{
 			EbN0_step = stod(std::string(argv[i + 1]));
 			i += 1;
 		}
-		else if (std::string(argv[i]) == "-target")
+		else if (std::string(argv[i]) == "-target" || std::string(argv[i]) == "-t")
 		{
 			forced_EbN0 = stod(std::string(argv[i + 1]));
 			forced_mode = true;
@@ -294,13 +294,7 @@ int main(int argc, char *argv[])
 			NbMonteCarlo = std::stoull(argv[i + 1]);
 			i += 1;
 		}
-		else if (std::string(argv[i]) == "-thread")
-		{
-			num_threads = std::atoi(argv[i + 1]);
-			omp_set_num_threads(num_threads);
-			i += 1;
-		}
-		else if (std::string(argv[i]) == "-threads")
+		else if (std::string(argv[i]) == "-thread" || std::string(argv[i]) == "-threads" || std::string(argv[i]) == "-t")
 		{
 			num_threads = std::atoi(argv[i + 1]);
 			omp_set_num_threads(num_threads);

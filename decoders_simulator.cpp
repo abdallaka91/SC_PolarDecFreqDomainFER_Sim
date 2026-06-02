@@ -294,13 +294,13 @@ int main(int argc, char *argv[])
 			NbMonteCarlo = std::stoull(argv[i + 1]);
 			i += 1;
 		}
-		else if (std::string(argv[i]) == "-thread" || std::string(argv[i]) == "-threads" || std::string(argv[i]) == "-t")
+		else if (std::string(argv[i]) == "-thread" || std::string(argv[i]) == "-threads")
 		{
 			num_threads = std::atoi(argv[i + 1]);
 			omp_set_num_threads(num_threads);
 			i += 1;
 		}
-		else if (std::string(argv[i]) == "-cores")
+		else if (std::string(argv[i]) == "-cores" || std::string(argv[i]) == "-c")
 		{
 			num_threads = std::atoi(argv[i + 1]);
 			omp_set_num_threads(num_threads);

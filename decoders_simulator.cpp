@@ -227,6 +227,8 @@ int main(int argc, char *argv[])
 	float EbN0_maxi = -1000.f;
 	float EbN0_step = -1000.f;
 
+	bool print_crc_errors = true;
+
 	uint16_t q = 0;
 	uint16_t p = 0;
 	uint16_t N = 0;
@@ -344,6 +346,10 @@ int main(int argc, char *argv[])
 			time_limit_ena  = true;
 			time_limit_val = std::atoi(argv[i + 1]);
 			i += 1;
+		}
+		else if( (std::string(argv[i]) == "-no-crc-errors") || (std::string(argv[i]) == "-no-crc-err") )
+		{
+			print_crc_errors  = false;
 		}
 		else
 		{
@@ -525,6 +531,11 @@ int main(int argc, char *argv[])
 		const float noise_sigma = sqrt(1.0 / (pow(10, cSNR / 10.0)));
 		const float llr_sigma = (llr_sigma_forced == true) ? llr_sigma_value : noise_sigma;
 
+		if (debug >= 2)
+		{
+			printf("#(II) Allocating CCSK channel\n");
+		}
+
 		CCSK_Channel *simulator = nullptr;
 		//
 		// Q = 64
@@ -623,6 +634,11 @@ int main(int argc, char *argv[])
 		//
 		//
 
+		if (debug >= 2)
+		{
+			printf("#(II) Starting openmp section\n");
+		}
+
 #pragma omp parallel
 		{
 			int thread_id = omp_get_thread_num();
@@ -640,9 +656,15 @@ int main(int argc, char *argv[])
 			printf("dec->n  = %d\n", dec->n());
 			printf("dec->gf = %d\n", dec->gf());
 #endif
+			if (debug >= 2)
+				printf("#(II) Try to allocate the polar decoder...\n");
+
 			dec = allocate_dec(dec_type, N, q, frozen_symbols.data());
 			dec->setReliability( code_param.reliab_sequence.data() ); // fot SC-flip decoders
 
+			if (debug >= 2)
+				printf("#(II) Decoder allocation is OK...\n");
+			
 			//
 			// On genere le mapping des K symbols dans le mot de N
 			//
@@ -675,6 +697,9 @@ int main(int argc, char *argv[])
 				//
 				// On insere le CRC 16b
 				//
+				if (debug >= 2)
+					printf("#(II) Inserting the CRC in the frame...\n");
+				
 				crc16_insert(K_symb.data(), K, q);
 				//
 				// On verifie le CRC 16b
@@ -693,6 +718,8 @@ int main(int argc, char *argv[])
 #ifdef _CRC_DEBUG_
 				printf("CRC : "); for (int i = 0; i < K; i++) printf("%2d ", K_symb[i]); printf("\n");
 #endif
+				if (debug >= 2)
+					printf("#(II) Preparing data for encoding...\n");
 
 				for (int u = 0; u < N; u++)
 				{
@@ -706,6 +733,9 @@ int main(int argc, char *argv[])
 #ifdef _CRC_DEBUG_
 				printf("PRE : "); for (int i = 0; i < N; i++) printf("%2d ", u_symb[i]); printf("\n");
 #endif
+
+				if (debug >= 2)
+					printf("#(II) Encoding the polar frame...\n");
 
 				for (int u = 0; u < N;
 					 u++)
@@ -730,7 +760,6 @@ int main(int argc, char *argv[])
 				// Simulate CCSK transmission
 				//
 				double *llr_values = simulator->simulate_frame(u_symb.data(), thread_id);
-
 				if constexpr (SimulationParams::method ==
 							  SimulationParams::LLRMethod::EXP)
 				{
@@ -762,8 +791,16 @@ int main(int argc, char *argv[])
 					}
 				}
 
+				if (debug >= 2)
+					printf("#(II) Loading result for oracle...\n");
 				dec->setResult(r_symb.data());
+
+				if (debug >= 2)
+					printf("#(II) Executing the decoder...\n");
 				dec->execute(llrs_n.data(), decoded_n.data());
+
+				if (debug >= 2)
+					printf("#(II) Computing errors in result...\n");
 
 				//
 				// Check for errors
@@ -813,11 +850,10 @@ int main(int argc, char *argv[])
 				// On verifie le CRC 16b
 				//
 				const bool dec_crc_ok = crc16_verify(F_symb.data(), K, q);
-				if( dec_crc_ok ^ succ_dec ){
-					printf("#(DD) CRC error : the frame is wrong but the CRC is correct !\n");
-					//printf("succ_dec   = %d\n", succ_dec);
-					//printf("dec_crc_ok = %d\n", dec_crc_ok);
-					//exit(EXIT_FAILURE);
+				if( dec_crc_ok ^ succ_dec )
+				{
+					if( print_crc_errors == true )
+						printf("#(DD) CRC error : the frame is wrong but the CRC is correct !\n");
 				}
 				//
 				//

@@ -26,8 +26,11 @@
 
 #include "./include/encoder_1.hpp"
 #include "./include/loader_so.hpp"
+
+#if 0
 #include "./include/frame_dump.hpp"
 #include "./include/frame_reader.hpp"
+#endif
 
 using namespace PoAwN::structures;
 using namespace PoAwN::init;
@@ -343,7 +346,7 @@ int main(int argc, char *argv[])
 		}
 		else if (std::string(argv[i]) == "-time-limit")
 		{
-			time_limit_ena  = true;
+			time_limit_ena = true;
 			time_limit_val = std::atoi(argv[i + 1]);
 			i += 1;
 		}
@@ -498,9 +501,10 @@ int main(int argc, char *argv[])
 		// On cree toujours le logger et le parametre "dump_err_frames" active
 		// ou pas le code en interne.
 		//
+#if 0		
 		std::mutex mtx;  // Declare a mutex
 		frame_dumper frame_store(N, K, q, cSNR, sSNR, dump_err_frames);
-
+#endif
 		//
 		//
 		//
@@ -656,15 +660,10 @@ int main(int argc, char *argv[])
 			printf("dec->n  = %d\n", dec->n());
 			printf("dec->gf = %d\n", dec->gf());
 #endif
-			if (debug >= 2)
-				printf("#(II) Try to allocate the polar decoder...\n");
 
 			dec = allocate_dec(dec_type, N, q, frozen_symbols.data());
 			dec->setReliability( code_param.reliab_sequence.data() ); // fot SC-flip decoders
 
-			if (debug >= 2)
-				printf("#(II) Decoder allocation is OK...\n");
-			
 			//
 			// On genere le mapping des K symbols dans le mot de N
 			//
@@ -697,8 +696,6 @@ int main(int argc, char *argv[])
 				//
 				// On insere le CRC 16b
 				//
-				if (debug >= 2)
-					printf("#(II) Inserting the CRC in the frame...\n");
 				
 				crc16_insert(K_symb.data(), K, q);
 				//
@@ -718,9 +715,6 @@ int main(int argc, char *argv[])
 #ifdef _CRC_DEBUG_
 				printf("CRC : "); for (int i = 0; i < K; i++) printf("%2d ", K_symb[i]); printf("\n");
 #endif
-				if (debug >= 2)
-					printf("#(II) Preparing data for encoding...\n");
-
 				for (int u = 0; u < N; u++)
 				{
 					u_symb[u] = 0;
@@ -733,9 +727,6 @@ int main(int argc, char *argv[])
 #ifdef _CRC_DEBUG_
 				printf("PRE : "); for (int i = 0; i < N; i++) printf("%2d ", u_symb[i]); printf("\n");
 #endif
-
-				if (debug >= 2)
-					printf("#(II) Encoding the polar frame...\n");
 
 				for (int u = 0; u < N;
 					 u++)
@@ -791,16 +782,9 @@ int main(int argc, char *argv[])
 					}
 				}
 
-				if (debug >= 2)
-					printf("#(II) Loading result for oracle...\n");
 				dec->setResult(r_symb.data());
 
-				if (debug >= 2)
-					printf("#(II) Executing the decoder...\n");
 				dec->execute(llrs_n.data(), decoded_n.data());
-
-				if (debug >= 2)
-					printf("#(II) Computing errors in result...\n");
 
 				//
 				// Check for errors
@@ -871,6 +855,7 @@ int main(int argc, char *argv[])
 				}
 				// succ_now = global_counter.load() - FER.load();
 
+#if 0				
 				if( (succ_dec == false) && (dump_err_frames == true) )
 				{
 					mtx.lock();  // Lock the mutex before accessing the shared variable
@@ -880,7 +865,7 @@ int main(int argc, char *argv[])
 					frame_store.write_number_proc_frames( global_counter.load() );					
 					mtx.unlock();  // Unlock the mutex after the critical section
 				}
-
+#endif
 				//
 				// Plus d'openmp critical car on filtre sur thread 1
 				//
@@ -1024,26 +1009,15 @@ int main(int argc, char *argv[])
 
 		append_results_to_file1(dec_type, q, N, K, cSNR, FER_out, gen_frames_out, forced_EbN0, forced_mode, llr_sigma, (int)sec, nbits);
 
+		delete simulator;
+
 		//
 		// Si CTRL+C alors on quitte la simulation
 		//
 		if (force_quit == true)
 			break;
 
-		delete simulator;
-
 	} // fin de la boucle sur le SNR
-
-	// Final results
-//	std::cout << std::endl;
-//	std::cout << "#(DD) Polar Code: N=" << N << ", K=" << K << ", GF=" << q
-//<< std::endl; 	std::cout << "#(DD) Decoder: " << dec_type << std::endl;
-//	std::cout << "#(DD) Eb/N0: " << EbN0 << " dB, noise_sigma: " <<
-// noise_sigma << std::endl; 	std::cout << "#(DD) Actual frames: " <<
-// gen_frames_out << std::endl; 	std::cout << "#(DD) Time: " << sec << " seconds"
-//<< std::endl; 	std::cout << "#(DD) Throughput: " << gen_frames_out / sec << "
-// fps" << std::endl; 	std::cout << "#(DD) Throughput info: " << (gen_frames_out *
-// K * p) / sec / 1e6 << " Mbps" << std::endl;
 #ifdef find_llr_rang
 	std::cout << "global_llr_max: " << global_llr_max << std::endl;
 	std::cout << "global_llr_min: " << global_llr_min << std::endl;

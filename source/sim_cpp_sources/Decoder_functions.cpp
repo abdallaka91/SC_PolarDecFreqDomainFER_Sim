@@ -29,7 +29,6 @@ void llr_to_probabilities(const std::vector<double> &llr,
 } // namespace
 
 void PoAwN::decoding::Channel_LLR(const vector<vector<softdata_t>> &chan_observ,
-                                  const vector<vector<uint16_t>> &bin_symb_seq,
                                   uint16_t q,
                                   softdata_t sigma,
                                   vector<vector<softdata_t>> &chan_LLR)

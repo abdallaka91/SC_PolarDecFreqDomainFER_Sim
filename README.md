@@ -6,6 +6,8 @@ This project runs Monte Carlo simulations for non-binary polar code construction
 
 The `hybrid` branch also keeps the copied `ccsk_simulator/` folder from the FFT simulator branch, including `aff3ct_randn_gen`. The active executable is still the BLG genie-aided simulation.
 
+The active simulation path is intentionally small: `genie_aided_sim.cpp` plus `source/sim_cpp_sources/channel.cpp`, `Decoder_functions.cpp`, and `tools.cpp`. The channel uses only the binary CCSK sequence from `ccsk_simulator`, like the FFT decoder simulator branch.
+
 ## Requirements
 
 - CMake 3.16+

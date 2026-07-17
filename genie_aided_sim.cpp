@@ -1,11 +1,7 @@
 #include "Decoder_functions.h"
-#include "GF_tools.h"
-#include "HelperFunc.h"
 #include "channel.h"
 #include "definitions/code.hpp"
-#include "init.h"
 #include "struct.h"
-#include "tools.h"
 #include <algorithm>
 #include <atomic>
 #include <cctype>
@@ -28,8 +24,6 @@
 #include "utilities/utility_functions.hpp"
 
 using namespace PoAwN::structures;
-using namespace PoAwN::tools;
-using namespace PoAwN::init;
 using namespace PoAwN::decoding;
 using namespace PoAwN::channel;
 using std::array;
@@ -68,12 +62,10 @@ int main(int argc, char *argv[])
   {
     mode = argv[5];
   }
-  uint16_t q, N, n, p, frozen_val = 0;
-  softdata_t offset;
+  uint16_t q, N, n, frozen_val = 0;
   uint64_t NbMonteCarlo = stoi(argv[1]);
   float EbN0 = stod(argv[2]);
   q = stoi(argv[3]);
-  p = log2(q);
   N = stoi(argv[4]);
 
   if (q != _GF_)
@@ -85,60 +77,15 @@ int main(int argc, char *argv[])
 
   n = log2(N);
 
-  base_code_t code_param(N, N, n, q, p, frozen_val);
-
-  int gf_rand_SEED = 0;
-  float nse_rand_SEED = 1.2544;
-  bool repeatable_randgen = 0;
-
-  decoder_parameters dec_param(code_param);
-  code_param.sig_mod = "CCSK_BIN";
-
-  dec_param.reliab_sequence.resize(N);
-  int frozen_symbols[N];
+  vector<uint16_t> reliability_order(N);
+  vector<int> frozen_symbols(N, false);
   for (int i = 0; i < N; i += 1)
   {
-    dec_param.reliab_sequence[i] = i;
-    frozen_symbols[i] = false;
+    reliability_order[i] = i;
   }
 
-  CCSK_seq ccsk_seq;
-  vector<vector<uint16_t>> CCSK_rotated_codes(q, vector<uint16_t>());
-  if (code_param.sig_mod == "CCSK_BIN")
-    create_ccsk_rotated_table(ccsk_seq.CCSK_bin_seq[code_param.p - 2],
-                              ccsk_seq.CCSK_bin_seq[code_param.p - 2].size(),
-                              CCSK_rotated_codes);
-  else if (code_param.sig_mod == "CCSK_NB")
-    create_ccsk_rotated_table(ccsk_seq.CCSK_GF_seq[code_param.p - 2],
-                              ccsk_seq.CCSK_GF_seq[code_param.p - 2].size(),
-                              CCSK_rotated_codes);
-
-  vector<vector<vector<int16_t>>> hst1(
-      n, vector<vector<int16_t>>(N, vector<int16_t>(dec_param.nm, 0)));
-
-  q = code_param.q;
-  p = code_param.p;
-  vector<vector<softdata_t>> bin_mod_dict;
-  if (code_param.sig_mod == "CCSK_BIN")
-  {
-    bin_mod_dict.resize(q, vector<softdata_t>(q, 0));
-
-    for (int i = 0; i < q; i++)
-      for (int j = 0; j < q; j++)
-        bin_mod_dict[i][j] = (CCSK_rotated_codes[i][j] == 0) ? 1 : -1;
-  }
-
-  dec_param.ucap.resize(n + 1, vector<uint16_t>(N, dec_param.MxUS));
-  dec_param.ucap[n].assign(N, dec_param.frozen_val);
   unsigned base_seed =
       0; // std::chrono::system_clock::now().time_since_epoch().count();
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-
-  double time_base[128];
-  for (int i = 0; i < 128; i += 1)
-    time_base[i] = 0.0;
 
   int max_threads = omp_get_max_threads();
   vector<vector<float>> thread_entrop(max_threads, vector<float>(N, 0.0f));
@@ -149,7 +96,6 @@ int main(int argc, char *argv[])
 
 #pragma omp parallel
   {
-    PoAwN::structures::decoder_parameters dec_param_local = dec_param;
     int thread_id = omp_get_thread_num();
     std::mt19937 gen(thread_id + base_seed);
     vector<decoder_t> L(N);
@@ -160,7 +106,7 @@ int main(int argc, char *argv[])
     vector<float> one_err_prob(N);
 
     decoder *dec;
-    dec = new decoder_naive<_GF_>(N, frozen_symbols);
+    dec = new decoder_naive<_GF_>(N, frozen_symbols.data());
 
     std::vector<symbols_s<_GF_>> llrs_n(N);
 
@@ -170,8 +116,8 @@ int main(int argc, char *argv[])
 
       bool succ_dec[N] = {false};
 
-      EncodeChanBPSK_BinCCSK(gen, dec_param_local, EbN0,
-                             CCSK_rotated_codes, L, KSYMB, bin_mod_dict);
+      EncodeChanBPSK_BinCCSK(gen, N, q, n, frozen_val, reliability_order,
+                             EbN0, L, KSYMB);
 
       for (int i = 0; i < N; i++)
       {
@@ -231,12 +177,9 @@ int main(int argc, char *argv[])
       global_one_err_prob[i] += thread_one_err_prob[t][i];
     }
   }
-  const float inv_log_q = 1.0f / logf(static_cast<float>(_GF_));
-
   for (int i = 0; i < N; i++)
   {
     global_entrop[i] /= static_cast<float>(NbMonteCarlo);
-    // global_entrop[i] *= inv_log_q;
     global_one_err_prob[i] /= static_cast<float>(NbMonteCarlo);
   }
 

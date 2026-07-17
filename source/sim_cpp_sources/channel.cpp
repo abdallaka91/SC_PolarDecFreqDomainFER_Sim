@@ -3,13 +3,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include "ccsk_simulator/simul_parameters.hpp"
 #include "Decoder_functions.h"
-#include "GF_tools.h"
-#include "init.h"
+#include "definitions/code.hpp"
 #include "struct.h"
 #include "tools.h"
 #include "channel.h"
-#include "HelperFunc.h"
 #include <random>
 
 #define PI 3.14159265358979323846
@@ -17,149 +16,68 @@
 
 using namespace PoAwN::structures;
 using namespace PoAwN::tools;
-using namespace PoAwN::init;
 using namespace PoAwN::decoding;
-using std::array;
-using std::cout;
-using std::endl;
-using std::stod;
-using std::stoi;
-using std::string;
 using std::vector;
 
-void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
-                                            decoder_parameters &dec_param,
-                                            const float SNR,
-                                            const vector<vector<uint16_t>> &bin_table,
-                                            vector<decoder_t> &chan_LLR_sorted,
-                                            vector<uint16_t> &KSYMB,
-                                            const vector<vector<softdata_t>> &bin_mod_dict)
+namespace
 {
-    uint16_t N = dec_param.N, K = dec_param.K, q = dec_param.q;
+uint16_t binary_ccsk_chip(const uint16_t index)
+{
+#if _GF_ == 64
+    return CCSKSequences::BASE_SEQ_64[index];
+#elif _GF_ == 128
+    return CCSKSequences::BASE_SEQ_128[index];
+#elif _GF_ == 256
+    return CCSKSequences::BASE_SEQ_256[index];
+#elif _GF_ == 512
+    return CCSKSequences::BASE_SEQ_512[index];
+#elif _GF_ == 1024
+    return CCSKSequences::BASE_SEQ_1024[index];
+#else
+#error "Unsupported _GF_ for binary CCSK"
+#endif
+}
+} // namespace
+
+void PoAwN::channel::EncodeChanBPSK_BinCCSK(std::mt19937 &gen,
+                                            uint16_t N,
+                                            uint16_t q,
+                                            uint16_t n,
+                                            uint16_t frozen_val,
+                                            const vector<uint16_t> &reliability_order,
+                                            const float SNR,
+                                            vector<decoder_t> &chan_LLR_sorted,
+                                            vector<uint16_t> &KSYMB)
+{
     float sigma = sqrt(1.0 / (pow(10, SNR / 10.0))); // N0/2 or N0?
     vector<uint16_t> NSYMB(N);
-    // RandomSymbGenerator(K, q, RepRndGn, 0, KSYMB);
-    // std::mt19937 gen(0);
     std::uniform_int_distribution<int> unif_dist(0, q - 1);
-    for (uint16_t k = 0; k < K; k++)
+    for (uint16_t k = 0; k < N; k++)
     {
         KSYMB[k] = (uint16_t)unif_dist(gen);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-#if 0
-    printf("Generated symbols:\n");
-    for (int i = 0; i < K; i += 1) {
-        if ((i % 8) == 0)
-            printf(" | ");
-        if ((i % 16) == 0)
-            printf("\n | ");
-        printf("%2d ", KSYMB[i]);
-    }
-    printf(" |\n");
-#endif
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    vector<vector<uint16_t>> ucap(n + 1, vector<uint16_t>(N, frozen_val));
+    for (int i = 0; i < N; i++)
+        ucap[n][reliability_order[i]] = KSYMB[i];
+    Encoder(ucap, NSYMB);
 
-    for (int i = 0; i < K; i++)
-        dec_param.ucap[dec_param.n][dec_param.reliab_sequence[i]] = KSYMB[i];
-
-#if 0
-    printf("Frozen symbol reliability:\n");
-    for (int i = 0; i < N; i += 1) {
-        if ((i % 8) == 0)
-            printf(" | ");
-        if ((i % 16) == 0)
-            printf("\n | ");
-        printf("%2d ", dec_param.reliab_sequence[i]);
-    }
-    printf(" |\n");
-
-    printf("Encoded symbols:\n");
-    for (int i = 0; i < N; i += 1) {
-        if ((i % 8) == 0)
-            printf(" | ");
-        if ((i % 16) == 0)
-            printf("\n | ");
-        printf("%2d ", dec_param.ucap[dec_param.n][i]);
-    }
-    printf(" |\n");
-#endif
-
-    Encoder(dec_param.ucap, NSYMB);
-    // for (int y = 0; y < N; y++)
-    //     std::cout << y<< ":" << dec_param.ucap[dec_param.n][y] << " , ";
-    // std::cout << endl;
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //
-#if 0
-    printf("Encoded symbols:\n");
-    for (int i = 0; i < N; i += 1) {
-        if ((i % 8) == 0)
-            printf(" | ");
-        if ((i % 16) == 0)
-            printf("\n | ");
-        printf("%2d ", NSYMB[i]);
-    }
-    printf(" |\n");
-#endif
-    //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    vector<vector<softdata_t>> noisy_sig(N, vector<softdata_t>(bin_table[0].size(), (softdata_t)0.0));
-
-    for (int i = 0; i < int(noisy_sig.size()); i++)
-        noisy_sig[i] = bin_mod_dict[NSYMB[i]];
-    // awgn_channel_noise(sigma, RepRndGn, 0, noisy_sig);
+    vector<vector<softdata_t>> noisy_sig(N, vector<softdata_t>(q, (softdata_t)0.0));
+    std::normal_distribution<double> norm_dist(0, sigma);
+    for (int i = 0; i < N; i++)
     {
-        uint16_t q1 = noisy_sig[0].size();
-        vector<vector<softdata_t>> noise_table(N, vector<softdata_t>(q1, 0));
-        std::normal_distribution<double> norm_dist(0, sigma);
+        const uint16_t shift = q - NSYMB[i];
+        for (int j = 0; j < q; j++)
         {
-            for (int i = 0; i < N; i++)
-            {
-
-                for (int j = 0; j < q1; j++)
-                {
-                    noise_table[i][j] = (softdata_t)norm_dist(gen);
-                }
-            }
+            const uint16_t chip = (shift + j) & (q - 1);
+            noisy_sig[i][j] = static_cast<softdata_t>(binary_ccsk_chip(chip) + norm_dist(gen));
         }
-
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < q1; j++)
-                noisy_sig[i][j] += noise_table[i][j];
     }
-    vector<vector<softdata_t>> chan_LLR(N, vector<softdata_t>(q, 0));
-    Channel_LLR(noisy_sig, bin_table, q, sigma, chan_LLR);
+
+    vector<vector<softdata_t>> chan_LLR(N, vector<softdata_t>(q, 0.0f));
+    Channel_LLR(noisy_sig, q, sigma, chan_LLR);
     for (int i = 0; i < N; i++)
     {
         chan_LLR_sorted[i].intrinsic_LLR = chan_LLR[i];
     }
-
-#if 0
-    const int id = 1;
-    const int GF = chan_LLR_sorted[0].intrinsic_LLR.size();
-    printf("Post-channel LLRs:\n");
-    for (int i = 0; i < GF; i += 1) {
-        if ((i % 8) == 0)
-            printf(" | ");
-        if ((i % 16) == 0)
-            printf("\n | ");
-        printf("%1.3f ", chan_LLR_sorted[id].intrinsic_LLR[i]);
-    }
-    printf(" |\n");
-    printf("Post-channel GFs:\n");
-    for (int i = 0; i < GF; i += 1) {
-        if ((i % 8) == 0)
-            printf(" | ");
-        if ((i % 16) == 0)
-            printf("\n | ");
-        printf("%2d ", chan_LLR_sorted[id].intrinsic_GF[i]);
-    }
-    printf(" |\n");
-    exit( EXIT_SUCCESS );
-#endif
 }

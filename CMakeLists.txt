@@ -78,13 +78,10 @@ find_library(FFTW3_LIBRARY fftw3
     PATHS /usr/lib /usr/lib/x86_64-linux-gnu /usr/local/lib
 )
 
-if(FFTW3_INCLUDE_DIR AND FFTW3_LIBRARY)
-    set(FFTW3_FOUND TRUE)
-    message(STATUS "Found FFTW3: ${FFTW3_LIBRARY}")
-else()
-    set(FFTW3_FOUND FALSE)
-    message(WARNING "FFTW3 not found. Install with: sudo apt install libfftw3-dev")
+if(NOT FFTW3_INCLUDE_DIR OR NOT FFTW3_LIBRARY)
+    message(FATAL_ERROR "FFTW3 is required. Install with: sudo apt install libfftw3-dev")
 endif()
+message(STATUS "Found FFTW3: ${FFTW3_LIBRARY}")
 
 # ===========================
 #  Source setup
@@ -116,10 +113,7 @@ target_include_directories(Sim2 PUBLIC
     ${CMAKE_SOURCE_DIR}/BLG/src/features/fwht
 )
 
-if(FFTW3_FOUND)
-    target_include_directories(Sim2 PUBLIC ${FFTW3_INCLUDE_DIR})
-    target_compile_definitions(Sim2 PUBLIC USE_FFTW3)
-endif()
+target_include_directories(Sim2 PUBLIC ${FFTW3_INCLUDE_DIR})
 
 # Option for ALL_GFs
 option(USE_ALL_GFs "Enable ALL_GFs compilation" OFF)
@@ -138,11 +132,8 @@ if(OpenMP_CXX_FOUND)
     target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
-if(FFTW3_FOUND)
-    target_link_libraries(Sim2 PRIVATE ${FFTW3_LIBRARY})
-    # Link math library for exp(), cos(), etc.
-    target_link_libraries(Sim2 PRIVATE m)
-endif()
+target_link_libraries(Sim2 PRIVATE ${FFTW3_LIBRARY})
+target_link_libraries(Sim2 PRIVATE m)
 
 # ===========================
 #  Diagnostics

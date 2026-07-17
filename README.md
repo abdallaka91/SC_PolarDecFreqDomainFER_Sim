@@ -9,7 +9,7 @@ This project runs Monte Carlo simulations for non-binary polar code construction
 - CMake 3.16+
 - C++17 compiler
 - OpenMP
-- FFTW3
+- FFTW3, required for CCSK LLR computation
 - Python 3
 
 On Ubuntu:
@@ -62,3 +62,5 @@ Posterior probabilities are floored/saturated to `1e-12` before the entropy and 
 ## Notes
 
 `run_sim.py` generates `build/generated/definitions/code.hpp` with `_GF_`, `_logGF_`, `_N_`, and `_logN_`. The simulation path does not need `reliab_seq`.
+
+The channel LLR computation is FFTW3-based circular correlation: observation FFT, multiply by the reversed CCSK base-sequence FFT, inverse FFT, subtract the minimum LLR, then normalize with `exp(-LLR)`. There is no non-FFTW fallback.

@@ -103,7 +103,9 @@ add_executable(Sim2 ${SRC_FILES})
 # ===========================
 target_include_directories(Sim2 PUBLIC
     ${CMAKE_BINARY_DIR}/generated
+    ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/ccsk_simulator
     ${CMAKE_SOURCE_DIR}/BLG/src/include
     ${CMAKE_SOURCE_DIR}/BLG/src/decoders
     ${CMAKE_SOURCE_DIR}/BLG/src/definitions

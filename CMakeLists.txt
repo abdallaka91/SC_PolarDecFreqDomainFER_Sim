@@ -11,6 +11,41 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Generate the small BLG compile-time configuration without modifying the
+# submodule's definitions/code.hpp. The generated header shadows it because
+# its include directory is listed first below.
+set(CODE_N 64 CACHE STRING "Polar code length compiled into BLG")
+set(CODE_GF 64 CACHE STRING "Galois-field size compiled into BLG")
+
+function(compute_power_of_two_log2 INPUT_VALUE OUTPUT_VARIABLE)
+    if(NOT "${INPUT_VALUE}" MATCHES "^[1-9][0-9]*$")
+        message(FATAL_ERROR "${OUTPUT_VARIABLE} source must be a positive integer, got '${INPUT_VALUE}'")
+    endif()
+
+    set(VALUE "${INPUT_VALUE}")
+    set(LOG_VALUE 0)
+    while(VALUE GREATER 1)
+        math(EXPR REMAINDER "${VALUE} % 2")
+        if(NOT REMAINDER EQUAL 0)
+            message(FATAL_ERROR "${OUTPUT_VARIABLE} source must be a power of two, got '${INPUT_VALUE}'")
+        endif()
+        math(EXPR VALUE "${VALUE} / 2")
+        math(EXPR LOG_VALUE "${LOG_VALUE} + 1")
+    endwhile()
+
+    set(${OUTPUT_VARIABLE} "${LOG_VALUE}" PARENT_SCOPE)
+endfunction()
+
+compute_power_of_two_log2("${CODE_N}" CODE_LOG_N)
+compute_power_of_two_log2("${CODE_GF}" CODE_LOG_GF)
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/generated/definitions")
+configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake/code.hpp.in"
+    "${CMAKE_BINARY_DIR}/generated/definitions/code.hpp"
+    @ONLY
+)
+message(STATUS "Generated BLG code.hpp: N=${CODE_N}, GF=${CODE_GF}")
+
 # ===========================
 #  Build type configuration
 # ===========================
@@ -61,7 +96,7 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
-    "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
+    "${CMAKE_SOURCE_DIR}/genie_aided_sim.cpp"
 )
 
 add_executable(Sim2 ${SRC_FILES})
@@ -70,6 +105,7 @@ add_executable(Sim2 ${SRC_FILES})
 #  Include Directories
 # ===========================
 target_include_directories(Sim2 PUBLIC
+    ${CMAKE_BINARY_DIR}/generated
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/BLG/src/include
     ${CMAKE_SOURCE_DIR}/BLG/src/decoders
@@ -184,7 +220,7 @@ message(STATUS "C++ Flags    : ${CMAKE_CXX_FLAGS}")
 #     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive_cfloat/*.cpp"
 #     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"
 #     "${CMAKE_SOURCE_DIR}/single_frame_dec.cpp"
-#     "${CMAKE_SOURCE_DIR}/decoders_simulator.cpp"
+#     "${CMAKE_SOURCE_DIR}/genie_aided_sim.cpp"
 #     )
 
 # list(FILTER SRC_FILES EXCLUDE REGEX "simulator_dec_fft_B.cpp")

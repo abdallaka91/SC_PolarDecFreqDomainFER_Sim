@@ -1,3 +1,0 @@
-/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/Sim2.dir
-/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/edit_cache.dir
-/home/abdallah/Documents/VSCode/SC_PolarDecFreqDomainFER_Sim/build/CMakeFiles/rebuild_cache.dir

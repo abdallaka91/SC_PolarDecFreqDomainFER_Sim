@@ -1,1 +1,27 @@
-entropies_probabilities
+# Build outputs
+build/
+build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+Sim2
+
+# Generated simulation outputs
+entropies_probabilities/
+matrices/
+results/
+
+# Python/cache files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local editor/environment files
+.vscode/
+.venv/
+
+# OS/editor noise
+.DS_Store
+*~

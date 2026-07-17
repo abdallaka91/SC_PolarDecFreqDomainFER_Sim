@@ -89,7 +89,6 @@ message(STATUS "Found FFTW3: ${FFTW3_LIBRARY}")
 add_compile_options(-mavx2)
 
 file(GLOB_RECURSE SRC_FILES
-    "${CMAKE_SOURCE_DIR}/source/**/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/utilities/**.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/decoders/naive/*.cpp"
     "${CMAKE_SOURCE_DIR}/BLG/src/hadamard/Hadamard.cpp"

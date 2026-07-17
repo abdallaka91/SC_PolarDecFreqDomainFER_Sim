@@ -6,7 +6,7 @@ This project runs Monte Carlo simulations for non-binary polar code construction
 
 The `hybrid` branch also keeps the copied `ccsk_simulator/` folder from the FFT simulator branch, including `aff3ct_randn_gen`. The active executable is still the BLG genie-aided simulation.
 
-The active simulation path is intentionally small: `genie_aided_sim.cpp` plus `source/sim_cpp_sources/channel.cpp`, `Decoder_functions.cpp`, and `tools.cpp`. The channel uses only the binary CCSK sequence from `ccsk_simulator`, like the FFT decoder simulator branch.
+The active simulation path is intentionally close to `decoders_simulator.cpp` from the FFT simulator branch: `genie_aided_sim.cpp` directly uses `ccsk_simulator` to generate random symbols, polar-encode them, simulate binary CCSK, convert LLRs to probabilities, then feed BLG's genie-aided decoder.
 
 ## Requirements
 
@@ -67,4 +67,4 @@ Posterior probabilities are floored/saturated to `1e-12` before the entropy and 
 
 `run_sim.py` generates `build/generated/definitions/code.hpp` with `_GF_`, `_logGF_`, `_N_`, and `_logN_`. The simulation path does not need `reliab_seq`.
 
-The channel LLR computation uses `ccsk_simulator/ccsk_llr.hpp`: observation FFT, multiply by the reversed CCSK base-sequence FFT, inverse FFT, subtract the minimum LLR, then normalize with `exp(-LLR)`. It uses the decoder-simulator style of one shared LLR calculator with per-thread FFT buffers. There is no lookup-table probability conversion and no non-FFTW fallback.
+The channel LLR computation uses `ccsk_simulator/ccsk_llr.hpp`: observation FFT, multiply by the reversed CCSK base-sequence FFT, inverse FFT, subtract the minimum LLR, then normalize with `exp(-LLR)`. There is no lookup-table probability conversion and no non-FFTW fallback.

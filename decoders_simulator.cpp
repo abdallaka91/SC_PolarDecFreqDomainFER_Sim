@@ -220,6 +220,7 @@ int main(int argc, char *argv[])
 
 	float forced_EbN0 = -1000.f;
 	bool  forced_mode = false;
+	bool  clean_mode = false;
 
 	bool  dump_err_frames = false;
 
@@ -298,6 +299,10 @@ int main(int argc, char *argv[])
 		{
 			NbMonteCarlo = std::stoull(argv[i + 1]);
 			i += 1;
+		}
+		else if (std::string(argv[i]) == "-clean")
+		{
+			clean_mode = true;
 		}
 		else if (std::string(argv[i]) == "-thread" || std::string(argv[i]) == "-threads")
 		{
@@ -869,15 +874,12 @@ int main(int argc, char *argv[])
 				//
 				// Plus d'openmp critical car on filtre sur thread 1
 				//
-				if (thread_id == 0)
+				if ( thread_id == 0 )
 				{
-					const auto curr = std::chrono::high_resolution_clock::now();
-					const auto sec =
-						std::chrono::duration<double>(curr - watchdod).count();
+					auto curr = std::chrono::high_resolution_clock::now();
+					auto sec  = std::chrono::duration<double>(curr - watchdod).count();
 					if (sec >= 1)
 					{
-						// const uint64_t local_success = global_counter.load() -
-						// FER.load();
 						if ((global_counter.load() >= NbMonteCarlo) ||
 							(FER.load() >= FER_STOP))
 						{
@@ -887,13 +889,6 @@ int main(int argc, char *argv[])
 						gen_frames_out = global_counter.load();
 
 						const double FER_ratio = (double)FER_out / gen_frames_out;
-						// std::ostringstream oss;
-						//					FER_ratio < 0.0001 ? oss <<
-						// std::scientific << std::setprecision(3) << std::setw(10) <<
-						// FER_ratio : oss << std::fixed << std::setprecision(6) <<
-						// std::setw(10) << FER_ratio;
-						// oss << std::scientific << std::setprecision(3) << std::setw(10)
-						// << FER_ratio; std::string FER_str = oss.str();
 
 						auto end   = std::chrono::high_resolution_clock::now();
 						double sec = std::chrono::duration<double>(end - start).count();
@@ -922,35 +917,39 @@ int main(int argc, char *argv[])
 						const float fps = (double)gen_frames_out / (double)csec;
 						const float tgt = (fps * N * p) / 1000.0 / 1000.0;
 
-						if (FER_out != 0)
+						if( clean_mode == false )
 						{
-							double tps_p_err = (double)sec / (double)FER_out;
-							double restAnt = (FER_STOP - FER_out);
-							double restant = std::max(restAnt, 0.0);
-							double tps_rest = (double)(restant)*tps_p_err;
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %6.2f | %6.2f | %6.2f | %6.1f | %6.1f | %6.1f | %9.2f |  \r",
-								   cSNR,
-								   FER_out,
-								   gen_frames_out,
-								   FER_ratio,
-								   int(sec), int(tps_rest),
-								   d_avg, d_min, d_max, l_avg, l_min, l_max, tgt);
+							if (FER_out != 0)
+							{
+								double tps_p_err = (double)sec / (double)FER_out;
+								double restAnt = (FER_STOP - FER_out);
+								double restant = std::max(restAnt, 0.0);
+								double tps_rest = (double)(restant)*tps_p_err;
+								printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %6.2f | %6.2f | %6.2f | %6.1f | %6.1f | %6.1f | %9.2f |  \r",
+									cSNR,
+									FER_out,
+									gen_frames_out,
+									FER_ratio,
+									int(sec), int(tps_rest),
+									d_avg, d_min, d_max, l_avg, l_min, l_max, tgt);
+							}
+							else
+							{
+								const double FER_ratiO = (double)1.0 / gen_frames_out;
+								printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %6.2f | %6.2f | %6.2f | %6.1f | %6.1f | %6.1f | %9.2f |  \r",
+									cSNR,
+									FER_out,
+									gen_frames_out,
+									FER_ratiO,
+									int(sec), 0,
+									d_avg, d_min, d_max, l_avg, l_min, l_max, tgt);
+							}
+							fflush(stdout);
 						}
-						else
-						{
-							const double FER_ratiO = (double)1.0 / gen_frames_out;
-							printf("%6.2f | %6lu | %10lu | %1.3e | %6d | %6d | %6.2f | %6.2f | %6.2f | %6.1f | %6.1f | %6.1f | %9.2f |  \r",
-								   cSNR,
-								   FER_out,
-								   gen_frames_out,
-								   FER_ratiO,
-								   int(sec), 0,
-								   d_avg, d_min, d_max, l_avg, l_min, l_max, tgt);
-						}
-						fflush(stdout);
 						watchdod = std::chrono::high_resolution_clock::now();
 					}
 				}
+
 				if (stop.load())
 				{
 					break;

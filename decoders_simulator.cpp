@@ -968,6 +968,7 @@ int main(int argc, char *argv[])
 					auto   cend = std::chrono::high_resolution_clock::now();
 					double csec = std::chrono::duration<double>(cend - start).count();
 					if( csec >= time_limit_val ){
+						force_quit = true;
 						break;
 					}
 				}

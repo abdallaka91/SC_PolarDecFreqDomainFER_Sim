@@ -1,6 +1,8 @@
 with import <nixpkgs> {};
-stdenv.mkDerivation {
+mkShell {
+  NIX_ENFORCE_NO_NATIVE=0;
+
   name = "env";
-  nativeBuildInputs = [ cmake ];
+  nativeBuildInputs = [ cmake clang gcc ccache ];
   buildInputs = [ fftw fftwFloat llvmPackages.openmp ];
 }

@@ -9,19 +9,16 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include "polar_encoder.hpp"
 #include "decoder.hpp"  // inclure le header réel si tu l’as
 
 // Définition des types de fonction correspondant à ta bibliothèque
 typedef decoder* (*allocate_dec_func)(const std::string, int, int, const int*);
-typedef polar_encoder* (*allocate_enc_func)(int, int, int, const int*);
 
 class loader_so
 {
 private:
     static void* handle;
     static allocate_dec_func allocate_dec_ptr;
-    static allocate_enc_func allocate_enc_ptr;
 
 public:
     // Ouvre la librairie et récupère les pointeurs
@@ -50,17 +47,6 @@ public:
             return false;
         }
 
-        allocate_enc_ptr = (allocate_enc_func)dlsym(handle, "allocate_enc");
-        err = dlerror();
-        if ( err != nullptr ) {
-            dlclose(handle);
-            handle = nullptr;
-            printf("(EE) Error dlsym allocate_enc failed\n");
-            printf("(EE) library = [%s] could not be opened\n", libname);
-            printf("(EE) location [%s:%d]\n", __FILE__, __LINE__);
-            return false;
-        }
-
         return true;
     }
 
@@ -71,13 +57,6 @@ public:
             dlclose(handle);
             handle = nullptr;
         }
-    }
-
-    // Wrapper pour créer un encoder
-    static polar_encoder* allocate_enc(int N, int K, int GF, const int* f_vector)
-    {
-        if (!allocate_enc_ptr) return nullptr;
-        return allocate_enc_ptr(N, K, GF, f_vector);
     }
 
     // Wrapper pour créer un decoder
@@ -91,9 +70,7 @@ public:
 // Définition des pointeurs statiques
 void* loader_so::handle = nullptr;
 allocate_dec_func loader_so::allocate_dec_ptr = nullptr;
-allocate_enc_func loader_so::allocate_enc_ptr = nullptr;
 
-extern "C" polar_encoder* allocate_enc(int N, int K, int GF, const int* f_vector);
 extern "C" decoder* allocate_dec(const std::string& type, int N, int GF, const int* f_vector);
 
 #endif // GENERATOR_LOADER_SO_H

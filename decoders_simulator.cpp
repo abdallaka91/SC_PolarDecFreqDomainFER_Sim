@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <exception>
 #include <filesystem>
 #include <inttypes.h>
 #include <iomanip>
@@ -216,6 +217,7 @@ int main(int argc, char *argv[])
 	/////////////////////////////////////////////////////////////////
 
 	std::string dec_type = "";
+	std::string construction_directory = "";
 	uint64_t NbMonteCarlo = 10000000000;
 
 	float forced_EbN0 = -1000.f;
@@ -237,11 +239,9 @@ int main(int argc, char *argv[])
 	uint16_t p = 0;
 	uint16_t N = 0;
 	uint16_t NN = 0;
-	uint16_t n = 0;
 	uint16_t K = 0;
 
 	int FER_STOP = 100;
-	uint16_t frozen_val = 0;
 	int nbits = -1;
 
 	float llr_sigma_value  = -1.f;
@@ -283,7 +283,6 @@ int main(int argc, char *argv[])
 		else if (std::string(argv[i]) == "-N")
 		{
 			N = stoi(std::string(argv[i + 1]));
-			n = log2(N);
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-NN" ||
@@ -301,6 +300,12 @@ int main(int argc, char *argv[])
 		else if (std::string(argv[i]) == "-dec")
 		{
 			dec_type = std::string(argv[i + 1]);
+			i += 1;
+		}
+		else if (std::string(argv[i]) == "-construction" ||
+				 std::string(argv[i]) == "-construction-dir")
+		{
+			construction_directory = std::string(argv[i + 1]);
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-cw")
@@ -427,6 +432,30 @@ int main(int argc, char *argv[])
 		printf("(EE) missing [-dec] option\n");
 		exit(EXIT_FAILURE);
 	}
+	if (construction_directory.empty())
+	{
+		printf("(EE) Error during CLI parsing\n");
+		printf("(EE) missing [-construction <directory>] option\n");
+		exit(EXIT_FAILURE);
+	}
+
+	iterative_shortening_code construction;
+	try
+	{
+		construction = LoadIterativeShorteningCode(
+			construction_directory, N, NN, K, q, debug >= 1);
+	}
+	catch (const std::exception &error)
+	{
+		std::cerr << "#(EE) Invalid iterative shortening construction: "
+				  << error.what() << '\n';
+		exit(EXIT_FAILURE);
+	}
+	const std::vector<uint16_t> &short_positions =
+		construction.shortened_positions;
+	const std::vector<uint16_t> &information_positions =
+		construction.information_positions;
+	const std::vector<int> &frozen_symbols = construction.frozen_symbols;
 
 /*	NOTE: I added a mutex to solve this issue ;-)
 
@@ -452,6 +481,10 @@ int main(int argc, char *argv[])
 	if (forced_mode == true)
 		std::cout << "#(DD) Targeted SNR : " << forced_EbN0 << " dB" << std::endl;
 	std::cout << "#(DD) dec_type     : " << dec_type << std::endl;
+	std::cout << "#(DD) construction: " << construction_directory << std::endl;
+	std::cout << "#(DD) constr. SNR  : " << construction.construction_snr << " dB" << std::endl;
+	std::cout << "#(DD) constr. metric: " << construction.selection_metric
+			  << std::endl;
 	std::cout << "#(DD) FER_STOP     : " << FER_STOP << std::endl;
 	std::cout << "#(DD) num_threads  : " << num_threads << std::endl;
 
@@ -500,26 +533,6 @@ int main(int argc, char *argv[])
 	for (float cSNR = EbN0_mini; cSNR <= EbN0_maxi; cSNR += EbN0_step)
 	{
 		//
-		//
-		//
-		base_code_t code_param(N, K, n, q, p, frozen_val);
-		code_param.sig_mod = "CCSK_BIN";
-
-		//		int   gf_rand_SEED = 0;
-		//		float nse_rand_SEED = 1.2544;
-		//		bool  repeatable_randgen = 0;
-
-		table_GF table;
-
-		const float sSNR = (forced_mode == true) ? forced_EbN0 : cSNR;
-		if (debug >= 2)
-		{
-			printf("#(DD)\n");
-			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
-		}
-		LoadCode(code_param, sSNR, "./matrices/", debug >= 2);
-
-		//
 		// On cree toujours le logger et le parametre "dump_err_frames" active
 		// ou pas le code en interne.
 		//
@@ -530,58 +543,16 @@ int main(int argc, char *argv[])
 		//
 		//
 		//
-		std::vector<uint16_t> reliability_low_to_high(N);
-		for (int i = 0; i < N; ++i)
-			reliability_low_to_high[i] = code_param.reliab_sequence[N - i - 1];
-
-		const uint16_t short_count = N - NN;
-		std::vector<uint16_t> short_positions;
-		std::vector<uint16_t> frozen_positions;
-		if (short_count > 0)
-		{
-			const std::vector<uint16_t> shortening_order =
-				shortened_sequence(reliability_low_to_high, N);
-			short_positions.assign(shortening_order.begin(),
-								   shortening_order.begin() + short_count);
-			frozen_positions = froz_from_short(
-				N, reliability_low_to_high, N - K, short_positions);
-		}
-		else
-		{
-			frozen_positions.assign(reliability_low_to_high.begin(),
-									reliability_low_to_high.begin() + (N - K));
-		}
-
-		if (frozen_positions.size() != static_cast<size_t>(N - K))
-		{
-			printf("#(EE) Shortening produced %zu frozen positions; expected %u\n",
-				   frozen_positions.size(), N - K);
-			exit(EXIT_FAILURE);
-		}
-
-		std::vector<int> frozen_symbols(N, false);
-		for (const uint16_t pos : frozen_positions)
-			frozen_symbols.at(pos) = true;
-
-		std::vector<uint16_t> information_positions;
-		information_positions.reserve(K);
-		for (int pos = 0; pos < N; ++pos)
-			if (!frozen_symbols[pos])
-				information_positions.push_back(pos);
-		//
-		//
-		//
-
 		if (debug >= 2)
 		{
-			printf("#(II) Reliability sequence:\n");
+			printf("#(II) Information positions:\n");
 			printf("#(II) ");
 			for (const uint16_t pos : information_positions)
 			{
 				printf("%2d ", pos);
 			}
 			printf("\n");
-			if (short_count > 0)
+			if (!short_positions.empty())
 			{
 				printf("#(II) Shortened codeword positions:\n#(II) ");
 				for (const uint16_t pos : short_positions)
@@ -726,7 +697,6 @@ int main(int argc, char *argv[])
 #endif
 
 			dec = allocate_dec(dec_type, N, q, frozen_symbols.data());
-			dec->setReliability( code_param.reliab_sequence.data() ); // fot SC-flip decoders
 
 			//
 			// On genere le mapping des K symbols dans le mot de N
@@ -844,9 +814,9 @@ int main(int argc, char *argv[])
 
 				for (const uint16_t pos : short_positions)
 				{
-					llrs_n[pos * q] = 1.0f - 1e-12f;
+					llrs_n[pos * q] = 1.0f;
 					for (int symbol = 1; symbol < q; ++symbol)
-						llrs_n[pos * q + symbol] = 1e-12f;
+						llrs_n[pos * q + symbol] = 0.0f;
 				}
 
 				dec->setResult(r_symb.data());
@@ -963,13 +933,13 @@ int main(int argc, char *argv[])
 						//
 						// NB-polar decoder statistics (thread 0)
 						//
-						const float d_avg = dec->dec_avg_coded_mbps();
-						const float d_min = dec->dec_min_coded_mbps();
-						const float d_max = dec->dec_max_coded_mbps();
+						const float d_avg = 0.0f;
+						const float d_min = 0.0f;
+						const float d_max = 0.0f;
 
-						const float l_avg = dec->dec_avg_latency();
-						const float l_min = dec->dec_min_latency();
-						const float l_max = (dec->dec_max_latency() > 9999.9) ? 9999.9f : dec->dec_max_latency();
+						const float l_avg = 0.0f;
+						const float l_min = 0.0f;
+						const float l_max = 0.0f;
 
 						//
 						// Simulation statistics

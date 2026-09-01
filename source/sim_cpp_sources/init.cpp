@@ -4,10 +4,14 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
+
+namespace fs = std::filesystem;
 
 void PoAwN::init::LoadCode(PoAwN::structures::base_code_t &code, float SNR,
                            const std::string &base_dir, const bool debug)
@@ -234,4 +238,132 @@ PoAwN::init::froz_from_short(int N,
 
   std::sort(frozen_positions.begin(), frozen_positions.end());
   return frozen_positions;
+}
+
+PoAwN::init::iterative_shortening_code
+PoAwN::init::LoadIterativeShorteningCode(
+    const std::string &construction_directory, int N, int NS, int K, int GF,
+    bool debug)
+{
+  iterative_shortening_code code;
+  const fs::path directory(construction_directory);
+  const fs::path summary_path = directory / "shortening_order.txt";
+  std::ifstream summary(summary_path);
+  if (!summary)
+    throw std::runtime_error("Cannot open shortening order: " +
+                             summary_path.string());
+
+  std::vector<uint16_t> full_shortening_order;
+  std::string line;
+  while (std::getline(summary, line))
+  {
+    if (line.rfind("# N ", 0) == 0)
+      code.mother_length = std::stoi(line.substr(4));
+    else if (line.rfind("# GF ", 0) == 0)
+      code.gf_size = std::stoi(line.substr(5));
+    else if (line.rfind("# SNR ", 0) == 0)
+      code.construction_snr = std::stof(line.substr(6));
+    else if (line.rfind("# selection_metric ", 0) == 0)
+      code.selection_metric =
+          line.substr(std::string("# selection_metric ").size());
+    else if (line.rfind("# shortening_order", 0) == 0)
+    {
+      std::istringstream values(line);
+      std::string hash;
+      std::string label;
+      values >> hash >> label;
+      int index;
+      while (values >> index)
+        full_shortening_order.push_back(static_cast<uint16_t>(index));
+    }
+  }
+
+  if (code.mother_length != N || code.gf_size != GF)
+    throw std::runtime_error(
+        "Construction metadata does not match requested N/GF");
+
+  code.shortened_length = NS;
+  const int shortening_depth = N - NS;
+  if (shortening_depth < 0 || K < 1 || K > NS)
+    throw std::runtime_error("The code must satisfy 1 <= K <= NS <= N");
+  if (full_shortening_order.size() <
+      static_cast<size_t>(shortening_depth))
+    throw std::runtime_error(
+        "Construction does not reach the requested shortening depth");
+
+  code.shortened_positions.assign(
+      full_shortening_order.begin(),
+      full_shortening_order.begin() + shortening_depth);
+
+  std::ostringstream snapshot_name;
+  snapshot_name << "reliability_S" << std::setw(4) << std::setfill('0')
+                << shortening_depth << "_NS" << std::setw(4) << NS << ".txt";
+  const fs::path snapshot_path = directory / snapshot_name.str();
+  std::ifstream snapshot(snapshot_path);
+  if (!snapshot)
+    throw std::runtime_error("Cannot open reliability snapshot: " +
+                             snapshot_path.string());
+
+  while (std::getline(snapshot, line))
+  {
+    if (line.empty() || line[0] == '#')
+      continue;
+
+    std::istringstream values(line);
+    int rank;
+    int index;
+    double one_error_probability;
+    double entropy;
+    uint64_t hard_success_count;
+    int is_candidate;
+    if (!(values >> rank >> index >> one_error_probability >> entropy >>
+          hard_success_count >> is_candidate))
+      throw std::runtime_error("Invalid reliability row in " +
+                               snapshot_path.string());
+    code.active_reliability_order.push_back(
+        static_cast<uint16_t>(index));
+  }
+
+  if (code.active_reliability_order.size() != static_cast<size_t>(NS))
+    throw std::runtime_error(
+        "Reliability snapshot does not contain exactly NS active inputs");
+
+  std::vector<bool> seen(N, false);
+  for (const uint16_t index : code.shortened_positions)
+  {
+    if (index >= N || seen[index])
+      throw std::runtime_error("Invalid or duplicate shortened index");
+    seen[index] = true;
+  }
+  for (const uint16_t index : code.active_reliability_order)
+  {
+    if (index >= N || seen[index])
+      throw std::runtime_error(
+          "Shortened and active index sets are not disjoint and unique");
+    seen[index] = true;
+  }
+  if (std::find(seen.begin(), seen.end(), false) != seen.end())
+    throw std::runtime_error(
+        "Shortened and active index sets do not partition the mother code");
+
+  code.information_positions.assign(code.active_reliability_order.begin(),
+                                    code.active_reliability_order.begin() + K);
+  std::sort(code.information_positions.begin(),
+            code.information_positions.end());
+
+  code.frozen_symbols.assign(N, true);
+  for (const uint16_t index : code.information_positions)
+    code.frozen_symbols[index] = false;
+
+  if (debug)
+  {
+    std::cout << "#(II) Loaded iterative shortening construction: "
+              << directory << '\n'
+              << "#(II) construction SNR=" << code.construction_snr
+              << ", metric=" << code.selection_metric
+              << ", S=" << shortening_depth << ", NS=" << NS
+              << ", K=" << K << '\n';
+  }
+
+  return code;
 }

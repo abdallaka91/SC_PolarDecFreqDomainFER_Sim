@@ -102,32 +102,34 @@ if(NOT APPLE)
   target_link_libraries(Sim2 PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
-add_executable(replay ${SRC_FILES} ${CMAKE_SOURCE_DIR}/replay_simulator.cpp)
+if(EXISTS "${CMAKE_SOURCE_DIR}/replay_simulator.cpp")
+  add_executable(replay ${SRC_FILES} ${CMAKE_SOURCE_DIR}/replay_simulator.cpp)
 
-# ===========================
-# Include Directories
-# ===========================
-target_include_directories(
-  replay PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/ccsk_simulator
-                ${CMAKE_SOURCE_DIR}/ccsk_simulator/aff3ct_randn_gen
-)
+  # ===========================
+  # Include Directories
+  # ===========================
+  target_include_directories(
+    replay PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/ccsk_simulator
+                  ${CMAKE_SOURCE_DIR}/ccsk_simulator/aff3ct_randn_gen
+  )
 
-# Option for ALL_GFs
-option(USE_ALL_GFs "Enable ALL_GFs compilation" OFF)
-message(STATUS "USE_ALL_GFs value: ${USE_ALL_GFs}")
-if(USE_ALL_GFs)
-  target_compile_definitions(replay PUBLIC ALL_GFs)
-  message(STATUS "ALL_GFs compilation enabled")
-else()
-  message(STATUS "ALL_GFs compilation disabled")
-endif()
+  # Option for ALL_GFs
+  option(USE_ALL_GFs "Enable ALL_GFs compilation" OFF)
+  message(STATUS "USE_ALL_GFs value: ${USE_ALL_GFs}")
+  if(USE_ALL_GFs)
+    target_compile_definitions(replay PUBLIC ALL_GFs)
+    message(STATUS "ALL_GFs compilation enabled")
+  else()
+    message(STATUS "ALL_GFs compilation disabled")
+  endif()
 
-# ===========================
-# Link Libraries
-# ===========================
-target_link_libraries(replay PRIVATE Threads::Threads ccsk_simulators)
-if(NOT APPLE)
-  target_link_libraries(replay PRIVATE OpenMP::OpenMP_CXX)
+  # ===========================
+  # Link Libraries
+  # ===========================
+  target_link_libraries(replay PRIVATE Threads::Threads ccsk_simulators)
+  if(NOT APPLE)
+    target_link_libraries(replay PRIVATE OpenMP::OpenMP_CXX)
+  endif()
 endif()
 
 # ===========================

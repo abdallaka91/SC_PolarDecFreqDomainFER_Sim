@@ -35,9 +35,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  */
 #pragma once
-#include <iostream>
-#include <ostream>
-#include <chrono>
+#include <cstdint>
 //
 //
 //
@@ -45,50 +43,10 @@
 //
 class decoder {
 public:
-    decoder(const int _gf_, const int _n_, const int * frozen_symb);
-    virtual ~decoder();
-    virtual void execute(void * channel, uint16_t * decoded) = 0;
-    virtual void setResult     (const uint16_t* decoded) { }
-	virtual void setReliability(const uint16_t* probas ) { }
-
-public:
-    virtual int64_t n_decoded_frames();
-    virtual float  dec_avg_info_mbps();
-    virtual float  dec_min_info_mbps();
-    virtual float  dec_max_info_mbps();
-
-    virtual float  dec_avg_coded_mbps();
-    virtual float  dec_min_coded_mbps();
-    virtual float  dec_max_coded_mbps();
-
-    virtual float  dec_avg_latency();
-    virtual float  dec_min_latency();
-    virtual float  dec_max_latency();
-
-    virtual int n ();
-    virtual int k ();
-    virtual int gf();
-
-protected:
-    virtual void dec_start();
-    virtual void dec_stop ();
-
-private:
-    int64_t n_decoding;
-
-	std::chrono::steady_clock::time_point t_start;
-    double sum_exec_time;
-    double min_exec_time;
-    double max_exec_time;
-    double last_exec_time;
-
-protected:
-    int GF;
-    int N;
-    int K;
-
-    std::vector<int32_t> frozen;
-    std::vector<int32_t> fiabilite;
+    virtual ~decoder() { }
+    virtual void execute(const float * channel, uint16_t * decoded) = 0;
+    virtual int GF() = 0;
+    virtual void setResult(const uint16_t * decoded) { }
 };
 //
 //

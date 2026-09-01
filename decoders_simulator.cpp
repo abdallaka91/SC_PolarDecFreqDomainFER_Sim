@@ -726,7 +726,6 @@ int main(int argc, char *argv[])
 #endif
 
 			dec = allocate_dec(dec_type, N, q, frozen_symbols.data());
-			dec->setReliability( code_param.reliab_sequence.data() ); // fot SC-flip decoders
 
 			//
 			// On genere le mapping des K symbols dans le mot de N
@@ -963,13 +962,13 @@ int main(int argc, char *argv[])
 						//
 						// NB-polar decoder statistics (thread 0)
 						//
-						const float d_avg = dec->dec_avg_coded_mbps();
-						const float d_min = dec->dec_min_coded_mbps();
-						const float d_max = dec->dec_max_coded_mbps();
+						const float d_avg = 0.0f;
+						const float d_min = 0.0f;
+						const float d_max = 0.0f;
 
-						const float l_avg = dec->dec_avg_latency();
-						const float l_min = dec->dec_min_latency();
-						const float l_max = (dec->dec_max_latency() > 9999.9) ? 9999.9f : dec->dec_max_latency();
+						const float l_avg = 0.0f;
+						const float l_min = 0.0f;
+						const float l_max = 0.0f;
 
 						//
 						// Simulation statistics

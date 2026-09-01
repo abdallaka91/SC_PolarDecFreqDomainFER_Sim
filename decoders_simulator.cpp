@@ -236,6 +236,7 @@ int main(int argc, char *argv[])
 	uint16_t q = 0;
 	uint16_t p = 0;
 	uint16_t N = 0;
+	uint16_t NN = 0;
 	uint16_t n = 0;
 	uint16_t K = 0;
 
@@ -283,6 +284,13 @@ int main(int argc, char *argv[])
 		{
 			N = stoi(std::string(argv[i + 1]));
 			n = log2(N);
+			i += 1;
+		}
+		else if (std::string(argv[i]) == "-NN" ||
+				 std::string(argv[i]) == "-shortened-N" ||
+				 std::string(argv[i]) == "-shortened-n")
+		{
+			NN = stoi(std::string(argv[i + 1]));
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-K")
@@ -368,6 +376,8 @@ int main(int argc, char *argv[])
 	}
 
 	/////////////////////////////////////////////////////////////////
+	if (NN == 0)
+		NN = N;
 
 	if (EbN0_mini == -1000.f)
 	{
@@ -405,6 +415,12 @@ int main(int argc, char *argv[])
 		printf("(EE) missing [-q] option\n");
 		exit(EXIT_FAILURE);
 	}
+	if (NN > N || NN < K)
+	{
+		printf("(EE) Invalid shortened length: K <= NN <= N is required "
+			   "(K=%u, NN=%u, N=%u)\n", K, NN, N);
+		exit(EXIT_FAILURE);
+	}
 	if (dec_type == "")
 	{
 		printf("(EE) Error during CLI parsing\n");
@@ -430,6 +446,7 @@ int main(int argc, char *argv[])
 	std::cout << "#(DD) EbN0_max     : " << EbN0_maxi << " dB" << std::endl;
 	std::cout << "#(DD) EbN0_step    : " << EbN0_step << " dB" << std::endl;
 	std::cout << "#(DD) N            : " << N << std::endl;
+	std::cout << "#(DD) NN           : " << NN << std::endl;
 	std::cout << "#(DD) K            : " << K << std::endl;
 	std::cout << "#(DD) GF(q)        : " << q << std::endl;
 	if (forced_mode == true)
@@ -513,9 +530,44 @@ int main(int argc, char *argv[])
 		//
 		//
 		//
-		std::vector<int> frozen_symbols(N, true);
-		for (int i = 0; i < K; i += 1) // on dégèle les K noeuds les plus fiables
-			frozen_symbols.at(code_param.reliab_sequence[i]) = false;
+		std::vector<uint16_t> reliability_low_to_high(N);
+		for (int i = 0; i < N; ++i)
+			reliability_low_to_high[i] = code_param.reliab_sequence[N - i - 1];
+
+		const uint16_t short_count = N - NN;
+		std::vector<uint16_t> short_positions;
+		std::vector<uint16_t> frozen_positions;
+		if (short_count > 0)
+		{
+			const std::vector<uint16_t> shortening_order =
+				shortened_sequence(reliability_low_to_high, N);
+			short_positions.assign(shortening_order.begin(),
+								   shortening_order.begin() + short_count);
+			frozen_positions = froz_from_short(
+				N, reliability_low_to_high, N - K, short_positions);
+		}
+		else
+		{
+			frozen_positions.assign(reliability_low_to_high.begin(),
+									reliability_low_to_high.begin() + (N - K));
+		}
+
+		if (frozen_positions.size() != static_cast<size_t>(N - K))
+		{
+			printf("#(EE) Shortening produced %zu frozen positions; expected %u\n",
+				   frozen_positions.size(), N - K);
+			exit(EXIT_FAILURE);
+		}
+
+		std::vector<int> frozen_symbols(N, false);
+		for (const uint16_t pos : frozen_positions)
+			frozen_symbols.at(pos) = true;
+
+		std::vector<uint16_t> information_positions;
+		information_positions.reserve(K);
+		for (int pos = 0; pos < N; ++pos)
+			if (!frozen_symbols[pos])
+				information_positions.push_back(pos);
 		//
 		//
 		//
@@ -524,11 +576,18 @@ int main(int argc, char *argv[])
 		{
 			printf("#(II) Reliability sequence:\n");
 			printf("#(II) ");
-			for (int i = 0; i < K; i += 1)
+			for (const uint16_t pos : information_positions)
 			{
-				printf("%2d ", code_param.reliab_sequence[i]);
+				printf("%2d ", pos);
 			}
 			printf("\n");
+			if (short_count > 0)
+			{
+				printf("#(II) Shortened codeword positions:\n#(II) ");
+				for (const uint16_t pos : short_positions)
+					printf("%2d ", pos);
+				printf("\n");
+			}
 		}
 
 		const auto s_start = std::chrono::system_clock::now();
@@ -672,11 +731,7 @@ int main(int argc, char *argv[])
 			//
 			// On genere le mapping des K symbols dans le mot de N
 			//
-			std::vector<uint16_t> k_pos( K );
-			for (int x = 0; x < K; x += 1) {
-				k_pos[x] = code_param.reliab_sequence[x];
-			}
-			std::sort( k_pos.begin(), k_pos.end() );
+			std::vector<uint16_t> k_pos = information_positions;
 			//
 			//
 #if 0
@@ -773,7 +828,7 @@ int main(int argc, char *argv[])
 				// Decode
 
 				else if constexpr (SimulationParams::method ==
-								   SimulationParams::LLRMethod::FAST_LUT)
+									   SimulationParams::LLRMethod::FAST_LUT)
 				{
 					// Fast method: lookup table
 					float *probabilities =
@@ -785,6 +840,13 @@ int main(int argc, char *argv[])
 							llrs_n[i * q + j] = probabilities[i * q + j];
 						}
 					}
+				}
+
+				for (const uint16_t pos : short_positions)
+				{
+					llrs_n[pos * q] = 1.0f - 1e-12f;
+					for (int symbol = 1; symbol < q; ++symbol)
+						llrs_n[pos * q + symbol] = 1e-12f;
 				}
 
 				dec->setResult(r_symb.data());

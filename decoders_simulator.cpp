@@ -217,7 +217,6 @@ int main(int argc, char *argv[])
 	/////////////////////////////////////////////////////////////////
 
 	std::string dec_type = "";
-	std::string construction_directory = "";
 	uint64_t NbMonteCarlo = 10000000000;
 
 	float forced_EbN0 = -1000.f;
@@ -300,12 +299,6 @@ int main(int argc, char *argv[])
 		else if (std::string(argv[i]) == "-dec")
 		{
 			dec_type = std::string(argv[i + 1]);
-			i += 1;
-		}
-		else if (std::string(argv[i]) == "-construction" ||
-				 std::string(argv[i]) == "-construction-dir")
-		{
-			construction_directory = std::string(argv[i + 1]);
 			i += 1;
 		}
 		else if (std::string(argv[i]) == "-cw")
@@ -432,31 +425,6 @@ int main(int argc, char *argv[])
 		printf("(EE) missing [-dec] option\n");
 		exit(EXIT_FAILURE);
 	}
-	if (construction_directory.empty())
-	{
-		printf("(EE) Error during CLI parsing\n");
-		printf("(EE) missing [-construction <directory>] option\n");
-		exit(EXIT_FAILURE);
-	}
-
-	iterative_shortening_code construction;
-	try
-	{
-		construction = LoadIterativeShorteningCode(
-			construction_directory, N, NN, K, q, debug >= 1);
-	}
-	catch (const std::exception &error)
-	{
-		std::cerr << "#(EE) Invalid iterative shortening construction: "
-				  << error.what() << '\n';
-		exit(EXIT_FAILURE);
-	}
-	const std::vector<uint16_t> &short_positions =
-		construction.shortened_positions;
-	const std::vector<uint16_t> &information_positions =
-		construction.information_positions;
-	const std::vector<int> &frozen_symbols = construction.frozen_symbols;
-
 /*	NOTE: I added a mutex to solve this issue ;-)
 
 	if ((dump_err_frames == true) && (num_threads != 1))
@@ -481,10 +449,6 @@ int main(int argc, char *argv[])
 	if (forced_mode == true)
 		std::cout << "#(DD) Targeted SNR : " << forced_EbN0 << " dB" << std::endl;
 	std::cout << "#(DD) dec_type     : " << dec_type << std::endl;
-	std::cout << "#(DD) construction: " << construction_directory << std::endl;
-	std::cout << "#(DD) constr. SNR  : " << construction.construction_snr << " dB" << std::endl;
-	std::cout << "#(DD) constr. metric: " << construction.selection_metric
-			  << std::endl;
 	std::cout << "#(DD) FER_STOP     : " << FER_STOP << std::endl;
 	std::cout << "#(DD) num_threads  : " << num_threads << std::endl;
 
@@ -532,6 +496,34 @@ int main(int argc, char *argv[])
 	//
 	for (float cSNR = EbN0_mini; cSNR <= EbN0_maxi; cSNR += EbN0_step)
 	{
+		const float construction_snr =
+			(forced_mode == true) ? forced_EbN0 : cSNR;
+		std::ostringstream construction_path;
+		construction_path << "./constructions/GF" << q << "/N" << N
+						  << "/SNR" << std::fixed << std::setprecision(3)
+						  << construction_snr << "_entropy";
+
+		iterative_shortening_code construction;
+		try
+		{
+			construction = LoadIterativeShorteningCode(
+				construction_path.str(), N, NN, K, q, debug >= 1);
+		}
+		catch (const std::exception &error)
+		{
+			std::cerr << "#(EE) Invalid iterative shortening construction: "
+					  << error.what() << '\n';
+			exit(EXIT_FAILURE);
+		}
+		const std::vector<uint16_t> &short_positions =
+			construction.shortened_positions;
+		const std::vector<uint16_t> &information_positions =
+			construction.information_positions;
+		const std::vector<int> &frozen_symbols = construction.frozen_symbols;
+
+		std::cout << "#(DD) construction: " << construction_path.str()
+				  << std::endl;
+
 		//
 		// On cree toujours le logger et le parametre "dump_err_frames" active
 		// ou pas le code en interne.

@@ -304,44 +304,73 @@ PoAwN::init::LoadIterativeShorteningCode(
     throw std::runtime_error("Cannot open reliability snapshot: " +
                              snapshot_path.string());
 
-  size_t snapshot_row_count = 0;
-  bool snapshot_has_active_column = false;
+  std::vector<uint16_t> reliability_order;
+  std::vector<bool> snapshot_active(N, false);
+  std::vector<bool> snapshot_row_seen(N, false);
+  bool read_reliability_order_values = false;
   while (std::getline(snapshot, line))
   {
+    if (line == "# reliability_order")
+    {
+      read_reliability_order_values = true;
+      continue;
+    }
+    if (read_reliability_order_values)
+    {
+      if (line.empty() || line[0] != '#')
+        throw std::runtime_error("Missing reliability order values in " +
+                                 snapshot_path.string());
+      std::istringstream order_values(line.substr(1));
+      int index;
+      while (order_values >> index)
+      {
+        if (index < 0 || index >= N)
+          throw std::runtime_error("Invalid reliability order index in " +
+                                   snapshot_path.string());
+        reliability_order.push_back(static_cast<uint16_t>(index));
+      }
+      read_reliability_order_values = false;
+      continue;
+    }
     if (line.empty() || line[0] == '#')
       continue;
 
     std::istringstream values(line);
-    int rank;
     int index;
-    double one_error_probability;
     double entropy;
-    uint64_t hard_success_count;
-    if (!(values >> rank >> index >> one_error_probability >> entropy >>
-          hard_success_count))
+    double one_error_probability;
+    int is_active;
+    int is_candidate;
+    if (!(values >> index >> entropy >> one_error_probability >> is_active >>
+          is_candidate))
       throw std::runtime_error("Invalid reliability row in " +
                                snapshot_path.string());
-
-    std::vector<int> status_fields;
-    int status;
-    while (values >> status)
-      status_fields.push_back(status);
-    if (status_fields.size() != 1 && status_fields.size() != 2)
-      throw std::runtime_error("Invalid reliability status fields in " +
+    if (index < 0 || index >= N || snapshot_row_seen[index] ||
+        (is_active != 0 && is_active != 1) ||
+        (is_candidate != 0 && is_candidate != 1))
+      throw std::runtime_error("Invalid indexed reliability data in " +
                                snapshot_path.string());
-
-    ++snapshot_row_count;
-    const bool is_active =
-        status_fields.size() == 1 || status_fields.front() != 0;
-    snapshot_has_active_column |= status_fields.size() == 2;
-    if (is_active)
-      code.active_reliability_order.push_back(
-          static_cast<uint16_t>(index));
+    snapshot_row_seen[index] = true;
+    snapshot_active[index] = is_active != 0;
   }
 
-  if (snapshot_has_active_column && snapshot_row_count != static_cast<size_t>(N))
+  if (read_reliability_order_values ||
+      reliability_order.size() != static_cast<size_t>(N) ||
+      std::find(snapshot_row_seen.begin(), snapshot_row_seen.end(), false) !=
+          snapshot_row_seen.end())
     throw std::runtime_error(
-        "Reliability snapshot does not contain exactly N input channels");
+        "Reliability snapshot does not describe exactly N input channels");
+
+  std::vector<bool> reliability_seen(N, false);
+  for (const uint16_t index : reliability_order)
+  {
+    if (reliability_seen[index])
+      throw std::runtime_error("Duplicate reliability order index in " +
+                               snapshot_path.string());
+    reliability_seen[index] = true;
+    if (snapshot_active[index])
+      code.active_reliability_order.push_back(index);
+  }
 
   if (code.active_reliability_order.size() != static_cast<size_t>(NS))
     throw std::runtime_error(

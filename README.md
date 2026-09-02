@@ -72,6 +72,13 @@ reliability once more with the corresponding outputs perfectly known as zero.
 Its output directory ends in `_non_iterative_Sxxxx` so it cannot overwrite an
 iterative construction.
 
+For a Cartesian sweep over several SNR values and shortening counts, edit the
+arrays and shared parameters near the top of `sweep_non_iterative.py`, then run:
+
+```bash
+python3 sweep_non_iterative.py
+```
+
 The selection metric is either `entropy` or `probability`, where probability
 means the average `1 - P(true symbol)`.
 

@@ -28,7 +28,11 @@ def read_reliability_order(path: Path) -> list[int]:
     for line in path.read_text(encoding="utf-8").splitlines():
         if line and not line.startswith("#"):
             fields = line.split()
-            order.append(int(fields[1]))
+            # New snapshots export all N inputs and identify the active ones
+            # in column 5. Old six-column snapshots contain active inputs only.
+            is_active = len(fields) < 7 or int(fields[5]) != 0
+            if is_active:
+                order.append(int(fields[1]))
     return order
 
 

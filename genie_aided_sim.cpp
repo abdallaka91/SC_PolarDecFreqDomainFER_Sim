@@ -67,8 +67,9 @@ void validate_shortening_state(
     if (active[column])
       throw std::runtime_error("A shortened index is still active");
 
-    // All inactive input rows are forced to zero. A shortened output is thus
-    // guaranteed to encode to zero only if it has no remaining active input.
+    // The active mask defines the reduced transform used to construct the
+    // nested shortening chain. Removed rows are still randomized during the
+    // reliability experiment so their evolving reliabilities remain visible.
     for (size_t row = 0; row < active.size(); ++row)
       if (active[row] && generator[row][column])
         throw std::runtime_error(
@@ -119,7 +120,6 @@ find_weight_one_candidates(const generator_matrix_t &generator,
 template <int GF, int N>
 ReliabilitySnapshot simulate_reliability(
     const uint64_t frame_count, CCSK_Simulator<GF, N> &simulator,
-    const std::vector<bool> &active,
     const std::vector<uint16_t> &shortened_positions)
 {
   const int max_threads = omp_get_max_threads();
@@ -131,9 +131,9 @@ ReliabilitySnapshot simulate_reliability(
       max_threads, std::vector<uint64_t>(N, 0));
   std::atomic<uint64_t> processed_frames(0);
 
+  // Every input remains unknown to the decoder. The active mask is used only
+  // for shortening-chain construction and candidate selection.
   std::vector<int> frozen_symbols(N, false);
-  for (int i = 0; i < N; ++i)
-    frozen_symbols[i] = !active[i];
 
 #pragma omp parallel
   {
@@ -154,7 +154,7 @@ ReliabilitySnapshot simulate_reliability(
       simulator.generate_random_symbols(random_symbols.data(), N, thread_id);
 
       for (int i = 0; i < N; ++i)
-        u_symbols[i] = active[i] ? random_symbols[i] : 0;
+        u_symbols[i] = random_symbols[i];
       true_u_symbols = u_symbols;
 
       polar_encode<N>(u_symbols.data());
@@ -167,12 +167,13 @@ ReliabilitySnapshot simulate_reliability(
           channel_probabilities[i].value[symbol] =
               static_cast<float>(llr_values[i * GF + symbol]);
 
-      // All previously shortened outputs are perfectly known zero symbols.
+      // A shortened output is perfectly known at its actual encoded symbol.
       for (const uint16_t position : shortened_positions)
       {
-        channel_probabilities[position].value[0] = 1.0f;
-        for (int symbol = 1; symbol < GF; ++symbol)
-          channel_probabilities[position].value[symbol] = 0.0f;
+        const uint16_t encoded_symbol = u_symbols[position];
+        for (int symbol = 0; symbol < GF; ++symbol)
+          channel_probabilities[position].value[symbol] =
+              symbol == encoded_symbol ? 1.0f : 0.0f;
       }
 
       decoder.execute(channel_probabilities.data(), decoded.data(),
@@ -181,8 +182,6 @@ ReliabilitySnapshot simulate_reliability(
 
       for (int i = 0; i < N; ++i)
       {
-        if (!active[i])
-          continue;
         thread_entropy[thread_id][i] += entropy[i];
         thread_one_error[thread_id][i] += one_error_probability[i];
         if (decoded[i] == true_u_symbols[i])
@@ -207,8 +206,6 @@ ReliabilitySnapshot simulate_reliability(
 
   for (int i = 0; i < N; ++i)
   {
-    if (!active[i])
-      continue;
     snapshot.entropy[i] = 0.0;
     snapshot.one_error_probability[i] = 0.0;
     for (int thread = 0; thread < max_threads; ++thread)
@@ -252,14 +249,12 @@ uint16_t select_weakest_candidate(const std::vector<uint16_t> &candidates,
 }
 
 std::vector<uint16_t>
-sort_active_by_reliability(const std::vector<bool> &active,
-                           const ReliabilitySnapshot &snapshot,
-                           const std::string &mode)
+sort_all_by_reliability(const ReliabilitySnapshot &snapshot,
+                        const std::string &mode)
 {
-  std::vector<uint16_t> order;
-  for (size_t i = 0; i < active.size(); ++i)
-    if (active[i])
-      order.push_back(static_cast<uint16_t>(i));
+  std::vector<uint16_t> order(snapshot.entropy.size());
+  for (size_t i = 0; i < order.size(); ++i)
+    order[i] = static_cast<uint16_t>(i);
 
   std::sort(order.begin(), order.end(), [&](const uint16_t a,
                                              const uint16_t b) {
@@ -303,12 +298,12 @@ void write_snapshot(const fs::path &output_directory, const int GF, const int N,
          << depth << "\n# shortened_length " << N - depth
          << "\n# shortened_positions " << join_indices(shortened_positions)
          << "\n# weight_one_candidates " << join_indices(candidates)
-         << "\n# order best_to_worst\n"
+         << "\n# order all_inputs_best_to_worst\n"
          << "# rank index average_one_error_probability average_entropy "
-            "hard_success_count is_weight_one_candidate\n";
+            "hard_success_count is_active is_weight_one_candidate\n";
 
   const std::vector<uint16_t> order =
-      sort_active_by_reliability(active, snapshot, mode);
+      sort_all_by_reliability(snapshot, mode);
   for (size_t rank = 0; rank < order.size(); ++rank)
   {
     const uint16_t index = order[rank];
@@ -318,8 +313,8 @@ void write_snapshot(const fs::path &output_directory, const int GF, const int N,
     output << rank << ' ' << index << ' ' << std::scientific
            << std::setprecision(12) << snapshot.one_error_probability[index]
            << ' ' << snapshot.entropy[index] << ' '
-           << snapshot.hard_success_count[index] << ' ' << is_candidate
-           << '\n';
+           << snapshot.hard_success_count[index] << ' ' << active[index]
+           << ' ' << is_candidate << '\n';
   }
 }
 
@@ -410,7 +405,7 @@ int main(int argc, char *argv[])
     const std::vector<uint16_t> candidates =
         find_weight_one_candidates(generator, active);
     const ReliabilitySnapshot snapshot = simulate_reliability<_GF_, _N_>(
-        frame_count, simulator, active, shortened_positions);
+        frame_count, simulator, shortened_positions);
 
     write_snapshot(output_directory, GF, N, snr, frame_count, mode, depth,
                    active, shortened_positions, candidates, snapshot);

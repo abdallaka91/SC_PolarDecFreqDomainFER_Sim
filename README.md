@@ -19,18 +19,21 @@ here, the unique active input of candidate output `x[j]` is `u[j]`.
 
 A genie-aided Monte Carlo simulation is run for the current shortening state.
 Among the weight-one candidates, the input with the weakest measured
-reliability is selected. Input `u[j]` is frozen, output `x[j]` is shortened,
-and index `j` is removed from both the active rows and columns.
+reliability is selected, output `x[j]` is shortened, and index `j` is removed
+from both the active rows and columns used to construct the nested chain.
 
-During every later simulation, all accumulated shortened outputs are injected
-as perfectly known zero symbols:
+During every reliability simulation, all `N` inputs are random, including
+inputs whose indices were previously removed. Each accumulated shortened
+output is injected as its perfectly known actual encoded symbol:
 
 ```text
-P(x[j] = 0) = 1
-P(x[j] != 0) = 0
+P(X[j] = encoded x[j]) = 1
+P(X[j] != encoded x[j]) = 0
 ```
 
-The process saves a new reliability snapshot after every shortening depth.
+This makes it possible to observe how the reliability of every input channel
+changes as more outputs become perfectly known. The process saves a new
+reliability snapshot after every shortening depth.
 
 ## Requirements
 
@@ -80,13 +83,13 @@ It contains:
 
 - all shortened positions accumulated through that depth;
 - the current weight-one candidates;
-- all remaining active inputs ordered from best to worst;
+- all `N` inputs ordered from best to worst, with an `is_active` field;
 - average error probability, entropy, and hard-decision success count.
 
 For a later choice `NS`, use depth `S=N-NS`. The shortened positions are the
-first `S` entries of `shortening_order.txt`. For any `K <= NS`, take the first
-`K` active inputs in that depth's best-to-worst reliability snapshot as the
-information set; the other `NS-K` active inputs are reliability-frozen.
+first `S` entries of `shortening_order.txt`. For any `K <= NS`, filter the
+snapshot to its active inputs and take the first `K` in best-to-worst order as
+the information set; the other `NS-K` active inputs are reliability-frozen.
 
 The derivation helper performs this extraction automatically:
 

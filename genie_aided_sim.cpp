@@ -29,7 +29,6 @@ struct ReliabilitySnapshot
 {
   std::vector<double> entropy;
   std::vector<double> one_error_probability;
-  std::vector<uint64_t> hard_success_count;
 };
 
 struct ShorteningStep
@@ -127,8 +126,6 @@ ReliabilitySnapshot simulate_reliability(
       max_threads, std::vector<double>(N, 0.0));
   std::vector<std::vector<double>> thread_one_error(
       max_threads, std::vector<double>(N, 0.0));
-  std::vector<std::vector<uint64_t>> thread_success(
-      max_threads, std::vector<uint64_t>(N, 0));
   std::atomic<uint64_t> processed_frames(0);
 
   // Every input remains unknown to the decoder. The active mask is used only
@@ -184,8 +181,6 @@ ReliabilitySnapshot simulate_reliability(
       {
         thread_entropy[thread_id][i] += entropy[i];
         thread_one_error[thread_id][i] += one_error_probability[i];
-        if (decoded[i] == true_u_symbols[i])
-          ++thread_success[thread_id][i];
       }
 
       const uint64_t processed = ++processed_frames;
@@ -201,8 +196,7 @@ ReliabilitySnapshot simulate_reliability(
 
   ReliabilitySnapshot snapshot{
       std::vector<double>(N, std::numeric_limits<double>::quiet_NaN()),
-      std::vector<double>(N, std::numeric_limits<double>::quiet_NaN()),
-      std::vector<uint64_t>(N, 0)};
+      std::vector<double>(N, std::numeric_limits<double>::quiet_NaN())};
 
   for (int i = 0; i < N; ++i)
   {
@@ -212,7 +206,6 @@ ReliabilitySnapshot simulate_reliability(
     {
       snapshot.entropy[i] += thread_entropy[thread][i];
       snapshot.one_error_probability[i] += thread_one_error[thread][i];
-      snapshot.hard_success_count[i] += thread_success[thread][i];
     }
     snapshot.entropy[i] /= static_cast<double>(frame_count);
     snapshot.one_error_probability[i] /= static_cast<double>(frame_count);
@@ -292,28 +285,26 @@ void write_snapshot(const fs::path &output_directory, const int GF, const int N,
            << "_NS" << std::setw(4) << N - depth << ".txt";
   std::ofstream output(output_directory / filename.str());
 
+  const std::vector<uint16_t> order =
+      sort_all_by_reliability(snapshot, mode);
   output << "# N " << N << "\n# GF " << GF << "\n# SNR " << std::fixed
          << std::setprecision(3) << snr << "\n# frames " << frame_count
          << "\n# selection_metric " << mode << "\n# shortening_depth "
          << depth << "\n# shortened_length " << N - depth
-         << "\n# shortened_positions " << join_indices(shortened_positions)
-         << "\n# weight_one_candidates " << join_indices(candidates)
-         << "\n# order all_inputs_best_to_worst\n"
-         << "# rank index average_one_error_probability average_entropy "
-            "hard_success_count is_active is_weight_one_candidate\n";
+         << "\n# reliability_order\n# " << join_indices(order)
+         << "\n# shortened_positions\n# "
+         << join_indices(shortened_positions)
+         << "\n# index average_entropy average_one_error_probability "
+            "is_active is_weight_one_candidate\n";
 
-  const std::vector<uint16_t> order =
-      sort_all_by_reliability(snapshot, mode);
-  for (size_t rank = 0; rank < order.size(); ++rank)
+  for (int index = 0; index < N; ++index)
   {
-    const uint16_t index = order[rank];
     const bool is_candidate =
         std::find(candidates.begin(), candidates.end(), index) !=
         candidates.end();
-    output << rank << ' ' << index << ' ' << std::scientific
-           << std::setprecision(12) << snapshot.one_error_probability[index]
-           << ' ' << snapshot.entropy[index] << ' '
-           << snapshot.hard_success_count[index] << ' ' << active[index]
+    output << index << ' ' << std::scientific << std::setprecision(12)
+           << snapshot.entropy[index] << ' '
+           << snapshot.one_error_probability[index] << ' ' << active[index]
            << ' ' << is_candidate << '\n';
   }
 }

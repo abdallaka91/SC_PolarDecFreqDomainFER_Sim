@@ -24,16 +24,25 @@ def read_shortening_order(path: Path) -> list[int]:
 
 
 def read_reliability_order(path: Path) -> list[int]:
-    order = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if line and not line.startswith("#"):
+    lines = path.read_text(encoding="utf-8").splitlines()
+    order = None
+    active = {}
+    for line_number, line in enumerate(lines):
+        if line == "# reliability_order":
+            if line_number + 1 >= len(lines) or not lines[line_number + 1].startswith("#"):
+                raise ValueError(f"Missing reliability order values in {path}")
+            order = [int(value) for value in lines[line_number + 1][1:].split()]
+        elif line and not line.startswith("#"):
             fields = line.split()
-            # New snapshots export all N inputs and identify the active ones
-            # in column 5. Old six-column snapshots contain active inputs only.
-            is_active = len(fields) < 7 or int(fields[5]) != 0
-            if is_active:
-                order.append(int(fields[1]))
-    return order
+            if len(fields) != 5:
+                raise ValueError(f"Invalid reliability row in {path}: {line}")
+            active[int(fields[0])] = int(fields[3]) != 0
+
+    if order is None:
+        raise ValueError(f"No reliability order found in {path}")
+    if set(order) != set(active):
+        raise ValueError(f"Reliability order and data rows do not contain the same indices")
+    return [index for index in order if active[index]]
 
 
 def main() -> int:

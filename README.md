@@ -83,8 +83,11 @@ It contains:
 
 - all shortened positions accumulated through that depth;
 - the current weight-one candidates;
-- all `N` inputs ordered from best to worst, with an `is_active` field;
-- average error probability, entropy, and hard-decision success count.
+- a two-line `reliability_order` header listing all `N` inputs from best to
+  worst;
+- a two-line `shortened_positions` header;
+- one naturally indexed row (`0` through `N-1`) containing entropy, average
+  error probability, `is_active`, and `is_weight_one_candidate`.
 
 For a later choice `NS`, use depth `S=N-NS`. The shortened positions are the
 first `S` entries of `shortening_order.txt`. For any `K <= NS`, filter the

@@ -64,6 +64,15 @@ def main() -> int:
         default="iterative",
         help="Reliability recomputation strategy",
     )
+    parser.add_argument(
+        "--refresh-interval",
+        type=positive_int,
+        default=1,
+        help=(
+            "For iterative strategy, recompute reliability after this many "
+            "shortening selections (default: 1)"
+        ),
+    )
     parser.add_argument("--threads", type=positive_int, default=4)
     parser.add_argument("--jobs", type=positive_int, default=None)
     parser.add_argument(
@@ -83,6 +92,8 @@ def main() -> int:
         parser.error(
             "--strategy non-iterative requires --max-shortening S with S > 0"
         )
+    if args.strategy == "non-iterative" and args.refresh_interval != 1:
+        parser.error("--refresh-interval applies only to --strategy iterative")
 
     build_dir = ROOT / "build"
     executable = build_dir / "Sim2"
@@ -126,7 +137,8 @@ def main() -> int:
     ]
     simulation.extend(
         (str(args.max_shortening if args.max_shortening is not None else args.length - 1),
-         args.strategy)
+         args.strategy,
+         str(args.refresh_interval))
     )
     print("Running:", " ".join(simulation), flush=True)
     return subprocess.run(simulation, cwd=ROOT, env=environment).returncode

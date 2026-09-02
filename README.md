@@ -59,6 +59,20 @@ through `S=N-1`:
 python3 run_sim.py 10000 -8 64 64 entropy --threads 4 --jobs 4
 ```
 
+To reuse each reliability computation for a block of shortening decisions,
+set the iterative refresh interval. For example, this computes reliability at
+`S=0`, reuses it for 32 selections, recomputes at `S=32`, reuses it for the
+next 32 selections, and performs a final computation at `S=64`:
+
+```bash
+python3 run_sim.py 10000 -6.75 64 256 entropy --strategy iterative --max-shortening 64 --refresh-interval 32 --threads 4 --jobs 4
+```
+
+An interval of `1` is the original fully iterative behavior. An intermediate
+snapshot records `reliability_measurement_depth` so it is clear when its
+reliability values were last recomputed. Refresh intervals greater than one
+use a `_refresh_Bxxxx` output-directory suffix.
+
 To run the two-pass non-iterative construction for exactly `S=9`, use:
 
 ```bash

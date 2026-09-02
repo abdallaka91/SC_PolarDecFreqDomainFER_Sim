@@ -281,6 +281,7 @@ std::string join_indices(const std::vector<uint16_t> &indices)
 void write_snapshot(const fs::path &output_directory, const int GF, const int N,
                     const double snr, const uint64_t frame_count,
                     const std::string &mode, const int depth,
+                    const int reliability_measurement_depth,
                     const std::vector<bool> &active,
                     const std::vector<uint16_t> &shortened_positions,
                     const std::vector<uint16_t> &candidates,
@@ -297,6 +298,8 @@ void write_snapshot(const fs::path &output_directory, const int GF, const int N,
          << std::setprecision(3) << snr << "\n# frames " << frame_count
          << "\n# selection_metric " << mode << "\n# shortening_depth "
          << depth << "\n# shortened_length " << N - depth
+         << "\n# reliability_measurement_depth "
+         << reliability_measurement_depth
          << "\n# reliability_order\n# " << join_indices(order)
          << "\n# shortened_positions\n# "
          << join_indices(shortened_positions)
@@ -342,12 +345,12 @@ void write_shortening_order(const fs::path &output_directory, const int GF,
 
 int main(int argc, char *argv[])
 {
-  if (argc < 5 || argc > 8)
+  if (argc < 5 || argc > 9)
   {
     std::cerr << "Usage: " << argv[0]
               << " <frames_per_depth> <SNR_dB> <GF_size> <N> "
                  "[entropy|probability] [max_shortening] "
-                 "[iterative|non-iterative]\n";
+                 "[iterative|non-iterative] [refresh_interval]\n";
     return EXIT_FAILURE;
   }
 
@@ -361,6 +364,7 @@ int main(int argc, char *argv[])
   std::string strategy = argc > 7 ? argv[7] : "iterative";
   std::transform(strategy.begin(), strategy.end(), strategy.begin(),
                  ::tolower);
+  const int refresh_interval = argc > 8 ? std::stoi(argv[8]) : 1;
 
   if (GF != _GF_ || N != _N_)
   {
@@ -389,6 +393,16 @@ int main(int argc, char *argv[])
     std::cerr << "Non-iterative strategy requires a positive shortening count.\n";
     return EXIT_FAILURE;
   }
+  if (refresh_interval <= 0)
+  {
+    std::cerr << "Refresh interval must be positive.\n";
+    return EXIT_FAILURE;
+  }
+  if (strategy == "non-iterative" && refresh_interval != 1)
+  {
+    std::cerr << "Refresh interval applies only to iterative strategy.\n";
+    return EXIT_FAILURE;
+  }
 
   const float noise_sigma = std::sqrt(1.0f / std::pow(10.0f, snr / 10.0f));
   const int max_threads = omp_get_max_threads();
@@ -409,6 +423,13 @@ int main(int argc, char *argv[])
            << max_shortening;
     construction_name += suffix.str();
   }
+  else if (refresh_interval > 1)
+  {
+    std::ostringstream suffix;
+    suffix << "_refresh_B" << std::setw(4) << std::setfill('0')
+           << refresh_interval;
+    construction_name += suffix.str();
+  }
   const fs::path output_directory =
       fs::path("constructions") / ("GF" + std::to_string(GF)) /
       ("N" + std::to_string(N)) / construction_name;
@@ -416,6 +437,8 @@ int main(int argc, char *argv[])
 
   if (strategy == "iterative")
   {
+    ReliabilitySnapshot current_snapshot;
+    int reliability_measurement_depth = -1;
     for (int depth = 0; depth <= max_shortening; ++depth)
     {
       std::cout << "Depth S=" << depth << ", shortened length NS="
@@ -424,20 +447,35 @@ int main(int argc, char *argv[])
       validate_shortening_state(generator, active, shortened_positions);
       const std::vector<uint16_t> candidates =
           find_weight_one_candidates(generator, active);
-      const ReliabilitySnapshot snapshot = simulate_reliability<_GF_, _N_>(
-          frame_count, simulator, active, shortened_positions, false);
+
+      const bool refresh_reliability =
+          depth == 0 || depth == max_shortening ||
+          depth % refresh_interval == 0;
+      if (refresh_reliability)
+      {
+        std::cout << "  computing reliability at S=" << depth << '\n';
+        current_snapshot = simulate_reliability<_GF_, _N_>(
+            frame_count, simulator, active, shortened_positions, false);
+        reliability_measurement_depth = depth;
+      }
+      else
+      {
+        std::cout << "  reusing reliability measured at S="
+                  << reliability_measurement_depth << '\n';
+      }
 
       write_snapshot(output_directory, GF, N, snr, frame_count, mode, depth,
-                     active, shortened_positions, candidates, snapshot);
+                     reliability_measurement_depth, active,
+                     shortened_positions, candidates, current_snapshot);
 
       if (depth == max_shortening)
         break;
 
       const uint16_t selected =
-          select_weakest_candidate(candidates, snapshot, mode);
+          select_weakest_candidate(candidates, current_snapshot, mode);
       shortening_steps.push_back(
-          {depth, candidates, selected, snapshot.entropy[selected],
-           snapshot.one_error_probability[selected]});
+          {depth, candidates, selected, current_snapshot.entropy[selected],
+           current_snapshot.one_error_probability[selected]});
 
       std::cout << "  candidates: " << join_indices(candidates) << '\n'
                 << "  selected x[" << selected << "] / u[" << selected
@@ -457,8 +495,9 @@ int main(int argc, char *argv[])
     const ReliabilitySnapshot initial_snapshot =
         simulate_reliability<_GF_, _N_>(frame_count, simulator, active,
                                         shortened_positions, false);
-    write_snapshot(output_directory, GF, N, snr, frame_count, mode, 0, active,
-                   shortened_positions, initial_candidates, initial_snapshot);
+    write_snapshot(output_directory, GF, N, snr, frame_count, mode, 0, 0,
+                   active, shortened_positions, initial_candidates,
+                   initial_snapshot);
 
     for (int depth = 0; depth < max_shortening; ++depth)
     {
@@ -485,7 +524,7 @@ int main(int argc, char *argv[])
         simulate_reliability<_GF_, _N_>(frame_count, simulator, active,
                                         shortened_positions, true);
     write_snapshot(output_directory, GF, N, snr, frame_count, mode,
-                   max_shortening, active, shortened_positions,
+                   max_shortening, max_shortening, active, shortened_positions,
                    final_candidates, final_snapshot);
   }
 

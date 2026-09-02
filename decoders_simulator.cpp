@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <filesystem>
 #include <inttypes.h>
 #include <iomanip>
@@ -16,6 +17,7 @@
 #include <omp.h>
 #include <signal.h>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -42,6 +44,68 @@ using namespace PoAwN::init;
 #include "./source/crc/crc_16b.hpp"
 
 namespace fs = std::filesystem;
+
+bool load_debug_reliability_shortening(
+	const fs::path &path, const int N, const int expected_short_count,
+	std::vector<uint16_t> &reliability_best_to_worst,
+	std::vector<uint16_t> &shortened_positions)
+{
+	std::ifstream input(path);
+	if (!input)
+		return false;
+
+	std::string reliability_line;
+	std::string shortening_line;
+	if (!std::getline(input, reliability_line) ||
+		!std::getline(input, shortening_line))
+		throw std::runtime_error(
+			"debug override must contain a reliability line and a shortening line");
+
+	auto parse_indices = [&](const std::string &line,
+							 const std::string &description) {
+		std::vector<uint16_t> indices;
+		std::istringstream values(line);
+		int index;
+		while (values >> index)
+		{
+			if (index < 0 || index >= N)
+				throw std::runtime_error(description + " contains an index outside 0..N-1");
+			indices.push_back(static_cast<uint16_t>(index));
+		}
+		if (!values.eof())
+			throw std::runtime_error(description + " contains a non-integer value");
+		return indices;
+	};
+
+	reliability_best_to_worst =
+		parse_indices(reliability_line, "debug reliability order");
+	shortened_positions =
+		parse_indices(shortening_line, "debug shortening list");
+
+	if (reliability_best_to_worst.size() != static_cast<size_t>(N))
+		throw std::runtime_error("debug reliability order must contain exactly N indices");
+	if (shortened_positions.size() !=
+		static_cast<size_t>(expected_short_count))
+		throw std::runtime_error(
+			"debug shortening list must contain exactly N-NN indices");
+
+	std::vector<bool> reliability_seen(N, false);
+	for (const uint16_t index : reliability_best_to_worst)
+	{
+		if (reliability_seen[index])
+			throw std::runtime_error("debug reliability order contains duplicates");
+		reliability_seen[index] = true;
+	}
+	std::vector<bool> shortening_seen(N, false);
+	for (const uint16_t index : shortened_positions)
+	{
+		if (shortening_seen[index])
+			throw std::runtime_error("debug shortening list contains duplicates");
+		shortening_seen[index] = true;
+	}
+
+	return true;
+}
 
 std::string format_FER(double FER_value, int width = 10)
 {
@@ -428,6 +492,27 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	const fs::path debug_override_path =
+		fs::path("debugging") / "debug_reliab_short.txt";
+	std::vector<uint16_t> debug_reliability_best_to_worst;
+	std::vector<uint16_t> debug_shortened_positions;
+	bool use_debug_override = false;
+	try
+	{
+		use_debug_override = load_debug_reliability_shortening(
+			debug_override_path, N, N - NN,
+			debug_reliability_best_to_worst, debug_shortened_positions);
+	}
+	catch (const std::exception &error)
+	{
+		std::cerr << "#(EE) Invalid " << debug_override_path << ": "
+				  << error.what() << '\n';
+		exit(EXIT_FAILURE);
+	}
+	if (use_debug_override)
+		std::cout << "#(II) Using debug reliability/shortening override: "
+				  << debug_override_path << '\n';
+
 /*	NOTE: I added a mutex to solve this issue ;-)
 
 	if ((dump_err_frames == true) && (num_threads != 1))
@@ -517,7 +602,8 @@ int main(int argc, char *argv[])
 			printf("#(DD)\n");
 			printf("#(DD) Frozen vector configured for EbN0 = %f\n", sSNR);
 		}
-		LoadCode(code_param, sSNR, "./matrices/", debug >= 2);
+		if (!use_debug_override)
+			LoadCode(code_param, sSNR, "./matrices/", debug >= 2);
 
 		//
 		// On cree toujours le logger et le parametre "dump_err_frames" active
@@ -531,13 +617,37 @@ int main(int argc, char *argv[])
 		//
 		//
 		std::vector<uint16_t> reliability_low_to_high(N);
+		const std::vector<uint16_t> &reliability_best_to_worst =
+			use_debug_override ? debug_reliability_best_to_worst
+							  : code_param.reliab_sequence;
 		for (int i = 0; i < N; ++i)
-			reliability_low_to_high[i] = code_param.reliab_sequence[N - i - 1];
+			reliability_low_to_high[i] = reliability_best_to_worst[N - i - 1];
 
 		const uint16_t short_count = N - NN;
 		std::vector<uint16_t> short_positions;
 		std::vector<uint16_t> frozen_positions;
-		if (short_count > 0)
+		if (use_debug_override)
+		{
+			short_positions = debug_shortened_positions;
+			std::vector<bool> is_frozen(N, false);
+			for (const uint16_t pos : short_positions)
+			{
+				frozen_positions.push_back(pos);
+				is_frozen[pos] = true;
+			}
+			for (const uint16_t pos : reliability_low_to_high)
+			{
+				if (!is_frozen[pos])
+				{
+					frozen_positions.push_back(pos);
+					is_frozen[pos] = true;
+				}
+				if (frozen_positions.size() == static_cast<size_t>(N - K))
+					break;
+			}
+			std::sort(frozen_positions.begin(), frozen_positions.end());
+		}
+		else if (short_count > 0)
 		{
 			const std::vector<uint16_t> shortening_order =
 				shortened_sequence(reliability_low_to_high, N);

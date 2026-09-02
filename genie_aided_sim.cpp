@@ -119,7 +119,9 @@ find_weight_one_candidates(const generator_matrix_t &generator,
 template <int GF, int N>
 ReliabilitySnapshot simulate_reliability(
     const uint64_t frame_count, CCSK_Simulator<GF, N> &simulator,
-    const std::vector<uint16_t> &shortened_positions)
+    const std::vector<bool> &active,
+    const std::vector<uint16_t> &shortened_positions,
+    const bool freeze_inactive_inputs)
 {
   const int max_threads = omp_get_max_threads();
   std::vector<std::vector<double>> thread_entropy(
@@ -128,9 +130,10 @@ ReliabilitySnapshot simulate_reliability(
       max_threads, std::vector<double>(N, 0.0));
   std::atomic<uint64_t> processed_frames(0);
 
-  // Every input remains unknown to the decoder. The active mask is used only
-  // for shortening-chain construction and candidate selection.
   std::vector<int> frozen_symbols(N, false);
+  if (freeze_inactive_inputs)
+    for (int i = 0; i < N; ++i)
+      frozen_symbols[i] = !active[i];
 
 #pragma omp parallel
   {
@@ -151,7 +154,8 @@ ReliabilitySnapshot simulate_reliability(
       simulator.generate_random_symbols(random_symbols.data(), N, thread_id);
 
       for (int i = 0; i < N; ++i)
-        u_symbols[i] = random_symbols[i];
+        u_symbols[i] =
+            freeze_inactive_inputs && !active[i] ? 0 : random_symbols[i];
       true_u_symbols = u_symbols;
 
       polar_encode<N>(u_symbols.data());
@@ -164,7 +168,9 @@ ReliabilitySnapshot simulate_reliability(
           channel_probabilities[i].value[symbol] =
               static_cast<float>(llr_values[i * GF + symbol]);
 
-      // A shortened output is perfectly known at its actual encoded symbol.
+      // In diagnostic iterative mode this is the actual random encoded symbol.
+      // In conventional non-iterative mode it is zero because the associated
+      // inputs have been frozen before encoding.
       for (const uint16_t position : shortened_positions)
       {
         const uint16_t encoded_symbol = u_symbols[position];
@@ -336,11 +342,12 @@ void write_shortening_order(const fs::path &output_directory, const int GF,
 
 int main(int argc, char *argv[])
 {
-  if (argc < 5 || argc > 7)
+  if (argc < 5 || argc > 8)
   {
     std::cerr << "Usage: " << argv[0]
               << " <frames_per_depth> <SNR_dB> <GF_size> <N> "
-                 "[entropy|probability] [max_shortening]\n";
+                 "[entropy|probability] [max_shortening] "
+                 "[iterative|non-iterative]\n";
     return EXIT_FAILURE;
   }
 
@@ -351,6 +358,9 @@ int main(int argc, char *argv[])
   std::string mode = argc > 5 ? argv[5] : "entropy";
   std::transform(mode.begin(), mode.end(), mode.begin(), ::tolower);
   const int max_shortening = argc > 6 ? std::stoi(argv[6]) : N - 1;
+  std::string strategy = argc > 7 ? argv[7] : "iterative";
+  std::transform(strategy.begin(), strategy.end(), strategy.begin(),
+                 ::tolower);
 
   if (GF != _GF_ || N != _N_)
   {
@@ -363,10 +373,20 @@ int main(int argc, char *argv[])
     std::cerr << "Selection metric must be entropy or probability.\n";
     return EXIT_FAILURE;
   }
+  if (strategy != "iterative" && strategy != "non-iterative")
+  {
+    std::cerr << "Strategy must be iterative or non-iterative.\n";
+    return EXIT_FAILURE;
+  }
   if (frame_count == 0 || max_shortening < 0 || max_shortening >= N)
   {
     std::cerr << "frames must be positive and max_shortening must satisfy "
                  "0 <= max_shortening < N.\n";
+    return EXIT_FAILURE;
+  }
+  if (strategy == "non-iterative" && max_shortening == 0)
+  {
+    std::cerr << "Non-iterative strategy requires a positive shortening count.\n";
     return EXIT_FAILURE;
   }
 
@@ -381,43 +401,92 @@ int main(int argc, char *argv[])
 
   std::ostringstream snr_text;
   snr_text << std::fixed << std::setprecision(3) << snr;
+  std::string construction_name = "SNR" + snr_text.str() + "_" + mode;
+  if (strategy == "non-iterative")
+  {
+    std::ostringstream suffix;
+    suffix << "_non_iterative_S" << std::setw(4) << std::setfill('0')
+           << max_shortening;
+    construction_name += suffix.str();
+  }
   const fs::path output_directory =
       fs::path("constructions") / ("GF" + std::to_string(GF)) /
-      ("N" + std::to_string(N)) /
-      ("SNR" + snr_text.str() + "_" + mode);
+      ("N" + std::to_string(N)) / construction_name;
   fs::create_directories(output_directory);
 
-  for (int depth = 0; depth <= max_shortening; ++depth)
+  if (strategy == "iterative")
   {
-    std::cout << "Depth S=" << depth << ", shortened length NS=" << N - depth
-              << ", active inputs=" << N - depth << '\n';
+    for (int depth = 0; depth <= max_shortening; ++depth)
+    {
+      std::cout << "Depth S=" << depth << ", shortened length NS="
+                << N - depth << ", active inputs=" << N - depth << '\n';
 
-    validate_shortening_state(generator, active, shortened_positions);
-    const std::vector<uint16_t> candidates =
+      validate_shortening_state(generator, active, shortened_positions);
+      const std::vector<uint16_t> candidates =
+          find_weight_one_candidates(generator, active);
+      const ReliabilitySnapshot snapshot = simulate_reliability<_GF_, _N_>(
+          frame_count, simulator, active, shortened_positions, false);
+
+      write_snapshot(output_directory, GF, N, snr, frame_count, mode, depth,
+                     active, shortened_positions, candidates, snapshot);
+
+      if (depth == max_shortening)
+        break;
+
+      const uint16_t selected =
+          select_weakest_candidate(candidates, snapshot, mode);
+      shortening_steps.push_back(
+          {depth, candidates, selected, snapshot.entropy[selected],
+           snapshot.one_error_probability[selected]});
+
+      std::cout << "  candidates: " << join_indices(candidates) << '\n'
+                << "  selected x[" << selected << "] / u[" << selected
+                << "]\n";
+
+      active[selected] = false;
+      shortened_positions.push_back(selected);
+      write_shortening_order(output_directory, GF, N, snr, frame_count, mode,
+                             shortening_steps);
+    }
+  }
+  else
+  {
+    std::cout << "Pass 1/2: unshortened reliability\n";
+    const std::vector<uint16_t> initial_candidates =
         find_weight_one_candidates(generator, active);
-    const ReliabilitySnapshot snapshot = simulate_reliability<_GF_, _N_>(
-        frame_count, simulator, shortened_positions);
+    const ReliabilitySnapshot initial_snapshot =
+        simulate_reliability<_GF_, _N_>(frame_count, simulator, active,
+                                        shortened_positions, false);
+    write_snapshot(output_directory, GF, N, snr, frame_count, mode, 0, active,
+                   shortened_positions, initial_candidates, initial_snapshot);
 
-    write_snapshot(output_directory, GF, N, snr, frame_count, mode, depth,
-                   active, shortened_positions, candidates, snapshot);
+    for (int depth = 0; depth < max_shortening; ++depth)
+    {
+      validate_shortening_state(generator, active, shortened_positions);
+      const std::vector<uint16_t> candidates =
+          find_weight_one_candidates(generator, active);
+      const uint16_t selected =
+          select_weakest_candidate(candidates, initial_snapshot, mode);
+      shortening_steps.push_back(
+          {depth, candidates, selected, initial_snapshot.entropy[selected],
+           initial_snapshot.one_error_probability[selected]});
+      active[selected] = false;
+      shortened_positions.push_back(selected);
+    }
 
-    if (depth == max_shortening)
-      break;
-
-    const uint16_t selected =
-        select_weakest_candidate(candidates, snapshot, mode);
-    shortening_steps.push_back(
-        {depth, candidates, selected, snapshot.entropy[selected],
-         snapshot.one_error_probability[selected]});
-
-    std::cout << "  candidates: " << join_indices(candidates) << '\n'
-              << "  selected x[" << selected << "] / u[" << selected
-              << "]\n";
-
-    active[selected] = false;
-    shortened_positions.push_back(selected);
     write_shortening_order(output_directory, GF, N, snr, frame_count, mode,
                            shortening_steps);
+    validate_shortening_state(generator, active, shortened_positions);
+    const std::vector<uint16_t> final_candidates =
+        find_weight_one_candidates(generator, active);
+    std::cout << "Pass 2/2: reliability after S=" << max_shortening
+              << " conventional shortenings\n";
+    const ReliabilitySnapshot final_snapshot =
+        simulate_reliability<_GF_, _N_>(frame_count, simulator, active,
+                                        shortened_positions, true);
+    write_snapshot(output_directory, GF, N, snr, frame_count, mode,
+                   max_shortening, active, shortened_positions,
+                   final_candidates, final_snapshot);
   }
 
   write_shortening_order(output_directory, GF, N, snr, frame_count, mode,

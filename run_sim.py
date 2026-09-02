@@ -58,6 +58,12 @@ def main() -> int:
     parser.add_argument(
         "mode", choices=("entropy", "probability"), nargs="?", default="entropy"
     )
+    parser.add_argument(
+        "--strategy",
+        choices=("iterative", "non-iterative"),
+        default="iterative",
+        help="Reliability recomputation strategy",
+    )
     parser.add_argument("--threads", type=positive_int, default=4)
     parser.add_argument("--jobs", type=positive_int, default=None)
     parser.add_argument(
@@ -73,6 +79,10 @@ def main() -> int:
 
     if args.max_shortening is not None and args.max_shortening >= args.length:
         parser.error("--max-shortening must be smaller than the mother length")
+    if args.strategy == "non-iterative" and not args.max_shortening:
+        parser.error(
+            "--strategy non-iterative requires --max-shortening S with S > 0"
+        )
 
     build_dir = ROOT / "build"
     executable = build_dir / "Sim2"
@@ -114,8 +124,10 @@ def main() -> int:
         str(executable), str(args.frames), str(args.snr_db),
         str(args.gf), str(args.length), args.mode,
     ]
-    if args.max_shortening is not None:
-        simulation.append(str(args.max_shortening))
+    simulation.extend(
+        (str(args.max_shortening if args.max_shortening is not None else args.length - 1),
+         args.strategy)
+    )
     print("Running:", " ".join(simulation), flush=True)
     return subprocess.run(simulation, cwd=ROOT, env=environment).returncode
 

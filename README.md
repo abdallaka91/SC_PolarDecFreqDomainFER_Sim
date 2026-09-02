@@ -59,6 +59,19 @@ through `S=N-1`:
 python3 run_sim.py 10000 -8 64 64 entropy --threads 4 --jobs 4
 ```
 
+To run the two-pass non-iterative construction for exactly `S=9`, use:
+
+```bash
+python3 run_sim.py 10000 -8 64 64 entropy --strategy non-iterative --max-shortening 9 --threads 4 --jobs 4
+```
+
+This mode measures reliability once without shortening, constructs all `S`
+shortening positions from that fixed initial reliability and the evolving
+weight-one candidate sets, then freezes their inputs to zero and measures
+reliability once more with the corresponding outputs perfectly known as zero.
+Its output directory ends in `_non_iterative_Sxxxx` so it cannot overwrite an
+iterative construction.
+
 The selection metric is either `entropy` or `probability`, where probability
 means the average `1 - P(true symbol)`.
 

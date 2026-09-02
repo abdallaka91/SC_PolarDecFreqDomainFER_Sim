@@ -304,6 +304,8 @@ PoAwN::init::LoadIterativeShorteningCode(
     throw std::runtime_error("Cannot open reliability snapshot: " +
                              snapshot_path.string());
 
+  size_t snapshot_row_count = 0;
+  bool snapshot_has_active_column = false;
   while (std::getline(snapshot, line))
   {
     if (line.empty() || line[0] == '#')
@@ -315,14 +317,31 @@ PoAwN::init::LoadIterativeShorteningCode(
     double one_error_probability;
     double entropy;
     uint64_t hard_success_count;
-    int is_candidate;
     if (!(values >> rank >> index >> one_error_probability >> entropy >>
-          hard_success_count >> is_candidate))
+          hard_success_count))
       throw std::runtime_error("Invalid reliability row in " +
                                snapshot_path.string());
-    code.active_reliability_order.push_back(
-        static_cast<uint16_t>(index));
+
+    std::vector<int> status_fields;
+    int status;
+    while (values >> status)
+      status_fields.push_back(status);
+    if (status_fields.size() != 1 && status_fields.size() != 2)
+      throw std::runtime_error("Invalid reliability status fields in " +
+                               snapshot_path.string());
+
+    ++snapshot_row_count;
+    const bool is_active =
+        status_fields.size() == 1 || status_fields.front() != 0;
+    snapshot_has_active_column |= status_fields.size() == 2;
+    if (is_active)
+      code.active_reliability_order.push_back(
+          static_cast<uint16_t>(index));
   }
+
+  if (snapshot_has_active_column && snapshot_row_count != static_cast<size_t>(N))
+    throw std::runtime_error(
+        "Reliability snapshot does not contain exactly N input channels");
 
   if (code.active_reliability_order.size() != static_cast<size_t>(NS))
     throw std::runtime_error(

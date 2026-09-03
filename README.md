@@ -86,6 +86,22 @@ reliability once more with the corresponding outputs perfectly known as zero.
 Its output directory ends in `_non_iterative_Sxxxx` so it cannot overwrite an
 iterative construction.
 
+To construct `S` shortenings in reliability-guided blocks, use:
+
+```bash
+python3 run_sim.py 10000 -6.75 64 256 entropy --strategy block-iterative --max-shortening 64 --threads 4 --jobs 4
+```
+
+At each iteration this mode recomputes reliability for the current shortened
+code. For every active generator column `j`, it forms the block of active rows
+where that column is one. A column is eligible exactly when its current block
+weight is no larger than the remaining shortening budget. The mode selects the
+eligible block having the largest sum of input-channel entropy (or error
+probability), shortens all indices in that block, removes their corresponding
+rows and columns, and repeats until exactly `S` positions have been shortened.
+Current block weights are recomputed after every removal and are not restricted
+to powers of two. The output directory ends in `_block_iterative_Sxxxx`.
+
 For a Cartesian sweep over several SNR values and shortening counts, edit the
 arrays and shared parameters near the top of `sweep_non_iterative.py`, then run:
 

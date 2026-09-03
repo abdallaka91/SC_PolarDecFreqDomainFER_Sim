@@ -60,7 +60,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--strategy",
-        choices=("iterative", "non-iterative"),
+        choices=("iterative", "non-iterative", "block-iterative"),
         default="iterative",
         help="Reliability recomputation strategy",
     )
@@ -88,11 +88,14 @@ def main() -> int:
 
     if args.max_shortening is not None and args.max_shortening >= args.length:
         parser.error("--max-shortening must be smaller than the mother length")
-    if args.strategy == "non-iterative" and not args.max_shortening:
+    if (
+        args.strategy in ("non-iterative", "block-iterative")
+        and not args.max_shortening
+    ):
         parser.error(
-            "--strategy non-iterative requires --max-shortening S with S > 0"
+            f"--strategy {args.strategy} requires --max-shortening S with S > 0"
         )
-    if args.strategy == "non-iterative" and args.refresh_interval != 1:
+    if args.strategy != "iterative" and args.refresh_interval != 1:
         parser.error("--refresh-interval applies only to --strategy iterative")
 
     build_dir = ROOT / "build"

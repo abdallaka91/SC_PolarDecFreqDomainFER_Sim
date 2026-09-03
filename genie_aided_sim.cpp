@@ -40,6 +40,22 @@ struct ShorteningStep
   double selected_one_error_probability;
 };
 
+struct BlockCandidate
+{
+  uint16_t root_column;
+  std::vector<uint16_t> indices;
+  double summed_entropy;
+  double summed_one_error_probability;
+};
+
+struct BlockShorteningStep
+{
+  int iteration;
+  int starting_depth;
+  BlockCandidate selected;
+  size_t candidate_count;
+};
+
 generator_matrix_t build_polar_generator(const int N)
 {
   generator_matrix_t generator(N, std::vector<uint8_t>(N, 0));
@@ -67,8 +83,7 @@ void validate_shortening_state(
       throw std::runtime_error("A shortened index is still active");
 
     // The active mask defines the reduced transform used to construct the
-    // nested shortening chain. Removed rows are still randomized during the
-    // reliability experiment so their evolving reliabilities remain visible.
+    // nested shortening chain.
     for (size_t row = 0; row < active.size(); ++row)
       if (active[row] && generator[row][column])
         throw std::runtime_error(
@@ -112,6 +127,44 @@ find_weight_one_candidates(const generator_matrix_t &generator,
 
   if (candidates.empty())
     throw std::runtime_error("No active weight-one shortening candidate");
+
+  return candidates;
+}
+
+std::vector<BlockCandidate>
+find_block_candidates(const generator_matrix_t &generator,
+                      const std::vector<bool> &active,
+                      const int remaining_shortening,
+                      const ReliabilitySnapshot &snapshot)
+{
+  const int N = active.size();
+  std::vector<BlockCandidate> candidates;
+
+  for (int column = 0; column < N; ++column)
+  {
+    if (!active[column])
+      continue;
+
+    BlockCandidate candidate{static_cast<uint16_t>(column), {}, 0.0, 0.0};
+    for (int row = 0; row < N; ++row)
+    {
+      if (!active[row] || !generator[row][column])
+        continue;
+
+      candidate.indices.push_back(static_cast<uint16_t>(row));
+      candidate.summed_entropy += snapshot.entropy[row];
+      candidate.summed_one_error_probability +=
+          snapshot.one_error_probability[row];
+    }
+
+    const int block_weight = static_cast<int>(candidate.indices.size());
+    if (block_weight > 0 && block_weight <= remaining_shortening)
+      candidates.push_back(std::move(candidate));
+  }
+
+  if (candidates.empty())
+    throw std::runtime_error(
+        "No active shortening block fits the remaining shortening budget");
 
   return candidates;
 }
@@ -247,6 +300,34 @@ uint16_t select_weakest_candidate(const std::vector<uint16_t> &candidates,
   return weakest;
 }
 
+double block_reliability_metric(const BlockCandidate &candidate,
+                                const std::string &mode)
+{
+  return mode == "probability" ? candidate.summed_one_error_probability
+                               : candidate.summed_entropy;
+}
+
+const BlockCandidate &
+select_weakest_block(const std::vector<BlockCandidate> &candidates,
+                     const std::string &mode)
+{
+  const BlockCandidate *weakest = &candidates.front();
+  for (size_t i = 1; i < candidates.size(); ++i)
+  {
+    const BlockCandidate &candidate = candidates[i];
+    const double candidate_metric = block_reliability_metric(candidate, mode);
+    const double weakest_metric = block_reliability_metric(*weakest, mode);
+
+    if (candidate_metric > weakest_metric ||
+        (candidate_metric == weakest_metric &&
+         (candidate.indices.size() > weakest->indices.size() ||
+          (candidate.indices.size() == weakest->indices.size() &&
+           candidate.root_column < weakest->root_column))))
+      weakest = &candidate;
+  }
+  return *weakest;
+}
+
 std::vector<uint16_t>
 sort_all_by_reliability(const ReliabilitySnapshot &snapshot,
                         const std::string &mode)
@@ -285,7 +366,9 @@ void write_snapshot(const fs::path &output_directory, const int GF, const int N,
                     const std::vector<bool> &active,
                     const std::vector<uint16_t> &shortened_positions,
                     const std::vector<uint16_t> &candidates,
-                    const ReliabilitySnapshot &snapshot)
+                    const ReliabilitySnapshot &snapshot,
+                    const std::string &candidate_column =
+                        "is_weight_one_candidate")
 {
   std::ostringstream filename;
   filename << "reliability_S" << std::setw(4) << std::setfill('0') << depth
@@ -304,7 +387,8 @@ void write_snapshot(const fs::path &output_directory, const int GF, const int N,
          << "\n# shortened_positions\n# "
          << join_indices(shortened_positions)
          << "\n# index average_entropy average_one_error_probability "
-            "is_active is_weight_one_candidate\n";
+            "is_active "
+         << candidate_column << '\n';
 
   for (int index = 0; index < N; ++index)
   {
@@ -343,6 +427,34 @@ void write_shortening_order(const fs::path &output_directory, const int GF,
   output << '\n';
 }
 
+void write_block_shortening_order(
+    const fs::path &output_directory, const int GF, const int N,
+    const double snr, const uint64_t frame_count, const std::string &mode,
+    const std::vector<BlockShorteningStep> &steps,
+    const std::vector<uint16_t> &shortened_positions)
+{
+  std::ofstream output(output_directory / "shortening_order.txt");
+  output << "# N " << N << "\n# GF " << GF << "\n# SNR " << std::fixed
+         << std::setprecision(3) << snr << "\n# frames_per_iteration "
+         << frame_count << "\n# selection_metric summed_" << mode
+         << "\n# iteration starting_depth selected_root block_weight "
+            "summed_one_error_probability summed_entropy candidate_count "
+            "shortened_block\n";
+
+  for (const BlockShorteningStep &step : steps)
+    output << step.iteration << ' ' << step.starting_depth << ' '
+           << step.selected.root_column << ' ' << step.selected.indices.size()
+           << ' ' << std::scientific << std::setprecision(12)
+           << step.selected.summed_one_error_probability << ' '
+           << step.selected.summed_entropy << ' ' << step.candidate_count
+           << ' ' << join_indices(step.selected.indices) << '\n';
+
+  output << "# shortening_order";
+  for (const uint16_t index : shortened_positions)
+    output << ' ' << index;
+  output << '\n';
+}
+
 int main(int argc, char *argv[])
 {
   if (argc < 5 || argc > 9)
@@ -350,7 +462,8 @@ int main(int argc, char *argv[])
     std::cerr << "Usage: " << argv[0]
               << " <frames_per_depth> <SNR_dB> <GF_size> <N> "
                  "[entropy|probability] [max_shortening] "
-                 "[iterative|non-iterative] [refresh_interval]\n";
+                 "[iterative|non-iterative|block-iterative] "
+                 "[refresh_interval]\n";
     return EXIT_FAILURE;
   }
 
@@ -377,9 +490,11 @@ int main(int argc, char *argv[])
     std::cerr << "Selection metric must be entropy or probability.\n";
     return EXIT_FAILURE;
   }
-  if (strategy != "iterative" && strategy != "non-iterative")
+  if (strategy != "iterative" && strategy != "non-iterative" &&
+      strategy != "block-iterative")
   {
-    std::cerr << "Strategy must be iterative or non-iterative.\n";
+    std::cerr << "Strategy must be iterative, non-iterative, or "
+                 "block-iterative.\n";
     return EXIT_FAILURE;
   }
   if (frame_count == 0 || max_shortening < 0 || max_shortening >= N)
@@ -388,9 +503,11 @@ int main(int argc, char *argv[])
                  "0 <= max_shortening < N.\n";
     return EXIT_FAILURE;
   }
-  if (strategy == "non-iterative" && max_shortening == 0)
+  if ((strategy == "non-iterative" || strategy == "block-iterative") &&
+      max_shortening == 0)
   {
-    std::cerr << "Non-iterative strategy requires a positive shortening count.\n";
+    std::cerr << strategy
+              << " strategy requires a positive shortening count.\n";
     return EXIT_FAILURE;
   }
   if (refresh_interval <= 0)
@@ -398,7 +515,7 @@ int main(int argc, char *argv[])
     std::cerr << "Refresh interval must be positive.\n";
     return EXIT_FAILURE;
   }
-  if (strategy == "non-iterative" && refresh_interval != 1)
+  if (strategy != "iterative" && refresh_interval != 1)
   {
     std::cerr << "Refresh interval applies only to iterative strategy.\n";
     return EXIT_FAILURE;
@@ -412,6 +529,7 @@ int main(int argc, char *argv[])
   std::vector<bool> active(N, true);
   std::vector<uint16_t> shortened_positions;
   std::vector<ShorteningStep> shortening_steps;
+  std::vector<BlockShorteningStep> block_shortening_steps;
 
   std::ostringstream snr_text;
   snr_text << std::fixed << std::setprecision(3) << snr;
@@ -420,6 +538,13 @@ int main(int argc, char *argv[])
   {
     std::ostringstream suffix;
     suffix << "_non_iterative_S" << std::setw(4) << std::setfill('0')
+           << max_shortening;
+    construction_name += suffix.str();
+  }
+  else if (strategy == "block-iterative")
+  {
+    std::ostringstream suffix;
+    suffix << "_block_iterative_S" << std::setw(4) << std::setfill('0')
            << max_shortening;
     construction_name += suffix.str();
   }
@@ -487,7 +612,7 @@ int main(int argc, char *argv[])
                              shortening_steps);
     }
   }
-  else
+  else if (strategy == "non-iterative")
   {
     std::cout << "Pass 1/2: unshortened reliability\n";
     const std::vector<uint16_t> initial_candidates =
@@ -528,8 +653,71 @@ int main(int argc, char *argv[])
                    final_candidates, final_snapshot);
   }
 
-  write_shortening_order(output_directory, GF, N, snr, frame_count, mode,
-                         shortening_steps);
+  else
+  {
+    int iteration = 0;
+    while (static_cast<int>(shortened_positions.size()) <= max_shortening)
+    {
+      const int depth = static_cast<int>(shortened_positions.size());
+      const int remaining_shortening = max_shortening - depth;
+      std::cout << "Block iteration " << iteration << ", depth S=" << depth
+                << ", remaining=" << remaining_shortening << '\n';
+
+      validate_shortening_state(generator, active, shortened_positions);
+      const ReliabilitySnapshot snapshot =
+          simulate_reliability<_GF_, _N_>(frame_count, simulator, active,
+                                          shortened_positions, true);
+
+      std::vector<BlockCandidate> candidates;
+      std::vector<uint16_t> candidate_roots;
+      if (remaining_shortening > 0)
+      {
+        candidates = find_block_candidates(generator, active,
+                                           remaining_shortening, snapshot);
+        candidate_roots.reserve(candidates.size());
+        for (const BlockCandidate &candidate : candidates)
+          candidate_roots.push_back(candidate.root_column);
+      }
+
+      write_snapshot(output_directory, GF, N, snr, frame_count, mode, depth,
+                     depth, active, shortened_positions, candidate_roots,
+                     snapshot, "is_block_candidate");
+
+      if (remaining_shortening == 0)
+        break;
+
+      BlockCandidate selected = select_weakest_block(candidates, mode);
+      std::sort(selected.indices.begin(), selected.indices.end());
+      block_shortening_steps.push_back(
+          {iteration + 1, depth, selected, candidates.size()});
+
+      std::cout << "  selected root x[" << selected.root_column
+                << "] with current block weight " << selected.indices.size()
+                << ": " << join_indices(selected.indices) << '\n';
+
+      for (const uint16_t index : selected.indices)
+      {
+        if (!active[index])
+          throw std::runtime_error(
+              "Selected shortening block contains an inactive index");
+        active[index] = false;
+        shortened_positions.push_back(index);
+      }
+
+      write_block_shortening_order(
+          output_directory, GF, N, snr, frame_count, mode,
+          block_shortening_steps, shortened_positions);
+      ++iteration;
+    }
+  }
+
+  if (strategy == "block-iterative")
+    write_block_shortening_order(output_directory, GF, N, snr, frame_count,
+                                 mode, block_shortening_steps,
+                                 shortened_positions);
+  else
+    write_shortening_order(output_directory, GF, N, snr, frame_count, mode,
+                           shortening_steps);
   std::cout << "Construction written to " << output_directory << '\n';
   return EXIT_SUCCESS;
 }

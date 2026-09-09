@@ -724,6 +724,8 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 64) simulator = new CCSK_Simulator<64,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 64) simulator = new CCSK_Simulator<64, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 64) simulator = new CCSK_Simulator<64, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 64) simulator = new CCSK_Simulator<64, 4096>(noise_sigma, llr_sigma, num_threads);
+
 		//
 		// Q = 128
 		//
@@ -733,6 +735,8 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 128) simulator = new CCSK_Simulator<128,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 128) simulator = new CCSK_Simulator<128, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 128) simulator = new CCSK_Simulator<128, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 128) simulator = new CCSK_Simulator<128, 4096>(noise_sigma, llr_sigma, num_threads);
+
 		//
 		// Q = 256
 		//
@@ -742,6 +746,8 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 256) simulator = new CCSK_Simulator<256,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 256) simulator = new CCSK_Simulator<256, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 256) simulator = new CCSK_Simulator<256, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 256) simulator = new CCSK_Simulator<256, 4096>(noise_sigma, llr_sigma, num_threads);
+
 		//
 		// Q = 512
 		//
@@ -751,6 +757,7 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 512) simulator = new CCSK_Simulator<512,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 512) simulator = new CCSK_Simulator<512, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 512) simulator = new CCSK_Simulator<512, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 512) simulator = new CCSK_Simulator<512, 4096>(noise_sigma, llr_sigma, num_threads);
 		//
 		// Q = 1024
 		//
@@ -760,6 +767,7 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 1024) simulator = new CCSK_Simulator<1024,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 1024) simulator = new CCSK_Simulator<1024, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 1024) simulator = new CCSK_Simulator<1024, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 1024) simulator = new CCSK_Simulator<1024, 4096>(noise_sigma, llr_sigma, num_threads);
 
 		//
 		// Q = 1024
@@ -770,6 +778,7 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 8) simulator = new CCSK_Simulator<8,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 8) simulator = new CCSK_Simulator<8, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 8) simulator = new CCSK_Simulator<8, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 8) simulator = new CCSK_Simulator<8, 4096>(noise_sigma, llr_sigma, num_threads);
 
 		//
 		// Q = 1024
@@ -780,6 +789,7 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 16) simulator = new CCSK_Simulator<16,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 16) simulator = new CCSK_Simulator<16, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 16) simulator = new CCSK_Simulator<16, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 16) simulator = new CCSK_Simulator<16, 4096>(noise_sigma, llr_sigma, num_threads);
 
 		//
 		// Q = 1024
@@ -790,6 +800,7 @@ int main(int argc, char *argv[])
 		else if (N ==  512 && q == 32) simulator = new CCSK_Simulator<32,  512>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 1024 && q == 32) simulator = new CCSK_Simulator<32, 1024>(noise_sigma, llr_sigma, num_threads);
 		else if (N == 2048 && q == 32) simulator = new CCSK_Simulator<32, 2048>(noise_sigma, llr_sigma, num_threads);
+		else if (N == 4096 && q == 32) simulator = new CCSK_Simulator<32, 4096>(noise_sigma, llr_sigma, num_threads);
 
 		if (simulator == nullptr)
 		{
@@ -909,6 +920,7 @@ int main(int argc, char *argv[])
 				else if (N ==  512) polar_encode< 512>(u_symb.data());
 				else if (N == 1024) polar_encode<1024>(u_symb.data());
 				else if (N == 2048) polar_encode<2048>(u_symb.data());
+				else if (N == 4096) polar_encode<4096>(u_symb.data());
 				else
 					exit(EXIT_FAILURE);
 

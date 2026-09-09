@@ -150,4 +150,28 @@ inline void polar_encode<1024>(uint16_t* inp)// inp[1024])
         inp[i] = inp[i] ^ inp[i + 512];
     }
 }
+
+template <>
+inline void polar_encode<2048>(uint16_t* inp)// inp[2048])
+{
+    polar_encode<1024>(inp);
+    polar_encode<1024>(inp + 1024);
+
+    for (int i = 0; i < 1024; i++)
+    {
+        inp[i] = inp[i] ^ inp[i + 1024];
+    }
+}
+
+template <>
+inline void polar_encode<4096>(uint16_t* inp)// inp[4096])
+{
+    polar_encode<2048>(inp);
+    polar_encode<2048>(inp + 2048);
+
+    for (int i = 0; i < 2048; i++)
+    {
+        inp[i] = inp[i] ^ inp[i + 2048];
+    }
+}
 #endif

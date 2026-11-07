@@ -1,7 +1,7 @@
 // FPGA-UART decoded-readback FER version.
-// The host generates random u, polar-encodes it, sends N*GF probabilities to the FPGA,
+// The host generates random u, polar-encodes it, sends NS*GF probabilities to the FPGA,
 // reads back the decoded u word, and counts FER/SER in software.
-// IMPORTANT: this file assumes the FPGA bitstream uses uart_batch_decoder_top at 3 Mbaud
+// IMPORTANT: this file assumes the FPGA bitstream uses runtime_decoder_uart_top at 3 Mbaud
 // with CMD_BULK, CMD_START, CMD_STATUS, and CMD_DECODED enabled.
 
 // #define find_llr_rang // disable it
@@ -11,6 +11,7 @@
 #include "tools.h"
 #include <algorithm>
 #include <atomic>
+#include <cctype>
 #include <cerrno>
 #include <chrono>
 #include <cmath>
@@ -24,6 +25,7 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <map>
 #include <omp.h>
 #include <random>
 #include <signal.h>
@@ -196,15 +198,227 @@ static void fpga_read_counters(int fd, uint32_t &total, uint32_t &errors)
     errors = (uint32_t)b[4] | ((uint32_t)b[5] << 8) | ((uint32_t)b[6] << 16) | ((uint32_t)b[7] << 24);
 }
 
-// Send one N x q probability frame to FPGA memory without starting the decoder.
-static void fpga_send_bulk_frame(int fd, const uint16_t *prob_intgr, int N, int q)
+
+// ============================================================================
+// Runtime decoder image loading for generic-program bitstream
+// ============================================================================
+static constexpr uint8_t CMD_PING_RT          = 0x01;
+static constexpr uint8_t CMD_WRITE_PROGRAM_RT = 0x90;
+static constexpr uint8_t CMD_WRITE_MICRO_RT   = 0x91;
+static constexpr uint8_t CMD_WRITE_FROZEN_RT  = 0x92;
+static constexpr uint8_t CMD_WRITE_SHORTENED_RT = 0x93;
+static constexpr uint8_t CMD_SET_ACTIVE_N_RT  = 0x98;
+static constexpr uint8_t RESP_OK_RT           = 0x55;
+
+static std::string trim_copy(std::string s)
 {
+    auto not_space = [](unsigned char c){ return !std::isspace(c); };
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), not_space));
+    s.erase(std::find_if(s.rbegin(), s.rend(), not_space).base(), s.end());
+    return s;
+}
+
+static std::vector<std::string> read_hex_lines_cpp(const fs::path &path)
+{
+    std::ifstream f(path);
+    if (!f) throw std::runtime_error("cannot open " + path.string());
+    std::vector<std::string> out;
+    std::string line;
+    while (std::getline(f, line))
+    {
+        line = trim_copy(line);
+        line.erase(std::remove(line.begin(), line.end(), '_'), line.end());
+        if (line.empty() || line[0] == '#') continue;
+        out.push_back(line);
+    }
+    return out;
+}
+
+static std::map<std::string, std::string> read_manifest_cpp(const fs::path &path)
+{
+    std::ifstream f(path);
+    if (!f) throw std::runtime_error("cannot open " + path.string());
+    std::map<std::string, std::string> m;
+    std::string line;
+    while (std::getline(f, line))
+    {
+        auto pos = line.find('=');
+        if (pos == std::string::npos) continue;
+        m[trim_copy(line.substr(0, pos))] = trim_copy(line.substr(pos + 1));
+    }
+    return m;
+}
+
+static std::vector<uint8_t> bytes_from_hex_word_cpp(std::string s, size_t nbytes)
+{
+    s = trim_copy(s);
+    s.erase(std::remove(s.begin(), s.end(), '_'), s.end());
+    if (s.size() & 1u) s = "0" + s;
+    std::vector<uint8_t> b;
+    b.reserve(s.size() / 2);
+    for (size_t i = 0; i < s.size(); i += 2)
+    {
+        unsigned x = std::stoul(s.substr(i, 2), nullptr, 16);
+        b.push_back(static_cast<uint8_t>(x & 0xFFu));
+    }
+    if (b.size() > nbytes)
+        b.erase(b.begin(), b.end() - (long)nbytes);
+    if (b.size() < nbytes)
+        b.insert(b.begin(), nbytes - b.size(), 0);
+    return b;
+}
+
+static void append_le16(std::vector<uint8_t> &p, unsigned x)
+{
+    p.push_back(static_cast<uint8_t>(x & 0xFFu));
+    p.push_back(static_cast<uint8_t>((x >> 8) & 0xFFu));
+}
+
+static void fpga_cmd_ack_payload(int fd, const std::vector<uint8_t> &payload, const char *what)
+{
+    uart_write_all(fd, payload.data(), payload.size());
+    uint8_t ack = 0;
+    if (!uart_read_exact(fd, &ack, 1, 5000) || ack != RESP_OK_RT)
+    {
+        char msg[160];
+        std::snprintf(msg, sizeof(msg), "%s failed, response=0x%02X", what, ack);
+        throw std::runtime_error(msg);
+    }
+}
+
+static void fpga_runtime_ping(int fd)
+{
+    std::vector<uint8_t> p{CMD_PING_RT};
+    fpga_cmd_ack_payload(fd, p, "runtime ping");
+}
+
+static void fpga_set_active_n(int fd, unsigned active_n)
+{
+    std::vector<uint8_t> p{CMD_SET_ACTIVE_N_RT};
+    append_le16(p, active_n);
+    fpga_cmd_ack_payload(fd, p, "set active_N");
+}
+
+struct RuntimeCodeConfig
+{
+    int shortened_n = 0;
+    std::vector<uint8_t> frozen;
+    std::vector<uint8_t> shortened;
+};
+
+static std::vector<uint8_t> parse_bit_image(const std::vector<std::string> &lines,
+                                            const char *name)
+{
+    std::vector<uint8_t> bits;
+    bits.reserve(lines.size());
+    for (const std::string &line : lines)
+    {
+        const std::string value = trim_copy(line);
+        if (value != "0" && value != "00" && value != "1" && value != "01")
+            throw std::runtime_error(std::string("invalid ") + name + " bit: " + value);
+        bits.push_back((value == "0" || value == "00") ? 0 : 1);
+    }
+    return bits;
+}
+
+static RuntimeCodeConfig fpga_load_runtime_images(int fd, const std::string &dir_s,
+                                                  int N, int K, int q)
+{
+    fs::path root(dir_s);
+    auto manifest = read_manifest_cpp(root / "manifest.txt");
+    auto program  = read_hex_lines_cpp(root / "program.hex");
+    auto micro    = read_hex_lines_cpp(root / "micro.hex");
+    auto frozen_lines = read_hex_lines_cpp(root / "frozen.hex");
+    auto shortened_lines = read_hex_lines_cpp(root / "shortened.hex");
+    RuntimeCodeConfig config;
+    config.frozen = parse_bit_image(frozen_lines, "frozen");
+    config.shortened = parse_bit_image(shortened_lines, "shortened");
+
+    int manifest_N  = std::stoi(manifest.at("active_N"));
+    int manifest_K  = std::stoi(manifest.at("K"));
+    int manifest_GF = std::stoi(manifest.at("GF"));
+    config.shortened_n = std::stoi(manifest.at("shortened_N"));
+    int addr_w      = std::stoi(manifest.at("addr_w"));
+    int micro_bytes = (3 * addr_w + 7) / 8;
+
+    if (manifest_N != N || manifest_K != K || manifest_GF != q)
+    {
+        std::ostringstream oss;
+        oss << "runtime image mismatch: manifest has N=" << manifest_N
+            << " K=" << manifest_K << " GF=" << manifest_GF
+            << ", CLI has N=" << N << " K=" << K << " GF=" << q;
+        throw std::runtime_error(oss.str());
+    }
+    if (config.frozen.size() != static_cast<size_t>(N) ||
+        config.shortened.size() != static_cast<size_t>(N))
+        throw std::runtime_error("runtime frozen/shortened masks must contain N bits");
+    const int shortened_count = static_cast<int>(
+        std::count(config.shortened.begin(), config.shortened.end(), uint8_t{1}));
+    if (config.shortened_n != N - shortened_count || K > config.shortened_n)
+        throw std::runtime_error("runtime shortening metadata is inconsistent");
+
+    fpga_runtime_ping(fd);
+    fpga_set_active_n(fd, static_cast<unsigned>(N));
+
+    std::cout << "#(II) Loading runtime frozen mask: " << config.frozen.size() << " bits" << std::endl;
+    for (size_t i = 0; i < config.frozen.size(); i++)
+    {
+        std::vector<uint8_t> p{CMD_WRITE_FROZEN_RT};
+        append_le16(p, static_cast<unsigned>(i));
+        p.push_back(config.frozen[i]);
+        fpga_cmd_ack_payload(fd, p, "write frozen");
+    }
+
+    std::cout << "#(II) Loading runtime shortening mask: "
+              << config.shortened.size() << " bits, NS=" << config.shortened_n
+              << std::endl;
+    for (size_t i = 0; i < config.shortened.size(); i++)
+    {
+        std::vector<uint8_t> p{CMD_WRITE_SHORTENED_RT};
+        append_le16(p, static_cast<unsigned>(i));
+        p.push_back(config.shortened[i]);
+        fpga_cmd_ack_payload(fd, p, "write shortened");
+    }
+
+    std::cout << "#(II) Loading runtime micro table: " << micro.size()
+              << " words, " << micro_bytes << " bytes/word" << std::endl;
+    for (size_t i = 0; i < micro.size(); i++)
+    {
+        std::vector<uint8_t> p{CMD_WRITE_MICRO_RT};
+        append_le16(p, static_cast<unsigned>(i));
+        auto b = bytes_from_hex_word_cpp(micro[i], (size_t)micro_bytes);
+        p.insert(p.end(), b.begin(), b.end());
+        fpga_cmd_ack_payload(fd, p, "write micro");
+    }
+
+    std::cout << "#(II) Loading runtime program: " << program.size() << " words" << std::endl;
+    for (size_t i = 0; i < program.size(); i++)
+    {
+        std::vector<uint8_t> p{CMD_WRITE_PROGRAM_RT};
+        append_le16(p, static_cast<unsigned>(i));
+        auto b = bytes_from_hex_word_cpp(program[i], 16);
+        p.insert(p.end(), b.begin(), b.end());
+        fpga_cmd_ack_payload(fd, p, "write program");
+    }
+
+    std::cout << "#(II) Runtime decoder image loaded from " << root << std::endl;
+    return config;
+}
+
+// Send only non-shortened rows, in increasing mother-code position.
+static void fpga_send_bulk_frame(int fd, const uint16_t *prob_intgr, int N, int q,
+                                 const std::vector<uint8_t> &shortened)
+{
+    const size_t transmitted_n = static_cast<size_t>(N) -
+        std::count(shortened.begin(), shortened.end(), uint8_t{1});
     std::vector<uint8_t> packet;
-    packet.reserve(1 + (size_t)N * (size_t)q * 2);
+    packet.reserve(1 + transmitted_n * static_cast<size_t>(q) * 2);
     packet.push_back(0x60);
 
     for (int i = 0; i < N; i++)
     {
+        if (shortened[i])
+            continue;
         for (int j = 0; j < q; j++)
         {
             // FPGA data_t is signed W=10. For probabilities use 0..511.
@@ -422,6 +636,61 @@ void intHandler(int)
     force_quit = true;
 }
 
+static void fpga_send_frame_rowwise(int fd, const uint16_t *prob_intgr, int N, int q)
+{
+    auto send_ack = [&](const std::vector<uint8_t> &p, const char *what)
+    {
+        uart_write_all(fd, p.data(), p.size());
+        uint8_t ack = 0;
+        if (!uart_read_exact(fd, &ack, 1, 5000) || ack != 0x55)
+        {
+            char msg[160];
+            std::snprintf(msg, sizeof(msg), "%s failed, response=0x%02X", what, ack);
+            throw std::runtime_error(msg);
+        }
+    };
+
+    for (int row = 0; row < N; row++)
+    {
+        for (int j = 0; j < q; j++)
+        {
+            uint16_t v = prob_intgr[row * q + j] & 0x03FFu;
+
+            std::vector<uint8_t> p;
+            p.reserve(4);
+            p.push_back(0x10);                 // CMD_WRITE
+            p.push_back((uint8_t)j);           // GF index
+            p.push_back((uint8_t)(v & 0xFF));  // low byte
+            p.push_back((uint8_t)((v >> 8) & 0x03)); // high 2 bits
+
+            send_ack(p, "CMD_WRITE");
+        }
+
+        std::vector<uint8_t> c;
+        c.reserve(3);
+        c.push_back(0x20);                      // CMD_COMMIT
+        c.push_back((uint8_t)(row & 0xFF));
+        c.push_back((uint8_t)((row >> 8) & 0xFF));
+
+        send_ack(c, "CMD_COMMIT");
+    }
+}
+
+
+static void fpga_core_reset(int fd)
+{
+    uint8_t cmd = 0xA5; // CMD_RESET
+    uint8_t ack = 0;
+
+    uart_write_all(fd, &cmd, 1);
+
+    if (!uart_read_exact(fd, &ack, 1, 2000) || ack != 0x55)
+        throw std::runtime_error("FPGA core reset failed");
+
+    usleep(200);
+}
+
+
 int main(int argc, char *argv[])
 {
 #ifdef __AVX512BW__
@@ -441,15 +710,15 @@ int main(int argc, char *argv[])
 
     std::string dec_type = "fpga_uart_readback";
     std::string uart_dev = "/dev/ttyUSB1";
+    std::string runtime_images_dir;
     uint64_t NbMonteCarlo = 10000000000ULL;
     float EbN0 = -1000.f;
     uint16_t q = 0;
     uint16_t p = 0;
     uint16_t N = 0;
-    uint16_t n = 0;
+    uint16_t requested_shortened_n = 0;
     uint16_t K = 0;
     int FER_STOP = 100;
-    uint16_t frozen_val = 0;
     int nbits = 10;
     float llr_sigma = -1.f;
     uint32_t rng_seed = 1;
@@ -469,7 +738,10 @@ int main(int argc, char *argv[])
         else if (arg == "-N")
         {
             N = stoi(std::string(argv[++i]));
-            n = log2(N);
+        }
+        else if (arg == "-NN" || arg == "-shortened-N" || arg == "-shortened-n")
+        {
+            requested_shortened_n = stoi(std::string(argv[++i]));
         }
         else if (arg == "-K")
         {
@@ -498,6 +770,10 @@ int main(int argc, char *argv[])
         else if (arg == "-uart")
         {
             uart_dev = argv[++i];
+        }
+        else if (arg == "-images")
+        {
+            runtime_images_dir = argv[++i];
         }
         else if (arg == "-seed")
         {
@@ -536,30 +812,27 @@ int main(int argc, char *argv[])
         printf("(EE) This FPGA UART wrapper expects 10-bit signed probabilities. Use -nbits 10.\n");
         exit(EXIT_FAILURE);
     }
+    if (runtime_images_dir.empty())
+    {
+        printf("(EE) generic runtime FPGA mode requires [-images runtime_images/...]\n");
+        exit(EXIT_FAILURE);
+    }
 
 
-
-    const float MAX_2pn1 = (float)((1u << (nbits - 1)) - 1u); // for nbits=10 => 511
 
     std::cout << "(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
     std::cout << "(DD) EbN0         : " << EbN0 << std::endl;
     std::cout << "(DD) q            : " << q << std::endl;
     std::cout << "(DD) p            : " << p << std::endl;
     std::cout << "(DD) N            : " << N << std::endl;
+    if (requested_shortened_n != 0)
+        std::cout << "(DD) requested NS : " << requested_shortened_n << std::endl;
     std::cout << "(DD) K            : " << K << std::endl;
     std::cout << "(DD) dec_type     : " << dec_type << std::endl;
     std::cout << "(DD) FER_STOP     : " << FER_STOP << std::endl;
     std::cout << "(DD) UART         : " << uart_dev << " @ " << FPGA_UART_BAUD_PRINT << " baud" << std::endl;
+    std::cout << "(DD) runtime images: " << (runtime_images_dir.empty() ? std::string("<missing>") : runtime_images_dir) << std::endl;
     std::cout << "(DD) rng_seed     : " << rng_seed << std::endl;
-
-    base_code_t code_param(N, K, n, q, p, frozen_val);
-    code_param.sig_mod = "CCSK_BIN";
-
-    table_GF table;
-
-    cout << "(II) Loading code_param [START]" << endl;
-    LoadCode(code_param, EbN0, "../matrices/");
-    cout << "(II) Loading code_param [END OK]" << endl;
 
     cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations." << endl;
 
@@ -571,10 +844,17 @@ int main(int argc, char *argv[])
     CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
 
     int uart_fd = -1;
+    RuntimeCodeConfig runtime_config;
     try
     {
+
         uart_fd = uart_open_3mbaud(uart_dev);
+        fpga_core_reset(uart_fd);
         printf("#(II) Opened %s at 3 Mbaud\n", uart_dev.c_str());
+        runtime_config = fpga_load_runtime_images(uart_fd, runtime_images_dir, N, K, q);
+        if (requested_shortened_n != 0 &&
+            requested_shortened_n != runtime_config.shortened_n)
+            throw std::runtime_error("CLI shortened length does not match runtime images");
         fpga_clear_counters(uart_fd);
     }
     catch (const std::exception &e)
@@ -593,11 +873,68 @@ int main(int argc, char *argv[])
 
     std::mt19937 rng(rng_seed);
     std::uniform_int_distribution<int> sym_dist(0, q - 1);
+    std::vector<int> information_positions;
+    for (int i = 0; i < N; ++i)
+        if (!runtime_config.frozen[i])
+            information_positions.push_back(i);
+    if (information_positions.size() != static_cast<size_t>(K))
+    {
+        fprintf(stderr, "(EE) Runtime frozen mask contains %zu information positions, expected %u\n",
+                information_positions.size(), K);
+        return EXIT_FAILURE;
+    }
 
     auto start = std::chrono::high_resolution_clock::now();
     auto watchdod = std::chrono::high_resolution_clock::now();
 
     cout << "Simulation starts with random codewords and FPGA decoded-word readback..." << endl;
+
+
+//     {
+//     uint16_t i_ref[64] = {
+//         8,52,46,27,38,24,56,1,9,52,25,12,35,10,9,6,
+//         8,23,51,12,57,59,54,26,16,30,5,10,37,32,6,12,
+//         48,30,8,23,14,31,14,32,6,41,8,55,60,58,8,16,
+//         48,61,21,0,17,60,0,59,31,3,20,49,58,16,7,26
+//     };
+
+//     uint16_t o_ref[64] = {
+//         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+//         0,0,0,0,0,0,0,55,0,0,61,45,56,38,23,22,
+//         0,0,0,0,0,24,16,17,0,12,31,12,41,32,5,10,
+//         0,2,22,16,33,13,38,33,14,56,56,43,55,10,29,26
+//     };
+
+//     std::vector<uint16_t> prob(N * q, 0);
+
+//     for (int i = 0; i < N; i++) {
+//         prob[i * q + i_ref[i]] = 511;
+//     }
+
+//     fpga_send_frame_rowwise(uart_fd, prob.data(), N, q);
+//     fpga_start_decode(uart_fd);
+//     fpga_wait_decode_done(uart_fd);
+//     std::vector<uint16_t> dec = fpga_read_decoded_word(uart_fd, N, q);
+
+//     int err = 0;
+//     std::cout << "\nBULK ONE-HOT DIAG:\n";
+//     for (int i = 0; i < N; i++) {
+//         if (dec[i] != o_ref[i]) {
+//             std::cout << "i=" << i
+//                       << " fpga=" << dec[i]
+//                       << " expected=" << o_ref[i] << "\n";
+//             err++;
+//         }
+//     }
+
+//     std::cout << "BULK ONE-HOT errors = " << err << std::endl;
+//     exit(0);
+// }
+
+
+
+
+
 
     // Single-thread loop: one UART link cannot be shared by OpenMP workers.
     {
@@ -614,12 +951,17 @@ int main(int argc, char *argv[])
             for (int u = 0; u < N; u++)
                 u_symb[u] = 0;
             for (int k = 0; k < K; k++)
-                u_symb[code_param.reliab_sequence[k]] = static_cast<uint16_t>(sym_dist(rng));
+                u_symb[information_positions[k]] = static_cast<uint16_t>(sym_dist(rng));
 
             uint16_t x_symb[N];
             for (int u = 0; u < N; u++)
                 x_symb[u] = u_symb[u];
             polar_encode<_N_>(x_symb);
+            for (int i = 0; i < N; ++i)
+            {
+                if (runtime_config.shortened[i] && x_symb[i] != 0)
+                    throw std::runtime_error("shortened codeword position is not zero");
+            }
 
             // Simulate CCSK transmission of the encoded codeword and produce LLR/probabilities.
             double *llr_values = simulator.simulate_frame(x_symb, thread_id);
@@ -656,7 +998,9 @@ int main(int argc, char *argv[])
             // Send probabilities to hardware, read decoded u, and compare in software.
             try
             {
-                fpga_send_bulk_frame(uart_fd, prob_intgr.data(), N, q);
+
+                fpga_send_bulk_frame(uart_fd, prob_intgr.data(), N, q,
+                                     runtime_config.shortened);
                 fpga_start_decode(uart_fd);
                 fpga_wait_decode_done(uart_fd);
                 std::vector<uint16_t> decoded_u = fpga_read_decoded_word(uart_fd, N, q);

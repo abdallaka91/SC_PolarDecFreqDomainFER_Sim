@@ -173,39 +173,11 @@ static bool uart_read_exact(int fd, uint8_t *buf, size_t len, int timeout_ms)
     return true;
 }
 
-static void fpga_clear_counters(int fd)
-{
-    uint8_t cmd = 0x72;
-    uint8_t ack = 0;
-    uart_write_all(fd, &cmd, 1);
-    if (!uart_read_exact(fd, &ack, 1, 2000) || ack != 0x55)
-    {
-        throw std::runtime_error("FPGA clear-counters command failed");
-    }
-}
-
-static void fpga_read_counters(int fd, uint32_t &total, uint32_t &errors)
-{
-    uint8_t cmd = 0x70;
-    uint8_t b[8]{};
-    uart_write_all(fd, &cmd, 1);
-    if (!uart_read_exact(fd, b, 8, 2000))
-    {
-        throw std::runtime_error("Timeout while reading FPGA counters");
-    }
-
-    total  = (uint32_t)b[0] | ((uint32_t)b[1] << 8) | ((uint32_t)b[2] << 16) | ((uint32_t)b[3] << 24);
-    errors = (uint32_t)b[4] | ((uint32_t)b[5] << 8) | ((uint32_t)b[6] << 16) | ((uint32_t)b[7] << 24);
-}
-
-
 // ============================================================================
 // Runtime decoder image loading for generic-program bitstream
 // ============================================================================
 static constexpr uint8_t CMD_PING_RT          = 0x01;
 static constexpr uint8_t CMD_WRITE_PROGRAM_RT = 0x90;
-static constexpr uint8_t CMD_WRITE_MICRO_RT   = 0x91;
-static constexpr uint8_t CMD_WRITE_FROZEN_RT  = 0x92;
 static constexpr uint8_t CMD_WRITE_SHORTENED_RT = 0x93;
 static constexpr uint8_t CMD_SET_ACTIVE_N_RT  = 0x98;
 static constexpr uint8_t RESP_OK_RT           = 0x55;
@@ -327,7 +299,6 @@ static RuntimeCodeConfig fpga_load_runtime_images(int fd, const std::string &dir
     fs::path root(dir_s);
     auto manifest = read_manifest_cpp(root / "manifest.txt");
     auto program  = read_hex_lines_cpp(root / "program.hex");
-    auto micro    = read_hex_lines_cpp(root / "micro.hex");
     auto frozen_lines = read_hex_lines_cpp(root / "frozen.hex");
     auto shortened_lines = read_hex_lines_cpp(root / "shortened.hex");
     RuntimeCodeConfig config;
@@ -338,8 +309,7 @@ static RuntimeCodeConfig fpga_load_runtime_images(int fd, const std::string &dir
     int manifest_K  = std::stoi(manifest.at("K"));
     int manifest_GF = std::stoi(manifest.at("GF"));
     config.shortened_n = std::stoi(manifest.at("shortened_N"));
-    int addr_w      = std::stoi(manifest.at("addr_w"));
-    int micro_bytes = (3 * addr_w + 7) / 8;
+    int program_bits = std::stoi(manifest.at("program_word_bits"));
 
     if (manifest_N != N || manifest_K != K || manifest_GF != q)
     {
@@ -349,6 +319,8 @@ static RuntimeCodeConfig fpga_load_runtime_images(int fd, const std::string &dir
             << ", CLI has N=" << N << " K=" << K << " GF=" << q;
         throw std::runtime_error(oss.str());
     }
+    if (program_bits < 1 || program_bits > 128)
+        throw std::runtime_error("runtime program word does not fit the UART loader");
     if (config.frozen.size() != static_cast<size_t>(N) ||
         config.shortened.size() != static_cast<size_t>(N))
         throw std::runtime_error("runtime frozen/shortened masks must contain N bits");
@@ -360,15 +332,6 @@ static RuntimeCodeConfig fpga_load_runtime_images(int fd, const std::string &dir
     fpga_runtime_ping(fd);
     fpga_set_active_n(fd, static_cast<unsigned>(N));
 
-    std::cout << "#(II) Loading runtime frozen mask: " << config.frozen.size() << " bits" << std::endl;
-    for (size_t i = 0; i < config.frozen.size(); i++)
-    {
-        std::vector<uint8_t> p{CMD_WRITE_FROZEN_RT};
-        append_le16(p, static_cast<unsigned>(i));
-        p.push_back(config.frozen[i]);
-        fpga_cmd_ack_payload(fd, p, "write frozen");
-    }
-
     std::cout << "#(II) Loading runtime shortening mask: "
               << config.shortened.size() << " bits, NS=" << config.shortened_n
               << std::endl;
@@ -378,17 +341,6 @@ static RuntimeCodeConfig fpga_load_runtime_images(int fd, const std::string &dir
         append_le16(p, static_cast<unsigned>(i));
         p.push_back(config.shortened[i]);
         fpga_cmd_ack_payload(fd, p, "write shortened");
-    }
-
-    std::cout << "#(II) Loading runtime micro table: " << micro.size()
-              << " words, " << micro_bytes << " bytes/word" << std::endl;
-    for (size_t i = 0; i < micro.size(); i++)
-    {
-        std::vector<uint8_t> p{CMD_WRITE_MICRO_RT};
-        append_le16(p, static_cast<unsigned>(i));
-        auto b = bytes_from_hex_word_cpp(micro[i], (size_t)micro_bytes);
-        p.insert(p.end(), b.begin(), b.end());
-        fpga_cmd_ack_payload(fd, p, "write micro");
     }
 
     std::cout << "#(II) Loading runtime program: " << program.size() << " words" << std::endl;
@@ -817,11 +769,16 @@ int main(int argc, char *argv[])
         printf("(EE) generic runtime FPGA mode requires [-images runtime_images/...]\n");
         exit(EXIT_FAILURE);
     }
+    const float noise_sigma = std::sqrt(1.0f / std::pow(10.0f, EbN0 / 10.0f));
+    if (llr_sigma < 0.f)
+        llr_sigma = noise_sigma;
 
 
 
     std::cout << "(DD) NbMonteCarlo : " << NbMonteCarlo << std::endl;
     std::cout << "(DD) EbN0         : " << EbN0 << std::endl;
+    std::cout << "(DD) noise_sigma  : " << noise_sigma << std::endl;
+    std::cout << "(DD) llr_sigma    : " << llr_sigma << std::endl;
     std::cout << "(DD) q            : " << q << std::endl;
     std::cout << "(DD) p            : " << p << std::endl;
     std::cout << "(DD) N            : " << N << std::endl;
@@ -837,10 +794,6 @@ int main(int argc, char *argv[])
     cout << EVAL(FWHT) " and " EVAL(FWHT_NORM) " are used for FWHT operations." << endl;
 
 
-    float noise_sigma = sqrt(1.0 / (pow(10, EbN0 / 10.0)));
-    if (llr_sigma < 0.f)
-        llr_sigma = noise_sigma;
-
     CCSK_Simulator<_GF_, _N_> simulator(noise_sigma, llr_sigma, num_threads);
 
     int uart_fd = -1;
@@ -855,7 +808,6 @@ int main(int argc, char *argv[])
         if (requested_shortened_n != 0 &&
             requested_shortened_n != runtime_config.shortened_n)
             throw std::runtime_error("CLI shortened length does not match runtime images");
-        fpga_clear_counters(uart_fd);
     }
     catch (const std::exception &e)
     {
@@ -1077,18 +1029,6 @@ int main(int argc, char *argv[])
 
     FER_out = FER.load();
     gen_frames_out = global_counter.load();
-
-    // Optional consistency check with FPGA-side counters.
-    try
-    {
-        uint32_t fpga_total = 0, fpga_errors = 0;
-        fpga_read_counters(uart_fd, fpga_total, fpga_errors);
-        std::cout << "\nFPGA counters: total=" << fpga_total << " errors=" << fpga_errors << std::endl;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << "\n(WW) Could not read FPGA counters: " << e.what() << std::endl;
-    }
 
     if (uart_fd >= 0)
         close(uart_fd);
